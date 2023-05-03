@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help"
+	"API_MBundestag/help/generics"
 	"database/sql"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -21,7 +21,7 @@ func TestDiscussionAndPostLogic(t *testing.T) {
 
 func testHideTag(t *testing.T) {
 	disc := database.Document{UUID: "bazinga_fail_12"}
-	var message help.Message = ""
+	var message generics.Message = ""
 	var positive bool
 	ToggleHidePostTag(&disc, "uuid_1", &message, &positive)
 	assert.Equal(t, false, positive)
@@ -49,7 +49,7 @@ func testAddTag(t *testing.T) {
 	for _, tag := range tags {
 		tag := tag
 		go func() {
-			var message help.Message = ""
+			var message generics.Message = ""
 			var positive bool
 			post := database.Document{UUID: "testPost_forTags"}
 
@@ -65,7 +65,7 @@ func testAddTag(t *testing.T) {
 		}()
 	}
 
-	var message help.Message = ""
+	var message generics.Message = ""
 	var positive bool
 	disc := database.Document{UUID: "fail_request"}
 	AddPostTag(&disc, &database.Posts{}, &message, &positive)
@@ -91,7 +91,7 @@ func testAddTag(t *testing.T) {
 
 func testHideComment(t *testing.T) {
 	disc := database.Document{UUID: "bazinga_fail_12"}
-	var message help.Message = ""
+	var message generics.Message = ""
 	var positive bool
 	ToggleHideDiscussionComment(&disc, "uuid_1", &message, &positive)
 	assert.Equal(t, false, positive)
@@ -120,7 +120,7 @@ func testAddComment(t *testing.T) {
 	for _, comment := range comments {
 		comment := comment
 		go func() {
-			var message help.Message = ""
+			var message generics.Message = ""
 			var positive bool
 			disc := database.Document{UUID: "testDiscussion_forComments"}
 			AddComment(&disc, &database.Discussions{
@@ -135,7 +135,7 @@ func testAddComment(t *testing.T) {
 			assert.Equal(t, SuccessfulComment+"\n", message)
 		}()
 	}
-	var message help.Message = ""
+	var message generics.Message = ""
 	var positive bool
 	disc := database.Document{UUID: "fail_request"}
 	AddComment(&disc, &database.Discussions{}, &message, &positive)

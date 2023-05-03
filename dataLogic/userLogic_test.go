@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help"
+	"API_MBundestag/help/generics"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/crypto/bcrypt"
 	"testing"
@@ -18,7 +18,7 @@ func TestUserLogic(t *testing.T) {
 }
 
 func testChangePassword(t *testing.T) {
-	var msg help.Message
+	var msg generics.Message
 	var positive bool
 	ChangePassword("askjdlasd", "", "", &msg, &positive)
 	assert.Equal(t, AccountCloudNotBeFound+"\n", msg)
@@ -43,7 +43,7 @@ func testChangePassword(t *testing.T) {
 
 func testChangeUser(t *testing.T) {
 	acc := Account{}
-	var msg help.Message
+	var msg generics.Message
 	var positive bool
 	acc.GetUser("accUserLogic", "", &msg, &positive)
 	acc.ChangeFlair = true
@@ -72,7 +72,7 @@ func testChangeUser(t *testing.T) {
 
 func testGetUser(t *testing.T) {
 	acc := Account{}
-	var msg help.Message
+	var msg generics.Message
 	var positive bool
 	acc.GetUser("accUserLogic", "a", &msg, &positive)
 	assert.Equal(t, CouldNotFindAccount+"\n", msg)

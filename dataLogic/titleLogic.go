@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help"
+	"API_MBundestag/help/generics"
 	"database/sql"
 )
 
@@ -35,14 +35,14 @@ func (title *Title) GetMe(name string) (err error) {
 	return
 }
 
-var ErrorTitleCouldNotBeCreated help.Message = "Titel konnte nicht erstellt werden"
-var SuccessCreatedTitle help.Message = "Titel erfolgreich erstellt"
-var ErrorWhileRefreshingTitleHierarchy help.Message = "Titelhierarchie konnte nicht aktualisiert werden"
-var ErrorCouldNotFindTitle help.Message = "Titel konnte nicht gefunden werden"
-var ErrorWhileChangingTitle help.Message = "Titel konnte nicht geändert werden"
-var SuccessChangedTitle help.Message = "Titel erfolgreich geändert"
+var ErrorTitleCouldNotBeCreated generics.Message = "Titel konnte nicht erstellt werden"
+var SuccessCreatedTitle generics.Message = "Titel erfolgreich erstellt"
+var ErrorWhileRefreshingTitleHierarchy generics.Message = "Titelhierarchie konnte nicht aktualisiert werden"
+var ErrorCouldNotFindTitle generics.Message = "Titel konnte nicht gefunden werden"
+var ErrorWhileChangingTitle generics.Message = "Titel konnte nicht geändert werden"
+var SuccessChangedTitle generics.Message = "Titel erfolgreich geändert"
 
-func (title *Title) CreateMe(msg *help.Message, positiv *bool) {
+func (title *Title) CreateMe(msg *generics.Message, positiv *bool) {
 	titleLock.Lock()
 	userLock.Lock()
 	defer titleLock.Unlock()
@@ -70,7 +70,7 @@ func (title *Title) CreateMe(msg *help.Message, positiv *bool) {
 	}
 }
 
-func tryCreateTitle(creation *database.Title, msg *help.Message, positiv *bool) bool {
+func tryCreateTitle(creation *database.Title, msg *generics.Message, positiv *bool) bool {
 	err := creation.CreateMe()
 	if err != nil {
 		*msg = ErrorTitleCouldNotBeCreated + "\n" + *msg
@@ -81,7 +81,7 @@ func tryCreateTitle(creation *database.Title, msg *help.Message, positiv *bool) 
 	return false
 }
 
-func (title *Title) addFlairs(i *[]database.Account, msg *help.Message, positiv *bool) {
+func (title *Title) addFlairs(i *[]database.Account, msg *generics.Message, positiv *bool) {
 	for _, acc := range *i {
 		switch true {
 		case acc.GetByDisplayName(acc.DisplayName) != nil:
@@ -94,7 +94,7 @@ func (title *Title) addFlairs(i *[]database.Account, msg *help.Message, positiv 
 	}
 }
 
-func (title *Title) ChangeMe(msg *help.Message, positiv *bool) {
+func (title *Title) ChangeMe(msg *generics.Message, positiv *bool) {
 	titleLock.Lock()
 	userLock.Lock()
 	defer titleLock.Unlock()
@@ -126,7 +126,7 @@ func (title *Title) ChangeMe(msg *help.Message, positiv *bool) {
 	}
 }
 
-func (title *Title) tryChangeTitle(new *database.Title, msg *help.Message, positiv *bool) bool {
+func (title *Title) tryChangeTitle(new *database.Title, msg *generics.Message, positiv *bool) bool {
 	old := database.Title{Name: title.OldName, Holder: []database.Account{}}
 	switch true {
 	case old.UpdateHolder() != nil:
@@ -141,7 +141,7 @@ func (title *Title) tryChangeTitle(new *database.Title, msg *help.Message, posit
 	return true
 }
 
-func removeFlairsTitle(flair string, i *[]database.Account, msg *help.Message, positiv *bool) {
+func removeFlairsTitle(flair string, i *[]database.Account, msg *generics.Message, positiv *bool) {
 	for _, acc := range *i {
 		err := removeFlairWithSave(flair, &acc)
 		if err != nil {
@@ -152,7 +152,7 @@ func removeFlairsTitle(flair string, i *[]database.Account, msg *help.Message, p
 	}
 }
 
-func getTitle(old *database.Title, name string, msg *help.Message) bool {
+func getTitle(old *database.Title, name string, msg *generics.Message) bool {
 	err := old.GetByName(name)
 	if err != nil {
 		*msg = ErrorCouldNotFindTitle + "\n" + *msg
@@ -161,7 +161,7 @@ func getTitle(old *database.Title, name string, msg *help.Message) bool {
 	return false
 }
 
-func (title *Title) DeleteMe(msg *help.Message, positiv *bool) {
+func (title *Title) DeleteMe(msg *generics.Message, positiv *bool) {
 	titleLock.Lock()
 	userLock.Lock()
 	defer titleLock.Unlock()
@@ -182,10 +182,10 @@ func (title *Title) DeleteMe(msg *help.Message, positiv *bool) {
 	}
 }
 
-var ErrorWhileDeletingTitle help.Message = "Titel konnte nicht gelöscht werden"
-var SuccessDeletedTitle help.Message = "Titel erfolgreich gelöscht"
+var ErrorWhileDeletingTitle generics.Message = "Titel konnte nicht gelöscht werden"
+var SuccessDeletedTitle generics.Message = "Titel erfolgreich gelöscht"
 
-func tryDeleteMe(d *database.Title, msg *help.Message, positiv *bool) bool {
+func tryDeleteMe(d *database.Title, msg *generics.Message, positiv *bool) bool {
 	old := database.Title{Name: d.Name, Holder: []database.Account{}}
 	switch true {
 	case old.UpdateHolder() != nil:

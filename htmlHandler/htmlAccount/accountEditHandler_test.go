@@ -3,7 +3,6 @@ package htmlAccount
 import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database"
-	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	hHa "API_MBundestag/htmlHandler"
 	wr "API_MBundestag/htmlWrapper"
@@ -38,7 +37,7 @@ func testChangeEditAccount(t *testing.T) {
 		"\n|false", html.UnescapeString(w.Body.String()))
 	//test change only flair
 	dataAcc := dataLogic.Account{}
-	var msg help.Message
+	var msg generics.Message
 	w, ctx = hHa.GetContextSetForUserWithFormAndQuery(t, acc, map[string]string{"username": "head_admin_AccEditHandler", "changeFlair": "true", "flair": "test"}, "change=true")
 	PostEditUserPage(ctx)
 	dataAcc.GetUser("head_admin_AccEditHandler", "", &msg, &dataAcc.ChangeFlair)

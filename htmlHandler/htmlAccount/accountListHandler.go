@@ -3,7 +3,6 @@ package htmlAccount
 import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database"
-	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -12,7 +11,7 @@ import (
 
 type ListUserStruct struct {
 	Accounts database.AccountList
-	help.MessageStruct
+	generics.MessageStruct
 }
 
 func GetAdminListUserPage(c *gin.Context) {

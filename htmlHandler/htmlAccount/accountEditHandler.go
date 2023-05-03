@@ -14,7 +14,7 @@ import (
 type EditUserStruct struct {
 	Account dataLogic.Account
 	Names   database.NameList
-	help.MessageStruct
+	generics.MessageStruct
 }
 
 func getEmptyEditUserStruct() *EditUserStruct {
@@ -77,7 +77,7 @@ func validateChangeAccount(c *gin.Context, self *database.Account) (editStruct *
 }
 
 func (s *EditUserStruct) setAccount(c *gin.Context) bool {
-	var temp help.Message
+	var temp generics.Message
 	s.Account.GetUser("", generics.GetText(c, "username"), &temp, &s.Positiv)
 
 	if !s.Positiv {

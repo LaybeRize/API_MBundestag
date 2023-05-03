@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help"
+	"API_MBundestag/help/generics"
 	"database/sql"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
@@ -24,7 +24,7 @@ func testDeleteTitle(t *testing.T) {
 	err := title.GetMe("test_titleLogic2")
 	assert.Nil(t, err)
 
-	var msg help.Message
+	var msg generics.Message
 	var positve bool
 	title.DeleteMe(&msg, &positve)
 	assert.True(t, positve)
@@ -52,7 +52,7 @@ func testChangeTitle(t *testing.T) {
 	title.SubGroup = "test_asjdlalsd"
 	title.Holder = []string{"testTitleLogic2", "testTitleLogic3"}
 
-	var msg help.Message
+	var msg generics.Message
 	var positve bool
 	title.ChangeMe(&msg, &positve)
 	assert.True(t, positve)
@@ -108,7 +108,7 @@ func testCreateTitle(t *testing.T) {
 		SubGroup:  "test_titleLogic",
 		Holder:    []string{"testTitleLogic", "testTitleLogic3"},
 	}
-	var msg help.Message
+	var msg generics.Message
 	var positve bool
 	title.CreateMe(&msg, &positve)
 	assert.True(t, positve)

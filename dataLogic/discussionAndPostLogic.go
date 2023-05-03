@@ -2,17 +2,17 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help"
+	"API_MBundestag/help/generics"
 	"time"
 )
 
-var DiscussioNotFoundError help.Message = "Diskussion konnte nicht gefunden werden"
-var DiscussionAlreadyClosed help.Message = "Diese Diskussion ist bereits beendet"
-var CanNotCommentOnClosedDiscussion help.Message = "Du kannst keine Kommentare unter einer geschlossenen Diskussion schreiben"
-var CouldNotSaveComment help.Message = "Kommentar konnte nicht gespeichert werden"
-var SuccessfulComment help.Message = "Kommentar wurde gespeichert"
+var DiscussioNotFoundError generics.Message = "Diskussion konnte nicht gefunden werden"
+var DiscussionAlreadyClosed generics.Message = "Diese Diskussion ist bereits beendet"
+var CanNotCommentOnClosedDiscussion generics.Message = "Du kannst keine Kommentare unter einer geschlossenen Diskussion schreiben"
+var CouldNotSaveComment generics.Message = "Kommentar konnte nicht gespeichert werden"
+var SuccessfulComment generics.Message = "Kommentar wurde gespeichert"
 
-func AddComment(discussion *database.Document, comment *database.Discussions, msg *help.Message, positiv *bool) {
+func AddComment(discussion *database.Document, comment *database.Discussions, msg *generics.Message, positiv *bool) {
 	documentLock.Lock()
 	defer documentLock.Unlock()
 
@@ -41,12 +41,12 @@ func AddComment(discussion *database.Document, comment *database.Discussions, ms
 	*msg = SuccessfulComment + "\n" + *msg
 }
 
-var CommentNotFoundError help.Message = "Kommentar konnte nicht gefunden werden"
-var CommentSuccessfulHidden help.Message = "Kommentar wurde versteckt"
-var CommentSuccesfulUnhidden help.Message = "Kommentar wurde erfolgreich freigeschaltet"
-var CouldNotSaveCommentHidden help.Message = "Kommentarveränderung konnte nicht gespeichert werden"
+var CommentNotFoundError generics.Message = "Kommentar konnte nicht gefunden werden"
+var CommentSuccessfulHidden generics.Message = "Kommentar wurde versteckt"
+var CommentSuccesfulUnhidden generics.Message = "Kommentar wurde erfolgreich freigeschaltet"
+var CouldNotSaveCommentHidden generics.Message = "Kommentarveränderung konnte nicht gespeichert werden"
 
-func ToggleHideDiscussionComment(discussion *database.Document, commentID string, msg *help.Message, positiv *bool) {
+func ToggleHideDiscussionComment(discussion *database.Document, commentID string, msg *generics.Message, positiv *bool) {
 	documentLock.Lock()
 	defer documentLock.Unlock()
 
@@ -79,12 +79,12 @@ func ToggleHideDiscussionComment(discussion *database.Document, commentID string
 	}
 }
 
-var DocumentNotFoundError help.Message = "Dokument konnte nicht gefunden werden"
-var DocumentIsNotLegislativeText help.Message = "Das Dokument besitzt keine Tags"
-var CouldNotSavePostTag help.Message = "Tag konnte nicht gespeichert werden"
-var SuccessfulPostTag help.Message = "Tag wurde erfolgreichspeichert"
+var DocumentNotFoundError generics.Message = "Dokument konnte nicht gefunden werden"
+var DocumentIsNotLegislativeText generics.Message = "Das Dokument besitzt keine Tags"
+var CouldNotSavePostTag generics.Message = "Tag konnte nicht gespeichert werden"
+var SuccessfulPostTag generics.Message = "Tag wurde erfolgreichspeichert"
 
-func AddPostTag(postTag *database.Document, post *database.Posts, msg *help.Message, positiv *bool) {
+func AddPostTag(postTag *database.Document, post *database.Posts, msg *generics.Message, positiv *bool) {
 	documentLock.Lock()
 	defer documentLock.Unlock()
 
@@ -107,12 +107,12 @@ func AddPostTag(postTag *database.Document, post *database.Posts, msg *help.Mess
 	*msg = SuccessfulPostTag + "\n" + *msg
 }
 
-var CouldNotFindPostTag help.Message = "Tag konnte nicht gefunden werden"
-var CouldNotChangePostTag help.Message = "Tag konnte nicht geändert werden"
-var SuccessfulPostTagHidden help.Message = "Tag wurde erfolgreich versteckt"
-var SuccessfulPostTagUnhidden help.Message = "Tag wurde erfolgreich freigeschaltet"
+var CouldNotFindPostTag generics.Message = "Tag konnte nicht gefunden werden"
+var CouldNotChangePostTag generics.Message = "Tag konnte nicht geändert werden"
+var SuccessfulPostTagHidden generics.Message = "Tag wurde erfolgreich versteckt"
+var SuccessfulPostTagUnhidden generics.Message = "Tag wurde erfolgreich freigeschaltet"
 
-func ToggleHidePostTag(postTag *database.Document, postTagID string, msg *help.Message, positiv *bool) {
+func ToggleHidePostTag(postTag *database.Document, postTagID string, msg *generics.Message, positiv *bool) {
 	documentLock.Lock()
 	defer documentLock.Unlock()
 

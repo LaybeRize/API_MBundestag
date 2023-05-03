@@ -3,7 +3,6 @@ package htmlAccount
 import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database"
-	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -21,7 +20,7 @@ type ViewUserInfoElement struct {
 }
 
 type PasswordChangeStruct struct {
-	help.MessageStruct
+	generics.MessageStruct
 }
 
 func GetPasswordChangePage(c *gin.Context) {

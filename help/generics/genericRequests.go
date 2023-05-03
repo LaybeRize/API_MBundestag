@@ -1,9 +1,8 @@
-package help
+package generics
 
 import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database"
-	gen "API_MBundestag/help/generics"
 	"reflect"
 )
 
@@ -30,20 +29,20 @@ func (m *Message) CheckTitelAndContentEmptyLayer(content *any) bool {
 func FillAllNotSuspendedNames[T any](v *T) {
 	names, err := dataLogic.GetAllAccountNamesNotSuspended()
 	slice := reflect.ValueOf(names)
-	updateField(v, "Names", slice, err, gen.NamesQueryError)
+	updateField(v, "Names", slice, err, NamesQueryError)
 }
 
 func FillUserAndDisplayNames[T any](v *T) {
 	names := database.NameList{}
 	err := names.GetAllUserAndDisplayName()
 	slice := reflect.ValueOf(names)
-	updateField(v, "Names", slice, err, gen.NamesQueryError)
+	updateField(v, "Names", slice, err, NamesQueryError)
 }
 
 func FillOrganisationNames[T any](v *T) {
 	orgNames, err := dataLogic.GetAllOrganisationNames()
 	slice := reflect.ValueOf(orgNames)
-	updateField(v, "OrgNames", slice, err, gen.OrgNamesQueryError)
+	updateField(v, "OrgNames", slice, err, OrgNamesQueryError)
 }
 
 func FillOrganisationGroups[T any](v *T) {
@@ -51,14 +50,14 @@ func FillOrganisationGroups[T any](v *T) {
 	sliceMain := reflect.ValueOf(main)
 	sliceSub := reflect.ValueOf(sub)
 	updateField(v, "ExistingMainGroup", sliceMain, nil, "")
-	updateField(v, "ExistingSubGroup", sliceSub, err, gen.GroupQueryError)
+	updateField(v, "ExistingSubGroup", sliceSub, err, GroupQueryError)
 }
 
 func FillOwnAccounts[T any](v *T, acc *database.Account) {
 	ownAccounts := database.AccountList{}
 	err := ownAccounts.GetAllPressAccountsFromAccountPlusSelf(acc)
 	slice := reflect.ValueOf(ownAccounts)
-	updateField(v, "Accounts", slice, err, gen.OwnAccountsCouldNotBeFound)
+	updateField(v, "Accounts", slice, err, OwnAccountsCouldNotBeFound)
 }
 
 func FillOwnOrganisations[T any](v *T, acc *database.Account) {
@@ -70,7 +69,7 @@ func FillOwnOrganisations[T any](v *T, acc *database.Account) {
 		err = ownOrgs.GetAllPartOf(acc.ID)
 	}
 	slice := reflect.ValueOf(ownOrgs)
-	updateField(v, "Organisations", slice, err, gen.OrgNamesQueryError)
+	updateField(v, "Organisations", slice, err, OrgNamesQueryError)
 }
 
 func updateField[T any](v *T, name string, slice reflect.Value, err error, errorText string) {

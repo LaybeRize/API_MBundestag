@@ -14,7 +14,7 @@ import (
 
 type CreateUserStruct struct {
 	Account database.Account
-	help.MessageStruct
+	generics.MessageStruct
 }
 
 func GetCreateUserPage(c *gin.Context) {
