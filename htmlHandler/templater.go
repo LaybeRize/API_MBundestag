@@ -4,6 +4,7 @@ import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database"
 	"API_MBundestag/help"
+	"API_MBundestag/help/generics"
 	wr "API_MBundestag/htmlWrapper"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -71,6 +72,61 @@ func FillTitleGroups[T any](v *T) {
 	subGroup := reflect.ValueOf(dataLogic.GetSubGroupNames())
 	ref.FieldByName("ExistingMainGroup").Set(mainGroup)
 	ref.FieldByName("ExistingSubGroup").Set(subGroup)
+}
+
+func FillAllNotSuspendedNames[T any](v *T) {
+	names, err := dataLogic.GetAllAccountNamesNotSuspended()
+	slice := reflect.ValueOf(names)
+	updateField(v, "Names", slice, err, generics.NamesQueryError)
+}
+
+func FillUserAndDisplayNames[T any](v *T) {
+	names := database.NameList{}
+	err := names.GetAllUserAndDisplayName()
+	slice := reflect.ValueOf(names)
+	updateField(v, "Names", slice, err, generics.NamesQueryError)
+}
+
+func FillOrganisationNames[T any](v *T) {
+	orgNames, err := dataLogic.GetAllOrganisationNames()
+	slice := reflect.ValueOf(orgNames)
+	updateField(v, "OrgNames", slice, err, generics.OrgNamesQueryError)
+}
+
+func FillOrganisationGroups[T any](v *T) {
+	main, sub, err := dataLogic.GetNamesForSubAndMainGroups()
+	sliceMain := reflect.ValueOf(main)
+	sliceSub := reflect.ValueOf(sub)
+	updateField(v, "ExistingMainGroup", sliceMain, nil, "")
+	updateField(v, "ExistingSubGroup", sliceSub, err, generics.GroupQueryError)
+}
+
+func FillOwnAccounts[T any](v *T, acc *database.Account) {
+	ownAccounts := database.AccountList{}
+	err := ownAccounts.GetAllPressAccountsFromAccountPlusSelf(acc)
+	slice := reflect.ValueOf(ownAccounts)
+	updateField(v, "Accounts", slice, err, generics.OwnAccountsCouldNotBeFound)
+}
+
+func FillOwnOrganisations[T any](v *T, acc *database.Account) {
+	ownOrgs := database.OrganisationList{}
+	var err error
+	if acc.Role == database.HeadAdmin {
+		err = ownOrgs.GetAllVisable()
+	} else {
+		err = ownOrgs.GetAllPartOf(acc.ID)
+	}
+	slice := reflect.ValueOf(ownOrgs)
+	updateField(v, "Organisations", slice, err, generics.OrgNamesQueryError)
+}
+
+func updateField[T any](v *T, name string, slice reflect.Value, err error, errorText string) {
+	ref := reflect.ValueOf(v).Elem()
+	ref.FieldByName(name).Set(slice)
+	if err != nil {
+		mesg := ref.FieldByName("Message").String()
+		ref.FieldByName("Message").SetString(errorText + "\n" + mesg)
+	}
 }
 
 func Identity[T any](v T) string {

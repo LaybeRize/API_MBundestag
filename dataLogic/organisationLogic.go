@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/htmlHandler"
+	"API_MBundestag/help/generics"
 	"database/sql"
 	"fmt"
 )
@@ -42,16 +42,16 @@ func (org *Organsation) GetMe(name string) (err error) {
 }
 
 var AccountDoesNotExistError = "Account \"%s\" existiert nicht"
-var ErrorWhileQueryingAccounts htmlHandler.Message = "Fehler beim Abfragen der Accounts"
-var ErrorWhileCreatingOrganisation htmlHandler.Message = "Fehler beim Erstellen der Organisation"
-var ErrorWhileAddingFlair htmlHandler.Message = "Fehler beim Hinzufägen des Flairs"
+var ErrorWhileQueryingAccounts generics.Message = "Fehler beim Abfragen der Accounts"
+var ErrorWhileCreatingOrganisation generics.Message = "Fehler beim Erstellen der Organisation"
+var ErrorWhileAddingFlair generics.Message = "Fehler beim Hinzufägen des Flairs"
 var ErrorOrganisationNotFound = "Die Organisation \"%s\" existiert nicht"
-var ErrorWhileChangingOrganisation htmlHandler.Message = "Fehler beim Ändern der Organisation"
-var ErrorWhileRemovingFlair htmlHandler.Message = "Fehler beim Entfernen des Flairs"
-var OrganisationSuccessfulCreated htmlHandler.Message = "Die Organisation wurde erfolgreich erstellt"
-var SucessfulChangedOrganisation htmlHandler.Message = "Die Organisation wurde erfolgreich geändert"
+var ErrorWhileChangingOrganisation generics.Message = "Fehler beim Ändern der Organisation"
+var ErrorWhileRemovingFlair generics.Message = "Fehler beim Entfernen des Flairs"
+var OrganisationSuccessfulCreated generics.Message = "Die Organisation wurde erfolgreich erstellt"
+var SucessfulChangedOrganisation generics.Message = "Die Organisation wurde erfolgreich geändert"
 
-func (org *Organsation) CreateMe(msg *htmlHandler.Message, positiv *bool) {
+func (org *Organsation) CreateMe(msg *generics.Message, positiv *bool) {
 	creation := database.Organisation{
 		Name:      org.Name,
 		MainGroup: org.MainGroup,
@@ -80,7 +80,7 @@ func (org *Organsation) CreateMe(msg *htmlHandler.Message, positiv *bool) {
 	return
 }
 
-func tryCreation(d *database.Organisation, msg *htmlHandler.Message, positiv *bool) bool {
+func tryCreation(d *database.Organisation, msg *generics.Message, positiv *bool) bool {
 	err := d.CreateMe()
 	if err != nil {
 		*msg = ErrorWhileCreatingOrganisation + "\n" + *msg
@@ -101,11 +101,11 @@ func addAccountsTo(i *[]database.Account, m *map[string]*database.Account) bool 
 	return false
 }
 
-func addUsersTo(user []string, accounts *database.AccountList, msg *htmlHandler.Message, accMap *map[string]*database.Account) bool {
+func addUsersTo(user []string, accounts *database.AccountList, msg *generics.Message, accMap *map[string]*database.Account) bool {
 	exists, err := accounts.DoAccountsExist(user)
 	if err != nil {
 		if !exists {
-			*msg = htmlHandler.Message(fmt.Sprintf(AccountDoesNotExistError, err.Error())) + "\n" + *msg
+			*msg = generics.Message(fmt.Sprintf(AccountDoesNotExistError, err.Error())) + "\n" + *msg
 		} else {
 			*msg = ErrorWhileQueryingAccounts + "\n" + *msg
 		}
@@ -129,7 +129,7 @@ func addUsersTo(user []string, accounts *database.AccountList, msg *htmlHandler.
 	return false
 }
 
-func (org *Organsation) ChangeMe(msg *htmlHandler.Message, positiv *bool) {
+func (org *Organsation) ChangeMe(msg *generics.Message, positiv *bool) {
 	orgnisationLock.Lock()
 	userLock.Lock()
 	defer orgnisationLock.Unlock()
@@ -157,7 +157,7 @@ func (org *Organsation) ChangeMe(msg *htmlHandler.Message, positiv *bool) {
 	return
 }
 
-func tryChanging(d *database.Organisation, msg *htmlHandler.Message, positiv *bool) bool {
+func tryChanging(d *database.Organisation, msg *generics.Message, positiv *bool) bool {
 	switch true {
 	case d.SaveChanges() != nil:
 	case d.UpdateAccounts() != nil:
@@ -172,11 +172,11 @@ func tryChanging(d *database.Organisation, msg *htmlHandler.Message, positiv *bo
 	return true
 }
 
-func (org *Organsation) getOrganistion(d *database.Organisation, old *database.Organisation, msg *htmlHandler.Message) bool {
+func (org *Organsation) getOrganistion(d *database.Organisation, old *database.Organisation, msg *generics.Message) bool {
 	err := d.GetByName(org.Name)
 	err2 := old.GetByName(org.Name)
 	if err != nil || err2 != nil {
-		*msg = htmlHandler.Message(fmt.Sprintf(ErrorOrganisationNotFound, org.Name)) + "\n" + *msg
+		*msg = generics.Message(fmt.Sprintf(ErrorOrganisationNotFound, org.Name)) + "\n" + *msg
 		return true
 	}
 	return false
@@ -190,7 +190,7 @@ func (org *Organsation) Update(d *database.Organisation) bool {
 	return false
 }
 
-func (org *Organsation) addFlairs(i *[]database.Account, msg *htmlHandler.Message, positiv *bool) {
+func (org *Organsation) addFlairs(i *[]database.Account, msg *generics.Message, positiv *bool) {
 	for _, acc := range *i {
 		switch true {
 		case acc.GetByDisplayName(acc.DisplayName) != nil:
@@ -203,7 +203,7 @@ func (org *Organsation) addFlairs(i *[]database.Account, msg *htmlHandler.Messag
 	}
 }
 
-func removeFlairsOrganisation(i *[]database.Account, old *database.Organisation, msg *htmlHandler.Message, positiv *bool) {
+func removeFlairsOrganisation(i *[]database.Account, old *database.Organisation, msg *generics.Message, positiv *bool) {
 	for _, acc := range *i {
 		err := removeFlairWithSave(old.Flair.String, &acc)
 		if err != nil {
@@ -214,7 +214,7 @@ func removeFlairsOrganisation(i *[]database.Account, old *database.Organisation,
 	}
 }
 
-func (org *Organsation) ChangeOnlyMembers(msg *htmlHandler.Message, positiv *bool) {
+func (org *Organsation) ChangeOnlyMembers(msg *generics.Message, positiv *bool) {
 	orgnisationLock.Lock()
 	userLock.Lock()
 	defer orgnisationLock.Unlock()
@@ -239,7 +239,7 @@ func (org *Organsation) ChangeOnlyMembers(msg *htmlHandler.Message, positiv *boo
 	return
 }
 
-func addToMap(accounts *[]database.Account, msg *htmlHandler.Message, accMap *map[string]*database.Account) bool {
+func addToMap(accounts *[]database.Account, msg *generics.Message, accMap *map[string]*database.Account) bool {
 	var err error
 	for _, acc := range *accounts {
 		err = acc.GetByDisplayNameWithParent(acc.DisplayName)

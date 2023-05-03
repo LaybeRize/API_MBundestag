@@ -55,7 +55,7 @@ func GetViewModMailListPage(c *gin.Context) {
 
 	var err error
 	letterStruct := getEmtpyViewModMailListStruct()
-	if htmlHandler.GetIfType(c, "before") {
+	if generics.GetIfType(c, "before") {
 		err = letterStruct.validateLetterReadPageBefore(c, i, "", true)
 	} else {
 		err = letterStruct.validateLetterReadNextPage(c, i, "", true)
@@ -79,11 +79,11 @@ func GetViewLetterListPage(c *gin.Context) {
 	//check viewer
 	viewer := database.Account{}
 	err := viewer.GetByDisplayName(c.Query("usr"))
-	if err != nil && !htmlHandler.GetIfEmptyQuery(c, "usr") {
+	if err != nil && !generics.GetIfEmptyQuery(c, "usr") {
 		htmlBasics.MakeErrorPage(c, &acc, generics.AccountDoesNotExistOrIsNotYours)
 		return
 	}
-	if htmlHandler.GetIfEmptyQuery(c, "usr") {
+	if generics.GetIfEmptyQuery(c, "usr") {
 		viewer = acc
 	}
 	if viewer.DisplayName != acc.DisplayName && viewer.Linked.Int64 != acc.ID {
@@ -95,7 +95,7 @@ func GetViewLetterListPage(c *gin.Context) {
 
 	letterStruct := getEmtpyViewLetterListStruct(&acc)
 	letterStruct.SelectedAccount = viewer.DisplayName
-	if htmlHandler.GetIfType(c, "before") {
+	if generics.GetIfType(c, "before") {
 		err = letterStruct.validateLetterReadPageBefore(c, i, viewer.DisplayName, false)
 	} else {
 		err = letterStruct.validateLetterReadNextPage(c, i, viewer.DisplayName, false)

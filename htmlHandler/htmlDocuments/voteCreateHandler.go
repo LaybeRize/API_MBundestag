@@ -87,18 +87,18 @@ func PostVoteCreatePage(c *gin.Context) {
 }
 
 func (voteStruct *VoteCreateStruct) fillVoteStructFromContext(c *gin.Context) {
-	voteStruct.SelectedOrganisation = htmlHandler.GetText(c, "selectedOrganisation")
-	voteStruct.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
-	voteStruct.Content = htmlHandler.GetText(c, "content")
-	voteStruct.Title = htmlHandler.GetText(c, "title")
-	voteStruct.Subtitle = htmlHandler.GetText(c, "subtitle")
-	voteStruct.MakePrivate = htmlHandler.GetBool(c, "private")
+	voteStruct.SelectedOrganisation = generics.GetText(c, "selectedOrganisation")
+	voteStruct.SelectedAccount = generics.GetText(c, "selectedAccount")
+	voteStruct.Content = generics.GetText(c, "content")
+	voteStruct.Title = generics.GetText(c, "title")
+	voteStruct.Subtitle = generics.GetText(c, "subtitle")
+	voteStruct.MakePrivate = generics.GetBool(c, "private")
 	voteStruct.FormatForTime = generics.TimeParseDiscussion
 	voteStruct.Info = database.DocumentInfo{
-		Poster:                    htmlHandler.GetStringArray(c, "poster"),
-		Viewer:                    htmlHandler.GetStringArray(c, "allowed"),
-		AnyPosterAllowed:          htmlHandler.GetBool(c, "anyPoster"),
-		OrganisationPosterAllowed: htmlHandler.GetBool(c, "orgPoster"),
+		Poster:                    generics.GetStringArray(c, "poster"),
+		Viewer:                    generics.GetStringArray(c, "allowed"),
+		AnyPosterAllowed:          generics.GetBool(c, "anyPoster"),
+		OrganisationPosterAllowed: generics.GetBool(c, "orgPoster"),
 		Finishing:                 time.Now().Add(time.Hour*24 + 10*time.Minute),
 	}
 	voteStruct.Votes = *extractVotesFromContext(c)
@@ -111,13 +111,13 @@ func extractVotesFromContext(c *gin.Context) *[]CreateSingleVote {
 	voteArray = []CreateSingleVote{}
 	for _, str := range array {
 		v := CreateSingleVote{
-			Question:               htmlHandler.GetText(c, "question"+str),
-			Type:                   database.VoteType(htmlHandler.GetText(c, "selectVoteType"+str)),
-			Number:                 htmlHandler.GetNumber(c, "maxValue"+str, 10, 2, 50),
-			ShowNumbersWhileVoting: htmlHandler.GetBool(c, "showNumsW"+str),
-			ShowNamesWhileVoting:   htmlHandler.GetBool(c, "showNamesW"+str),
-			ShowNamesAfterVoting:   htmlHandler.GetBool(c, "showNamesA"+str),
-			Options:                htmlHandler.GetStringArray(c, "option"+str),
+			Question:               generics.GetText(c, "question"+str),
+			Type:                   database.VoteType(generics.GetText(c, "selectVoteType"+str)),
+			Number:                 generics.GetNumber(c, "maxValue"+str, 10, 2, 50),
+			ShowNumbersWhileVoting: generics.GetBool(c, "showNumsW"+str),
+			ShowNamesWhileVoting:   generics.GetBool(c, "showNamesW"+str),
+			ShowNamesAfterVoting:   generics.GetBool(c, "showNamesA"+str),
+			Options:                generics.GetStringArray(c, "option"+str),
 		}
 		if len(v.Options) != 0 || v.Question != "" || v.Number != 10 {
 			voteArray = append(voteArray, v)
@@ -145,14 +145,14 @@ func (voteStruct *VoteCreateStruct) makeVote(c *gin.Context, acc *database.Accou
 	switch true {
 	case voteStruct.parseFinishingTime(c):
 	case voteStruct.checkIfTimeInWindow():
-	case htmlHandler.CheckWriter(voteStruct, writer, acc):
-	case htmlHandler.CheckOrgExists(voteStruct, orga):
+	case generics.CheckWriter(voteStruct, writer, acc):
+	case generics.CheckOrgExists(voteStruct, orga):
 	case voteStruct.organisationCheck(orga, writer):
 	case voteStruct.checkIfBoolsAreCorrect(orga, writer):
-	case htmlHandler.CheckTitelAndContentEmpty(voteStruct):
-	case htmlHandler.CheckLengthContent(voteStruct, generics.PostContentLimit):
-	case htmlHandler.CheckLengthTitle(voteStruct, generics.PostTitleLimit):
-	case htmlHandler.CheckLengthSubtitle(voteStruct, generics.PostSubtitleLimit):
+	case generics.CheckTitelAndContentEmpty(voteStruct):
+	case generics.CheckLengthContent(voteStruct, generics.PostContentLimit):
+	case generics.CheckLengthTitle(voteStruct, generics.PostTitleLimit):
+	case generics.CheckLengthSubtitle(voteStruct, generics.PostSubtitleLimit):
 	case gen.CheckAccountList(voteStruct, &voteStruct.Info.Poster):
 	case gen.CheckAccountList(voteStruct, &voteStruct.Info.Viewer):
 	case voteStruct.addViewer(voteStruct.Info.Poster):
@@ -168,7 +168,7 @@ func (voteStruct *VoteCreateStruct) makeVote(c *gin.Context, acc *database.Accou
 }
 
 func (voteStruct *VoteCreateStruct) parseFinishingTime(c *gin.Context) bool {
-	t, err := time.ParseInLocation(generics.TimeParseDiscussion, htmlHandler.GetText(c, "until"), time.Now().Location())
+	t, err := time.ParseInLocation(generics.TimeParseDiscussion, generics.GetText(c, "until"), time.Now().Location())
 	if err == nil {
 		voteStruct.Info.Finishing = t
 	} else {

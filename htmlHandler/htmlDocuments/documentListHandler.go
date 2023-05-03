@@ -32,7 +32,7 @@ func GetDocumentListView(c *gin.Context) {
 		Amount:       i,
 	}
 	var err error
-	if htmlHandler.GetIfType(c, "before") {
+	if generics.GetIfType(c, "before") {
 		err = documentStruct.validateDocumentReadPageBefore(c, i, &acc, admin)
 
 	} else {

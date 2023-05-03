@@ -4,7 +4,6 @@ import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database_old"
 	"API_MBundestag/help/generics"
-	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -89,8 +88,8 @@ func addTagToDocument(c *gin.Context, acc *database.Account, doc database.Docume
 	b := BackgroundInfo{
 		Admin:        dataLogic.CheckIfHasRole(acc, database.HeadAdmin, database.Admin),
 		FormatString: generics.LongTimeString,
-		TagText:      htmlHandler.GetText(c, "tag"),
-		TagColor:     htmlHandler.GetText(c, "color"),
+		TagText:      generics.GetText(c, "tag"),
+		TagColor:     generics.GetText(c, "color"),
 	}
 	if m, err := regexp.MatchString(`^#[0-9a-fA-F]{6}$`, b.TagColor); err != nil || !m {
 		b.TagColor = "#FFFFFF"
@@ -98,8 +97,8 @@ func addTagToDocument(c *gin.Context, acc *database.Account, doc database.Docume
 
 	switch true {
 	case b.checkIfLegislativeText(&doc, CanNotAddTagToNonLegislativeText):
-	case htmlHandler.CheckFieldNotEmpty(&b, "TagText", TagEmpty):
-	case htmlHandler.CheckLengthField(&b, generics.PostTagLimit, "TagText", generics.TagTooLong):
+	case generics.CheckFieldNotEmpty(&b, "TagText", TagEmpty):
+	case generics.CheckLengthField(&b, generics.PostTagLimit, "TagText", generics.TagTooLong):
 	case b.tryAddingNewTag(&doc):
 	default:
 		b.TagText = ""

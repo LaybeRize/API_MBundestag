@@ -50,7 +50,7 @@ func PostOrganisationUserHandler(c *gin.Context) {
 		return
 	}
 	var org *database.Organisation
-	b, org = checkIfUserHasAdminAccount(acc, htmlHandler.GetText(c, "name"))
+	b, org = checkIfUserHasAdminAccount(acc, generics.GetText(c, "name"))
 	if !b {
 		htmlBasics.MakeErrorPage(c, &acc, generics.NotAuthorizedToView)
 		return
@@ -58,7 +58,7 @@ func PostOrganisationUserHandler(c *gin.Context) {
 
 	orgEdit := &OrgansationNameEdit{
 		OrganisationName: org.Name,
-		User:             htmlHandler.GetStringArray(c, "user"),
+		User:             generics.GetStringArray(c, "user"),
 	}
 	htmlHandler.FillAllNotSuspendedNames(orgEdit)
 

@@ -112,14 +112,14 @@ func validateLetterCreate(c *gin.Context, acc *database.Account, modMail bool) (
 	letterStruct.Letter = getLetterFromContext(c)
 	letterStruct.Letter.Info.ModMessage = modMail
 
-	letterStruct.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
+	letterStruct.SelectedAccount = generics.GetText(c, "selectedAccount")
 
 	writer := &database.Account{}
 	switch true {
 	case letterStruct.checkAuthor():
-	case htmlHandler.CheckTitelAndContentEmptyLayer(letterStruct, &letterStruct.Letter):
-	case htmlHandler.CheckLengthContentLayer(letterStruct, &letterStruct.Letter, generics.LetterContentLimit):
-	case htmlHandler.CheckLengthTitleLayer(letterStruct, &letterStruct.Letter, generics.LetterTitleLimit):
+	case generics.CheckTitelAndContentEmptyLayer(letterStruct, &letterStruct.Letter):
+	case generics.CheckLengthContentLayer(letterStruct, &letterStruct.Letter, generics.LetterContentLimit):
+	case generics.CheckLengthTitleLayer(letterStruct, &letterStruct.Letter, generics.LetterTitleLimit):
 	case letterStruct.checkWriter(writer, acc):
 	case gen.CheckAccountList(letterStruct, &letterStruct.Letter.Info.PeopleInvitedToSign):
 	default:
@@ -131,13 +131,13 @@ func validateLetterCreate(c *gin.Context, acc *database.Account, modMail bool) (
 
 func getLetterFromContext(c *gin.Context) database.Letter {
 	return database.Letter{
-		Title:   htmlHandler.GetText(c, "title"),
-		Author:  htmlHandler.GetText(c, "author"),
-		Content: htmlHandler.GetText(c, "content"),
+		Title:   generics.GetText(c, "title"),
+		Author:  generics.GetText(c, "author"),
+		Content: generics.GetText(c, "content"),
 		Info: database.LetterInfo{
-			AllHaveToAgree:      htmlHandler.GetBool(c, "allHaveToSign"),
-			NoSigning:           htmlHandler.GetBool(c, "noSigning"),
-			PeopleInvitedToSign: htmlHandler.GetStringArray(c, "user"),
+			AllHaveToAgree:      generics.GetBool(c, "allHaveToSign"),
+			NoSigning:           generics.GetBool(c, "noSigning"),
+			PeopleInvitedToSign: generics.GetStringArray(c, "user"),
 		},
 	}
 }
@@ -154,7 +154,7 @@ func (s *LetterCreatePageStruct) checkWriter(writer *database.Account, acc *data
 	if s.ModMail {
 		return false
 	}
-	return htmlHandler.CheckWriter(s, writer, acc)
+	return generics.CheckWriter(s, writer, acc)
 }
 
 func (s *LetterCreatePageStruct) setSigning(writer *database.Account) {
@@ -184,7 +184,7 @@ func (s *LetterCreatePageStruct) finishLetter(c *gin.Context, writer *database.A
 	s.Letter.UUID = uuid.New().String()
 	//set the letter parameter, either for the actual author or for the author the moderation created
 	if s.ModMail {
-		s.Letter.Flair = htmlHandler.GetText(c, "flair")
+		s.Letter.Flair = generics.GetText(c, "flair")
 	} else {
 		s.Letter.Author = writer.DisplayName
 		s.Letter.Flair = writer.Flair

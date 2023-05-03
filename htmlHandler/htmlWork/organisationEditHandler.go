@@ -37,7 +37,7 @@ func GetEditOrganisationPage(c *gin.Context) {
 	err := errors.New("placeholder")
 	org := database.Organisation{}
 
-	if !htmlHandler.GetIfEmptyQuery(c, "org") {
+	if !generics.GetIfEmptyQuery(c, "org") {
 		err = org.GetByName(c.Query("org"))
 	}
 
@@ -59,7 +59,7 @@ func PostEditOrganisationPage(c *gin.Context) {
 		return
 	}
 
-	if htmlHandler.GetIfType(c, "search") {
+	if generics.GetIfType(c, "search") {
 		PostSearchOrganisationPage(c, &acc)
 		return
 	}
@@ -73,7 +73,7 @@ func PostSearchOrganisationPage(c *gin.Context, acc *database.Account) {
 
 func vaildateOrganisationSearch(c *gin.Context) (editOrg *EditOrganisationStruct) {
 	org := database.Organisation{}
-	err := org.GetByName(htmlHandler.GetText(c, "name"))
+	err := org.GetByName(generics.GetText(c, "name"))
 
 	editOrg = getEmptyEditOrgStruct()
 
@@ -84,7 +84,7 @@ func vaildateOrganisationSearch(c *gin.Context) (editOrg *EditOrganisationStruct
 	}
 	editOrg.Message = generics.OrgFindingError + "\n" + editOrg.Message
 	editOrg.Organisation = database.Organisation{
-		Name:   htmlHandler.GetText(c, "name"),
+		Name:   generics.GetText(c, "name"),
 		Status: database.Public,
 		Info: database.OrganisationInfo{
 			Admins: []string{},
@@ -97,14 +97,14 @@ func vaildateOrganisationSearch(c *gin.Context) (editOrg *EditOrganisationStruct
 func validateOrganisationEdit(c *gin.Context) (orgStruct *EditOrganisationStruct) {
 	orgStruct = getEmptyEditOrgStruct()
 	orgStruct.Organisation = database.Organisation{
-		Name:      htmlHandler.GetText(c, "name"),
-		MainGroup: htmlHandler.GetText(c, "mainGroup"),
-		SubGroup:  htmlHandler.GetText(c, "subGroup"),
+		Name:      generics.GetText(c, "name"),
+		MainGroup: generics.GetText(c, "mainGroup"),
+		SubGroup:  generics.GetText(c, "subGroup"),
 		Flair:     gen.GetNullString(c, "flair"),
-		Status:    database.StatusString(htmlHandler.GetText(c, "status")),
+		Status:    database.StatusString(generics.GetText(c, "status")),
 		Info: database.OrganisationInfo{
-			Admins: htmlHandler.GetStringArray(c, "admins"),
-			User:   htmlHandler.GetStringArray(c, "user"),
+			Admins: generics.GetStringArray(c, "admins"),
+			User:   generics.GetStringArray(c, "user"),
 			Viewer: []string{},
 		},
 	}
@@ -116,11 +116,11 @@ func validateOrganisationEdit(c *gin.Context) (orgStruct *EditOrganisationStruct
 
 	original := &database.Organisation{}
 	switch true {
-	case htmlHandler.CheckOrgOrTitle(orgStruct, orgRef):
+	case generics.CheckOrgOrTitle(orgStruct, orgRef):
 	case orgStruct.checkIfExists(original):
 	case gen.CheckAccountList(orgStruct, &infoRef.Admins):
 	case gen.CheckAccountList(orgStruct, &infoRef.User):
-	case htmlHandler.CheckOrgStatus(orgStruct, orgRef.Status):
+	case generics.CheckOrgStatus(orgStruct, orgRef.Status):
 	case orgStruct.addViewer(infoRef.Admins):
 	case orgStruct.addViewer(infoRef.User):
 	case orgStruct.tryCreation():

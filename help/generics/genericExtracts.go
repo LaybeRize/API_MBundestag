@@ -1,4 +1,4 @@
-package htmlHandler
+package generics
 
 import (
 	"API_MBundestag/help"

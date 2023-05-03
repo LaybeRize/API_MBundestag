@@ -37,7 +37,7 @@ func GetEditTitlePage(c *gin.Context) {
 	err := errors.New("placeholder")
 
 	titleStruct := getEmptyEditTitleStruct()
-	if !htmlHandler.GetIfEmptyQuery(c, "title") {
+	if !generics.GetIfEmptyQuery(c, "title") {
 		err = titleStruct.Title.GetByName(c.Query("title"))
 	}
 
@@ -55,11 +55,11 @@ func PostEditTitlePage(c *gin.Context) {
 		return
 	}
 
-	if htmlHandler.GetIfType(c, "search") {
+	if generics.GetIfType(c, "search") {
 		htmlHandler.MakeSite(validateSearchTitle(c), c, &acc)
 		return
 	}
-	if htmlHandler.GetIfType(c, "delete") {
+	if generics.GetIfType(c, "delete") {
 		htmlHandler.MakeSite(validateDeleteTitle(c), c, &acc)
 		return
 	}
@@ -69,7 +69,7 @@ func PostEditTitlePage(c *gin.Context) {
 
 func validateSearchTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 	editStruct = getEmptyEditTitleStruct()
-	err := editStruct.Title.GetByName(htmlHandler.GetText(c, "name"))
+	err := editStruct.Title.GetByName(generics.GetText(c, "name"))
 	if err != nil {
 		editStruct.Message = generics.TitleDoesNotExists + "\n" + editStruct.Message
 	} else {
@@ -80,7 +80,7 @@ func validateSearchTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 
 func validateDeleteTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 	editStruct = getEmptyEditTitleStruct()
-	err := editStruct.Title.GetByName(htmlHandler.GetText(c, "name"))
+	err := editStruct.Title.GetByName(generics.GetText(c, "name"))
 	if err != nil {
 		editStruct.Message = generics.TitleDoesNotExists + "\n" + editStruct.Message
 		return
@@ -104,12 +104,12 @@ func validateDeleteTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 func validateEditTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 	editStruct = getEmptyEditTitleStruct()
 	editStruct.Title = database.Title{
-		Name:      htmlHandler.GetText(c, "newName"),
-		MainGroup: htmlHandler.GetText(c, "mainGroup"),
-		SubGroup:  htmlHandler.GetText(c, "subGroup"),
+		Name:      generics.GetText(c, "newName"),
+		MainGroup: generics.GetText(c, "mainGroup"),
+		SubGroup:  generics.GetText(c, "subGroup"),
 		Flair:     gen.GetNullString(c, "flair"),
 		Info: database.TitleInfo{
-			Names: htmlHandler.GetStringArray(c, "user"),
+			Names: generics.GetStringArray(c, "user"),
 		},
 	}
 	titleRef := &editStruct.Title
@@ -118,7 +118,7 @@ func validateEditTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 
 	switch true {
 	case editStruct.getOldTitle(c, oldTitle):
-	case htmlHandler.CheckOrgOrTitle(editStruct, titleRef):
+	case generics.CheckOrgOrTitle(editStruct, titleRef):
 		editStruct.Title.Name = oldTitle.Name
 	case gen.CheckAccountList(editStruct, &infoRef.Names):
 		editStruct.Title.Name = oldTitle.Name
@@ -133,9 +133,9 @@ func validateEditTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 }
 
 func (editStruct *EditTitleStruct) getOldTitle(c *gin.Context, oldTitle *database.Title) bool {
-	err := oldTitle.GetByName(htmlHandler.GetText(c, "name"))
+	err := oldTitle.GetByName(generics.GetText(c, "name"))
 	if err != nil {
-		editStruct.Title.Name = htmlHandler.GetText(c, "name")
+		editStruct.Title.Name = generics.GetText(c, "name")
 		editStruct.Message = generics.TitleDoesNotExists + "\n" + editStruct.Message
 		return true
 	}

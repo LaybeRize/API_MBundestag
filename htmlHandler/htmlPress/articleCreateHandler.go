@@ -50,21 +50,21 @@ func validateCreateArticle(c *gin.Context, acc *database.Account) (articleStruct
 	articleStruct = getEmtpyCreateArticleStruct(acc)
 
 	articleStruct.Article = database.Article{
-		Headline: htmlHandler.GetText(c, "title"),
+		Headline: generics.GetText(c, "title"),
 		Subtitle: gen.GetNullString(c, "subtitle"),
-		Content:  htmlHandler.GetText(c, "content"),
+		Content:  generics.GetText(c, "content"),
 	}
-	articleStruct.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
-	articleStruct.BreakingNews = htmlHandler.GetBool(c, "breakingNews")
+	articleStruct.SelectedAccount = generics.GetText(c, "selectedAccount")
+	articleStruct.BreakingNews = generics.GetBool(c, "breakingNews")
 
 	writer := &database.Account{}
 	pub := &database.Publication{}
 	switch true {
 	case articleStruct.checkIfContentAndHeadlineEmpty():
-	case htmlHandler.CheckLengthContentLayer(articleStruct, &articleStruct.Article, generics.ArticleContentLimit):
-	case htmlHandler.CheckLengthFieldLayer(articleStruct, &articleStruct.Article, generics.ArticleTitleLimit, "Headline", generics.ArticleLimitError):
-	case htmlHandler.CheckLengthSubtitleLayer(articleStruct, &articleStruct.Article, generics.ArticleSubtitleLimit):
-	case htmlHandler.CheckWriter(articleStruct, writer, acc):
+	case generics.CheckLengthContentLayer(articleStruct, &articleStruct.Article, generics.ArticleContentLimit):
+	case generics.CheckLengthFieldLayer(articleStruct, &articleStruct.Article, generics.ArticleTitleLimit, "Headline", generics.ArticleLimitError):
+	case generics.CheckLengthSubtitleLayer(articleStruct, &articleStruct.Article, generics.ArticleSubtitleLimit):
+	case generics.CheckWriter(articleStruct, writer, acc):
 	case articleStruct.updateFields(writer):
 	case articleStruct.makePublication(pub):
 	default:

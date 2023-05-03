@@ -23,7 +23,7 @@ type ZwitscherListViewStruct struct {
 }
 
 func GetZwitscherLatestViewPage(c *gin.Context) {
-	if !htmlHandler.GetIfEmptyQuery(c, "uuid") {
+	if !generics.GetIfEmptyQuery(c, "uuid") {
 		GetZwitscherSingleViewPage(c)
 		return
 	}
@@ -46,7 +46,7 @@ func GetZwitscherLatestViewPage(c *gin.Context) {
 }
 
 func PostZwitscherLatestViewPage(c *gin.Context) {
-	if !htmlHandler.GetIfEmptyQuery(c, "uuid") {
+	if !generics.GetIfEmptyQuery(c, "uuid") {
 		PostZwitscherSingleViewPage(c)
 		return
 	}
@@ -74,13 +74,13 @@ func PostZwitscherLatestViewPage(c *gin.Context) {
 }
 
 func (zwitscher *ZwitscherListViewStruct) validateZwitscherCreate(c *gin.Context, acc *database.Account) {
-	zwitscher.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
-	zwitscher.Content = htmlHandler.GetText(c, "content")
+	zwitscher.SelectedAccount = generics.GetText(c, "selectedAccount")
+	zwitscher.Content = generics.GetText(c, "content")
 	writer := &database.Account{}
 	switch true {
-	case htmlHandler.CheckWriter(zwitscher, writer, acc):
-	case htmlHandler.CheckFieldNotEmpty(zwitscher, "Content", generics.ZwitscherIsNotAllowedToBeEmpty):
-	case htmlHandler.CheckLengthField(zwitscher, generics.CharacterLimitZwitscher, "Content", generics.ZwitscherIsToLong):
+	case generics.CheckWriter(zwitscher, writer, acc):
+	case generics.CheckFieldNotEmpty(zwitscher, "Content", generics.ZwitscherIsNotAllowedToBeEmpty):
+	case generics.CheckLengthField(zwitscher, generics.CharacterLimitZwitscher, "Content", generics.ZwitscherIsToLong):
 	case zwitscher.tryCreation(writer):
 	default:
 		zwitscher.Content = ""

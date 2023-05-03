@@ -11,7 +11,7 @@ import (
 
 type ListUserStruct struct {
 	Accounts database.AccountList
-	htmlHandler.MessageStruct
+	generics.MessageStruct
 }
 
 func GetAdminListUserPage(c *gin.Context) {

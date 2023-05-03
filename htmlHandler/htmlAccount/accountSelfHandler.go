@@ -20,7 +20,7 @@ type ViewUserInfoElement struct {
 }
 
 type PasswordChangeStruct struct {
-	htmlHandler.MessageStruct
+	generics.MessageStruct
 }
 
 func GetPasswordChangePage(c *gin.Context) {

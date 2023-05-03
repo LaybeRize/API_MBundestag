@@ -38,9 +38,9 @@ func GetViewSingleLetter(c *gin.Context) {
 		FormatString: generics.LongTimeString,
 	}
 	switch true {
-	case htmlHandler.GetIfType(c, "sign"):
+	case generics.GetIfType(c, "sign"):
 		viewLetter.signLetter(viewer)
-	case htmlHandler.GetIfType(c, "reject"):
+	case generics.GetIfType(c, "reject"):
 		viewLetter.rejectLetter(viewer)
 	}
 
@@ -66,11 +66,11 @@ func getLetter(c *gin.Context, letter *database.Letter, viewer *database.Account
 
 func getViewer(c *gin.Context, viewer *database.Account, acc *database.Account) bool {
 	err := viewer.GetByDisplayName(c.Query("usr"))
-	if err != nil && !htmlHandler.GetIfEmptyQuery(c, "usr") {
+	if err != nil && !generics.GetIfEmptyQuery(c, "usr") {
 		htmlBasics.MakeErrorPage(c, acc, generics.AccountForLetterViewError)
 		return true
 	}
-	if htmlHandler.GetIfEmptyQuery(c, "usr") {
+	if generics.GetIfEmptyQuery(c, "usr") {
 		viewer = acc
 	}
 	if viewer.DisplayName != acc.DisplayName && viewer.Linked.Int64 != acc.ID {

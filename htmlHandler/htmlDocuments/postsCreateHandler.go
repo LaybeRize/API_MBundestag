@@ -59,12 +59,12 @@ func PostPostsCreateHandler(c *gin.Context) {
 }
 
 func (post *CreatePostPageStruct) fillStructFromContext(c *gin.Context) {
-	post.SelectedOrganisation = htmlHandler.GetText(c, "selectedOrganisation")
-	post.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
-	post.Content = htmlHandler.GetText(c, "content")
-	post.Tag = htmlHandler.GetText(c, "tag")
-	post.Title = htmlHandler.GetText(c, "title")
-	post.Subtitle = htmlHandler.GetText(c, "subtitle")
+	post.SelectedOrganisation = generics.GetText(c, "selectedOrganisation")
+	post.SelectedAccount = generics.GetText(c, "selectedAccount")
+	post.Content = generics.GetText(c, "content")
+	post.Tag = generics.GetText(c, "tag")
+	post.Title = generics.GetText(c, "title")
+	post.Subtitle = generics.GetText(c, "subtitle")
 }
 
 func (post *CreatePostPageStruct) validateCreatePost(c *gin.Context, acc *database.Account) {
@@ -72,13 +72,13 @@ func (post *CreatePostPageStruct) validateCreatePost(c *gin.Context, acc *databa
 	orga := &database.Organisation{}
 	id := ""
 	switch true {
-	case htmlHandler.CheckTitelAndContentEmpty(post):
-	case htmlHandler.CheckLengthContent(post, generics.PostContentLimit):
-	case htmlHandler.CheckLengthTitle(post, generics.PostTitleLimit):
-	case htmlHandler.CheckLengthSubtitle(post, generics.PostSubtitleLimit):
-	case htmlHandler.CheckLengthField(post, generics.PostTagLimit, "Tag", generics.TagTooLong):
-	case htmlHandler.CheckWriter(post, writer, acc):
-	case htmlHandler.CheckOrgExists(post, orga):
+	case generics.CheckTitelAndContentEmpty(post):
+	case generics.CheckLengthContent(post, generics.PostContentLimit):
+	case generics.CheckLengthTitle(post, generics.PostTitleLimit):
+	case generics.CheckLengthSubtitle(post, generics.PostSubtitleLimit):
+	case generics.CheckLengthField(post, generics.PostTagLimit, "Tag", generics.TagTooLong):
+	case generics.CheckWriter(post, writer, acc):
+	case generics.CheckOrgExists(post, orga):
 	case post.checkIfAllowedToPost(orga, writer):
 	case post.checkOrgaNotSecret(orga):
 	case post.tryCreationPost(&id, writer):
