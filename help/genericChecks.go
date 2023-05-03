@@ -21,3 +21,16 @@ func (m *Message) CheckTitelAndContentEmptyLayer(content *any) bool {
 	}
 	return false
 }
+
+var NoMainGroupSubGroupOrNameProvided Message = "Es wurde keine Hauptkategorie, Unterkategorie oder ein Name angegeben"
+
+func (m *Message) CheckOrgOrTitle(content *any) bool {
+	ref := reflect.ValueOf(content).Elem()
+	if ref.FieldByName("MainGroup").String() == "" ||
+		ref.FieldByName("SubGroup").String() == "" ||
+		ref.FieldByName("Name").String() == "" {
+		*m = NoMainGroupSubGroupOrNameProvided + "\n" + *m
+		return true
+	}
+	return false
+}
