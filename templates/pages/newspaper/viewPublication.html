@@ -1,0 +1,45 @@
+{{define "content"}}
+  <std-div>
+    <headline>
+      {{dateFormat .FormatNewspaper .Publication.PublishTime}}
+    </headline>
+    {{if showPublishButton .Publication.Publicated .Articles}}
+      <div class="w-[800px] mt-4 flex flex-row items-center">
+        <form action="/publication" method="POST" onsubmit="return confirm('Möchtest du diese Zeitung wirklich veröffentlichen?');">
+          <input type="text" name="uuid" value="{{.Publication.UUID}}" hidden>
+          <submit-button>Zeitung veröffentlichen</submit-button>
+        </form>
+      </div>
+    {{end}}
+    <div class="w-[800px] mt-4">
+      {{$articleFormat := .FormatArticle}}
+      {{$rejectArticle := not .Publication.Publicated}}
+      {{range $i, $article := .Articles}}
+        <div class="p-2 w-[800px] mt-2 bg-gray-900">
+            <h1 class="text-2xl text-white mb-2">
+                {{$article.Headline}}
+            </h1>
+            {{if $article.Subtitle.Valid}}
+            <h1 class="text-xl text-white mb-2">
+                {{$article.Subtitle.String}}
+            </h1>
+            {{end}}
+            <p><i>{{dateFormat $articleFormat $article.Written}}</i></p>
+            <p><i>{{withFlair $article.Author $article.Flair}}</i></p>
+            <breaker class="w-[300px]"></breaker>
+            {{noescape $article.HTMLContent}}
+            {{if $rejectArticle}}
+            <breaker class="w-[750px]"></breaker>
+            <div class="mt-4 mb-2">
+                <a href="/reject-article?&uuid={{queryEscape $article.UUID}}" class="font-bold p-2 bg-slate-700">
+                    Artikel ablehnen
+                </a>
+            </div>
+            {{end}}
+        </div>
+      {{end}}
+    </div>
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

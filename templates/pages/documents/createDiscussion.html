@@ -1,0 +1,60 @@
+{{define "content"}}
+  <std-div>
+    <headline>Diskussion erstellen</headline>
+    <standard-form url="/create-discussion">
+      <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+        {{$name := .SelectedAccount}}
+        {{range $i, $value := .Accounts}}
+          <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+        {{end}}
+      </standard-select>
+      <standard-select name="selectedOrganisation" text="Organisation für Veröffentlichung" disable="false">
+        {{$orgname := .SelectedAccount}}
+        {{range $i, $value := .Organisations}}
+          <option value="{{$value.Name}}" {{if eq $value.Name $orgname}} selected{{end}}>{{$value.Name}}</option>
+        {{end}}
+      </standard-select>
+      <standard-input type="text" name="title" value="{{.Title}}">
+          Titel
+      </standard-input>
+      <standard-input type="text" name="subtitle" value="{{.Subtitle}}">
+          Untertitel
+      </standard-input>
+      <standard-input type="datetime-local" name="until" value="{{dateFormat .FormatForTime .Info.Finishing}}">
+          Ende der Diskussion
+      </standard-input>
+      <standard-checkbox checked=".MakePrivate" value="true" name="private">
+          Diskussion ist privat
+      </standard-checkbox>
+      <standard-checkbox checked=".Info.OrganisationPosterAllowed" value="true" name="orgPoster">
+          Alle Mitglieder der Organisation können kommentieren
+      </standard-checkbox>
+      <standard-checkbox checked=".Info.AnyPosterAllowed" value="true" name="anyPoster">
+          Alle Personen können kommentieren
+      </standard-checkbox>
+      <datalist id="userNameList">
+        {{range $i, $item := .Names}}
+        <option value="{{$item}}">
+        {{end}}
+      </datalist>
+      <div class="flex flex-row">
+        <custom-list name="poster" divName="listDivPoster"
+                     list="userNameList" class="w-[400px]"
+                     loop=".Info.Poster">Kommentatoren Hinzufügen</custom-list>
+        <custom-list name="allowed" divName="listDivAllowed"
+                     list="userNameList" class="w-[400px] ml-2"
+                     loop=".Info.Viewer">Zuschauer Hinzufügen</custom-list>
+      </div>
+      <breaker class="w-[800px]"></breaker>
+      <standard-textarea name="content" text="Diskussionbeitrag">{{.Content}}</standard-textarea>
+      <submit-button>Versenden</submit-button>
+      <button-for-preview>Vorschau anzeigen</button-for-preview>
+    </standard-form>
+    <message text=".Message"></message>
+    <preview></preview>
+  </std-div>
+  {{template "markDownScript" "Diskussionbeitrag"}}
+  {{template "addAndRemoveScript"}}
+{{end}}
+
+{{/* use basic */}}

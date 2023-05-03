@@ -1,0 +1,52 @@
+{{define "content"}}
+    <std-div>
+        <headline>
+            {{if .AccountSelect}}
+                Ersteller für das Dokument{{if .OrgAlreadySelected}} in "{{.OrgName}}"{{end}} auswählen
+            {{end}}
+            {{if .OrganisationSelect}}
+                Organisation für den Ersteller "{{.AccName}}" auswählen
+            {{end}}
+            {{if .DocumentSelect}}
+                Dokumenttypen für Ersteller "{{.AccName}}" in Organisation "{{.OrgName}}" auswählen
+            {{end}}
+        </headline>
+        <div class="w-3/5 mt-2 flex items-center flex-col">
+        {{if .AccountSelect}}
+            {{$org := .OrgName}}
+            {{$orgExists := .OrgAlreadySelected}}
+            {{range $i, $acc := .Accounts}}
+                <warper-link link="/create-document?usr={{queryEscape $acc.DisplayName}}{{if $orgExists}}&org={{queryEscape $org}}{{end}}">
+                    {{$acc.DisplayName}}
+                </warper-link>
+            {{end}}
+        {{end}}
+        {{if .OrganisationSelect}}
+            {{$accName := .AccName}}
+            {{range $i, $org := .Organisations}}
+                <warper-link link="/create-document?usr={{queryEscape $accName}}&org={{queryEscape $org.Name}}">
+                    {{$org.Name}}
+                </warper-link>
+            {{end}}
+        {{end}}
+        {{if .DocumentSelect}}
+            {{if .CanPost}}
+                <warper-link link="/create-post?usr={{queryEscape .AccName}}&org={{queryEscape .OrgName}}">
+                    offiziellen Text verfassen
+                </warper-link>
+            {{end}}
+            {{if .CanDiscussOrVote}}
+                <warper-link link="/create-discussion?usr={{queryEscape .AccName}}&org={{queryEscape .OrgName}}">
+                    Diskussion erstellen
+                </warper-link>
+                <warper-link link="/create-vote?usr={{queryEscape .AccName}}&org={{queryEscape .OrgName}}">
+                    Abstimmung erstellen
+                </warper-link>
+            {{end}}
+        {{end}}
+        </div>
+        <message text=".Message"></message>
+    </std-div>
+{{end}}
+
+{{/* use basic */}}

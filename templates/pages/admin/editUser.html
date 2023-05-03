@@ -1,0 +1,58 @@
+{{define "content"}}
+  <std-div>
+    <headline>Benutzer bearbeiten</headline>
+    <standard-form url="/edit-user?type=user">
+      <datalist id="userList">
+        {{range $i, $item := .Names}}
+          <option value="{{$item.Username}}">
+        {{end}}
+      </datalist>
+      <standard-input list="userList" type="text" name="name" value="{{.Account.Username}}">
+        Nutername
+      </standard-input>
+      <submit-button>Suchen</submit-button>
+    </standard-form>
+    <standard-form url="/edit-user?type=display">
+      <datalist id="displayList">
+        {{range $i, $item := .Names}}
+        <option value="{{$item.DisplayName}}">
+          {{end}}
+      </datalist>
+      <standard-input list="displayList" type="text" name="name" value="{{.Account.DisplayName}}">
+        Anzeigename
+      </standard-input>
+      <submit-button>Suchen</submit-button>
+    </standard-form>
+    <standard-form url="/edit-user?change=true">
+      <input type="text" name="username" value="{{.Account.Username}}" hidden>
+      <standard-input type="text" name="flair" value="{{.Account.Flair}}">
+        Flair
+      </standard-input>
+      <standard-select name="role" text="Rolle" disable="eqRole .Account.Role `press_account`">
+        {{range $value := roleLoop .Account.Role}}
+          <option value="{{$value.Loop}}" {{$value.Attribute}}>{{roleTranslations $value.Loop}}</option>
+        {{end}}
+      </standard-select>
+      <standard-select name="suspended" text="Account Status" disable="false">
+        <option value="false">Nicht Suspendiert</option>
+        <option value="true" {{if .Account.Suspended}}selected{{end}}>
+          Suspendiert
+        </option>
+      </standard-select>
+      <standard-checkbox checked="false" value="true" name="removeOrgs">
+        Account von allen Organisationen entfernen
+      </standard-checkbox>
+      <standard-checkbox checked="false" value="true" name="removeTitles">
+        Account alle Titel nehmen
+      </standard-checkbox>
+      <script>var empty = ''</script>
+      <standard-input type="number" name="linked" value="{{.Account.Linked.Int64}}" addition="min='0' oninput='validity.valid||(value=empty);'">
+        ID des zu verlinkenden Nutzer
+      </standard-input>
+      <submit-button>Verändern</submit-button>
+    </standard-form>
+    <message text=".Message"></message>
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

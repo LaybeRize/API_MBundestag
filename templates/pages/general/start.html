@@ -1,0 +1,34 @@
+{{define "content"}}
+  <div class="flex items-center flex-col w-full">
+    <h1 class="text-3xl font-bold mt-3">
+      Herzlich Willkommen im MBundestag
+    </h1>
+    {{if .LoggedIn}}
+      <p class="mt-4">Dein Anzeigename: {{.Account.DisplayName}}</p>
+      <breaker class="w-[500px]"></breaker>
+      <form action="/start?type=logout" method="POST">
+        <submit-button>Logout</submit-button>
+      </form>
+    {{else}}
+      <form action="/start" method="POST" class="mt-4">
+        <standard-input type="text" name="username">
+          Nutzername
+        </standard-input>
+        <standard-input type="password" name="password">
+          Passwort
+        </standard-input>
+        <submit-button>Login</submit-button>
+      </form>
+    {{end}}
+    <message text=".Info"></message>
+    <breaker class="w-[500px]"></breaker>
+    <p class="w-[750px] text-justify">Der MBundestag ist eine politische Simulation. Hier werden in Organisationen politische Aktivitäten geplant, diskutiert und darüber abgestimmt. In Pressemitteilungen
+    die Veränderungen in der Welt mitgeteilt. In Zwitschern die allgemeine Meinung kund getan und allgemein mit anderen Personen interagiert. Gesetze werden angefochten,
+      Gerichtsverfahren gegen politische Gegner angestrengt, Urteile gefällt und das Land am Laufen gehalten (mal mehr mal weniger).</p>
+    <p class="w-[750px] text-justify">Neben den Interaktionen auf der Website gibt es einen <a href="/" class="text-cyan-400">Discord</a>, auf dem ihr mit der Moderation inoffiziell interagieren könnt. Vorschläge für Ereignisse machen könnt
+    oder euch darüber beschweren, warum euer super toller Artikel von einem Moderationsmitglied abgelehnt wurde. Außerdem werden dort alle Pressemitteilungen, wenn sie herausgegeben werden
+    in einem seperaten Channel live gestellt, damit ihr keine der neusten Nachrichten verpassen könnt.</p>
+  </div>
+{{end}}
+
+{{/* use basic */}}

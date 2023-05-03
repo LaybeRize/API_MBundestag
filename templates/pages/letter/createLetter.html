@@ -1,0 +1,58 @@
+{{define "content"}}
+  <std-div>
+    <headline>
+      {{if .ModMail}}Moderationsbrief{{else}}Brief{{end}} erstellen
+    </headline>
+    <standard-form url="{{if .ModMail}}/create-mod-mail{{else}}/create-letter{{end}}">
+        {{if .ModMail}}
+            <standard-input type="text" name="author" value="{{.Letter.Author}}">
+                Auftraggeber
+            </standard-input>
+            <standard-input type="text" name="author" value="{{.Letter.Flair}}">
+                Flair des Auftraggebers
+            </standard-input>
+        {{else}}
+            <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+                {{$name := .SelectedAccount}}
+                {{range $i, $value := .Accounts}}
+                    <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+                {{end}}
+            </standard-select>
+        {{end}}
+        <standard-input type="text" name="title" value="{{.Letter.Title}}">Titel</standard-input>
+        <standard-checkbox checked=".Letter.Info.NoSigning" value="true" name="noSigning">Brief ist rein informationell und benötigt keine Unterschrift</standard-checkbox>
+        <hidable-checkbox id="hideThisDiv" hide=".Letter.Info.NoSigning" checked=".Letter.Info.AllHaveToAgree" value="true" name="allHaveToSign">
+            Brief ist erst unterschrieben, wenn alle unterschrieben haben
+        </hidable-checkbox>
+        <script>
+          const checkbox = document.getElementById('Brief ist rein informationell und benötigt keine Unterschrift')
+
+          checkbox.addEventListener('change', (event) => {
+            if (event.currentTarget.checked) {
+              document.getElementById('hideThisDiv').classList.toggle("hidden")
+            } else {
+              document.getElementById('hideThisDiv').classList.toggle("hidden")
+            }
+          })
+        </script>
+        <datalist id="userNameList">
+            {{range $i, $item := .Names}}
+            <option value="{{$item}}">
+                {{end}}
+        </datalist>
+        <custom-list name="user" divName="listDivUser"
+                     list="userNameList" class="w-[800px] mt-2"
+                     loop=".Letter.Info.PeopleInvitedToSign">Nutzer Hinzufügen</custom-list>
+        <breaker class="w-[800px]"></breaker>
+        <standard-textarea name="content" text="Briefinhalt">{{.Letter.Content}}</standard-textarea>
+        <submit-button>Versenden</submit-button>
+        <button-for-preview>Vorschau anzeigen</button-for-preview>
+    </standard-form>
+      <message text=".Message"></message>
+      <preview></preview>
+  </std-div>
+  {{template "markDownScript" "Briefinhalt"}}
+  {{template "addAndRemoveScript"}}
+{{end}}
+
+{{/* use basic */}}

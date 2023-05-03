@@ -1,0 +1,38 @@
+{{define "content"}}
+    <std-div>
+        <headline>Briefübersicht</headline>
+        {{if .Search}}
+            <standard-form url="/letter-list">
+                <standard-select name="selectedAccount" text="Sichtbar für Account" disable="false">
+                    {{$name := .SelectedAccount}}
+                    {{range $i, $value := .Accounts}}
+                        <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+                    {{end}}
+                </standard-select>
+                <submit-button>Suchen</submit-button>
+            </standard-form>
+            <message text=".Message"></message>
+        {{end}}
+        <div class="w-[800px] mt-2">
+            {{$acc := .SelectedAccount}}
+            {{$search := .Search}}
+            {{$format := .FormatString}}
+            {{range $i, $letter := .LetterList}}
+                <div class="mt-2 bg-gray-900">
+                <a href="/letter?{{getQueryString $letter.UUID $acc $search}}" class="p-2 w-[800px]">
+                    <p class="pl-6 text-3xl font-bold">
+                       {{$letter.Title}}
+                    </p>
+                    <p class="pl-6">Ausgestellt von {{$letter.Author}}</p>
+                    <p class="pl-6"><i>Ausgestellt am {{dateFormat $format $letter.Written}}</i></p>
+                </a>
+                </div>
+            {{end}}
+        </div>
+        <pager boolBefore=".HasBefore" boolNext=".HasNext"
+               linkBefore="/{{if .Search}}letter-list?usr={{queryEscape .SelectedAccount}}&{{else}}mod-mails?{{end}}type=before&uuid={{queryEscape .BeforeUUID}}&amount={{.Amount}}"
+               linkNext="/{{if .Search}}letter-list?usr={{queryEscape .SelectedAccount}}&{{else}}mod-mails?{{end}}uuid={{queryEscape .NextUUID}}&amount={{.Amount}}"></pager>
+    </std-div>
+{{end}}
+
+{{/* use basic */}}

@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "compile-ts": "dir .\\public\\*.ts /b /s > ts-watch.txt && npx tsc-watch @ts-watch.txt",
+    "start": "start npx tailwindcss -i ./tailwind/input.css -o ./public/output.css --watch && start npm run compile-ts"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.1"
+  },
+  "dependencies": {
+    "tw-elements": "^1.0.0-alpha12",
+    "typescript": "^4.9.3"
+  }
+}

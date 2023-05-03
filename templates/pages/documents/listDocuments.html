@@ -1,0 +1,28 @@
+{{define "content"}}
+    <std-div>
+        <headline>Dokumentenliste</headline>
+        <div class="w-[800px] mt-2">
+            {{$format := .FormatString}}
+            {{range $i, $doc := .DocumentList}}
+                <div class="mt-2 bg-gray-900">
+                    <a href="/document?uuid={{queryEscape $doc.UUID}}" class="p-1 w-[800px] {{if $doc.Blocked}}text-rose-600{{end}}">
+                        <div class="flex items-center">
+                            {{getIcon $doc.Type}}
+                            <p class="pr-6 pl-3 text-3xl font-bold">
+                                {{$doc.Title}}
+                            </p>
+                        </div>
+                        <p class="pl-6">Veröffentlicht von {{withFlair $doc.Author $doc.Flair}}</p>
+                        <p class="pl-6"><i>Veröffentlichungsort: {{$doc.Organisation}}</i></p>
+                        <p class="pl-6"><i>Veröffentlicht am {{dateFormat $format $doc.Written}}</i></p>
+                    </a>
+                </div>
+            {{end}}
+        </div>
+        <pager boolBefore=".HasBefore" boolNext=".HasNext"
+               linkBefore="/documents?type=before&uuid={{queryEscape .BeforeUUID}}&amount={{.Amount}}{{noescapeurl .ExtraQueryString}}"
+               linkNext="/documents?uuid={{queryEscape .NextUUID}}&amount={{.Amount}}{{noescapeurl .ExtraQueryString}}"></pager>
+    </std-div>
+{{end}}
+
+{{/* use basic */}}

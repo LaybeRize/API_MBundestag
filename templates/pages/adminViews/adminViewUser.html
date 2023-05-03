@@ -1,0 +1,46 @@
+{{define "content"}}
+  <std-div>
+    <headline>Liste aller Nutzer</headline>
+    <standard-table id="sortTable">
+      <tr>
+        <table-header-start click="sortTable(0)">ID</table-header-start>
+        <table-header-mid click="sortTable(1)">Anzeigename</table-header-mid>
+        <table-header-mid click="sortTable(2)">Nutzername</table-header-mid>
+        <table-header-mid click="sortTable(3)">Flair</table-header-mid>
+        <table-header-mid click="sortTable(4)">Rolle</table-header-mid>
+        <table-header-mid click="sortTable(5)">Status</table-header-mid>
+        <table-header-end click="sortTable(6)">Verlinkt mit</table-header-end>
+      </tr>
+  {{range $i, $item := .Accounts}}
+      <tr>
+        <table-element-start>{{$item.ID}}</table-element-start>
+        <table-element-mid>
+          <a href="/view-user?acc={{queryEscape $item.DisplayName}}">{{$item.DisplayName}}</a>
+        </table-element-mid>
+        <table-element-mid>{{$item.Username}}</table-element-mid>
+        <table-element-mid>{{$item.Flair}}</table-element-mid>
+        <table-element-mid>{{roleTranslations $item.Role}}</table-element-mid>
+        <table-element-mid>
+        {{if $item.Suspended}}
+          <span class="text-sm">
+            <i class="bi bi-x-lg"></i>
+          </span>
+        {{else}}
+          <span class="text-sm">
+            <i class="bi bi-check-lg"></i>
+          </span>
+        {{end}}
+        </table-element-mid>
+        <table-element-end>
+          {{if $item.Linked.Valid}}{{$item.Linked.Int64}}
+          {{else}}Nicht verlinkt{{end}}
+        </table-element-end>
+      </tr>
+  {{end}}
+    </standard-table>
+    <message text=".Message"></message>
+  </std-div>
+  {{template "sortScript"}}
+{{end}}
+
+{{/* use basic */}}

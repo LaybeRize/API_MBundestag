@@ -1,0 +1,68 @@
+{{define "content"}}
+    <std-div>
+        <headline>Abstimmung (Mehrfachauswahl)</headline>
+        <button-link link="/document?uuid={{queryEscape .Vote.Parent}}">
+            Zurück zum Abstimmungsdokument
+        </button-link>
+        {{if .Vote.Finished}}
+            <div class="w-[800px]">
+            <p class="mb-2 text-xl">{{.Vote.Question}}</p>
+            <p class="mb-2 text-xl">{{arrayOrEmpty "" .Vote.Info.Options}}</p>
+            </div>
+        {{else}}
+        <standard-form url="/vote?type=vote&uuid={{queryEscape .Vote.UUID}}">
+            <p class="mb-2 text-xl">{{.Vote.Question}}</p>
+            <breaker class="w-[800px]"></breaker>
+            <standard-select name="selectedAccount" text="Wähler" disable="false">
+                {{$name := .SelectedAccount}}
+                {{range $i, $value := .Accounts}}
+                    <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+                {{end}}
+            </standard-select>
+            {{$o := .Options}}
+            {{range $index, $option := .Vote.Info.Options}}
+                <standard-checkbox checked="option $o $option 1" value="true" name="{{$option}}">
+                    {{$option}}
+                </standard-checkbox>
+            {{end}}
+            <submit-button>Abstimmen</submit-button>
+            <submit-button url="/vote?type=invalid&uuid={{queryEscape .Vote.UUID}}">Ungültige Stimme abgeben</submit-button>
+        </standard-form>
+        <message text=".Message"></message>
+        {{end}}
+        {{if showNumbers .Vote}}
+            <breaker class="w-[800px]"></breaker>
+        <standard-table id="votes">
+            <tr>
+                <table-header-start>Option</table-header-start>
+                <table-header-end>Stimmen</table-header-end>
+            </tr>
+            {{$summary := .Vote.Info.Summary.Sums}}
+        {{range $index, $option := .Vote.Info.Options}}
+            <tr>
+                <table-element-start>{{$option}}</table-element-start>
+                <table-element-end>{{optionValue $summary $option}}</table-element-end>
+            </tr>
+        {{end}}
+        </standard-table>
+        {{end}}
+        {{if showNames .Vote}}
+            <breaker class="w-[800px]"></breaker>
+        <standard-table id="sortTable">
+                <tr>
+                    <table-header-start click="sortTable(0)">Person</table-header-start>
+                    <table-header-end click="sortTable(1)">Stimme</table-header-end>
+                </tr>
+                {{range $person, $vote := .Vote.Info.Summary.Person}}
+                    <tr>
+                        <table-element-start>{{$person}}</table-element-start>
+                        <table-element-end>{{$vote}}</table-element-end>
+                    </tr>
+                {{end}}
+            </standard-table>
+        {{end}}
+    </std-div>
+    {{template "sortScript"}}
+{{end}}
+
+{{/* use basic */}}

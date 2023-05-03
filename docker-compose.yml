@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:alpine
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    links:
+      - web
+  web:
+    env_file:
+      - .env
+    image:
+      layberize/api-mbundestag:vBeta
+    ports:
+      - "1350:8080"
+
+
+volumes:
+  postgres-db:

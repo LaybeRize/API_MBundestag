@@ -1,0 +1,75 @@
+{{define "content"}}
+    <std-div>
+        <headline>Abstimmung (Rangwahl)</headline>
+        <button-link link="/document?uuid={{queryEscape .Vote.Parent}}">
+            Zurück zum Abstimmungsdokument
+        </button-link>
+        {{if .Vote.Finished}}
+            <div class="w-[800px]">
+            <p class="mb-2 text-xl">{{.Vote.Question}}</p>
+            <p class="mb-2 text-xl">{{arrayOrEmpty "" .Vote.Info.Options}}</p>
+            </div>
+        {{else}}
+        <standard-form url="/vote?type=vote&uuid={{queryEscape .Vote.UUID}}">
+            <p class="mb-2 text-xl">{{.Vote.Question}}</p>
+            <p class="mb-2">Maximaler Rang: {{.Vote.Info.MaxPosition}}</p>
+            <breaker class="w-[800px]"></breaker>
+            <standard-select name="selectedAccount" text="Wähler" disable="false">
+                {{$name := .SelectedAccount}}
+                {{range $i, $value := .Accounts}}
+                    <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+                {{end}}
+            </standard-select>
+            {{$o := .Options}}
+            {{$max := .Vote.Info.MaxPosition}}
+            <script>var empty = ''</script>
+            {{range $index, $option := .Vote.Info.Options}}
+                <standard-input type="number" name="{{$option}}" value="{{optionValue $o $option}}" addition="min='0' max='{{$max}}' oninput='validity.valid||(value=empty);'">
+                    {{$option}}
+                </standard-input>
+            {{end}}
+            <submit-button>Abstimmen</submit-button>
+            <submit-button url="/vote?type=invalid&uuid={{queryEscape .Vote.UUID}}">Ungültige Stimme abgeben</submit-button>
+        </standard-form>
+        <message text=".Message"></message>
+        {{end}}
+        {{$sN := showNames .Vote}}
+        {{if $sN}}
+            <breaker class="w-[800px]"></breaker>
+            <div class="w-[800px]">
+                <p class="mb-2 text-xl">Ungültige Stimmen</p>
+                <p>{{arrayOrEmpty "" .Vote.Info.Summary.InvalidVotes}}</p>
+            </div>
+        {{end}}
+        {{if showNumbers .Vote}}
+            <breaker class="w-[800px]"></breaker>
+        <table id="votes" class="table-auto mt-4">
+            <tr>
+                <table-header-start>Wähler</table-header-start>
+                {{range $item := headerLoop .Vote.Info.Options}}
+                    {{if $item.IsEnd}}
+                        <table-header-end>{{$item.Header}}</table-header-end>
+                    {{else}}
+                        <table-header-mid>{{$item.Header}}</table-header-mid>
+                    {{end}}
+                {{end}}
+            </tr>
+            {{$option := .Vote.Info.Options}}
+        {{range $index, $map := .Vote.Info.Summary.RankedMap}}
+            <tr>
+                <table-element-start>{{if $sN}}{{$index}}{{else}}<i class="bi bi-lock"></i>{{end}}</table-element-start>
+                {{range $item := valueLoop $option $map}}
+                    {{if $item.IsEnd}}
+                        <table-element-end>{{$item.Value}}</table-element-end>
+                    {{else}}
+                        <table-element-mid>{{$item.Value}}</table-element-mid>
+                    {{end}}
+                {{end}}
+            </tr>
+        {{end}}
+        </table>
+        {{end}}
+    </std-div>
+{{end}}
+
+{{/* use basic */}}

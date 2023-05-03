@@ -1,0 +1,51 @@
+{{define "content"}}
+  <std-div>
+    <headline>Organisation verändern</headline>
+    <standard-form url="/edit-organisation?type=search">
+      <datalist id="namesList">
+        {{range $i, $item := .OrgNames}}
+          <option value="{{$item}}">
+        {{end}}
+      </datalist>
+      <standard-input list="namesList" type="text" name="name" value="{{.Organisation.Name}}">
+        Name
+      </standard-input>
+      <submit-button>Suchen</submit-button>
+    </standard-form>
+    <standard-form url="/edit-organisation?type=change">
+      <input type="text" name="name" value="{{.Organisation.Name}}" hidden>
+      <standard-input type="text" name="mainGroup" value="{{.Organisation.MainGroup}}">
+        Hauptkategorie
+      </standard-input>
+      <standard-input type="text" name="subGroup" value="{{.Organisation.SubGroup}}">
+        Unterkategorie
+      </standard-input>
+      <standard-input type="text" name="flair" value="{{.Organisation.Flair.String}}">
+        Flair
+      </standard-input>
+      <standard-select name="status" text="Status" disable="false">
+        {{range $value := statusLoop .Organisation.Status}}
+          <option value="{{$value.Loop}}" {{$value.Attribute}}>{{statusTranslations $value.Loop}}</option>
+        {{end}}
+      </standard-select>
+      <datalist id="userNameList">
+        {{range $i, $item := .Names}}
+          <option value="{{$item}}">
+        {{end}}
+      </datalist>
+      <div class="flex flex-row">
+        <custom-list name="admins" divName="listDivAdmin"
+                     list="userNameList" class="w-[400px]"
+                     loop=".Organisation.Info.Admins">Admin Hinzufügen</custom-list>
+        <custom-list name="user" divName="listDivUser"
+                     list="userNameList" class="w-[400px] ml-2"
+                     loop=".Organisation.Info.User">Nutzer Hinzufügen</custom-list>
+      </div>
+      <submit-button>Verändern</submit-button>
+    </standard-form>
+    <message text=".Message"></message>
+  </std-div>
+  {{template "addAndRemoveScript"}}
+{{end}}
+
+{{/* use basic */}}

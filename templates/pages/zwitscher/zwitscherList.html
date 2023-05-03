@@ -1,0 +1,36 @@
+{{define "content"}}
+  <div class="flex items-center flex-col w-full">
+    <h1 class="text-3xl font-bold mt-3">
+      Zwitscherübersicht
+    </h1>
+    {{if .CanZwitscher}}
+      <standard-form url="/zwitscher?amount={{.Amount}}">
+        <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+          {{$name := .SelectedAccount}}
+          {{range $i, $value := .Accounts}}
+            <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+          {{end}}
+        </standard-select>
+        <standard-textarea name="content" text="Zwitscherinhalt">{{.Content}}</standard-textarea>
+        <submit-button>Versenden</submit-button>
+      </standard-form>
+      <message text=".Message"></message>
+    {{end}}
+    <div class="w-[800px] mt-2">
+      {{$format := .DateFormatString}}
+      {{range $i, $zwitscher := .Zwitscher}}
+      <div class="p-2 w-[800px] bg-gray-900 mt-2">
+        <a href="/zwitscher?uuid={{queryEscape $zwitscher.UUID}}" class="{{if $zwitscher.Blocked}}text-rose-600{{end}}">
+          <h1 class="text-xl font-bold">
+            {{$zwitscher.Author}}
+          </h1>
+          <p><i>{{dateFormat $format $zwitscher.Written}}</i></p>
+          <p class="text-justify break-words mt-2">{{$zwitscher.HTMLContent}}</p>
+        </a>
+      </div>
+      {{end}}
+    </div>
+  </div>
+{{end}}
+
+{{/* use basic */}}

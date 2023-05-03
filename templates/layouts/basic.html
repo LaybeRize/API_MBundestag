@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/public/output.css" rel="stylesheet">
+    <link rel="icon" href="/public/MBundestagLogo.png" />
+    <link rel="stylesheet" href="/public/jsdelivr.css"/>
+</head>
+<body class="bg-slate-800">
+<div class="min-h-screen text-slate-200">
+    <span
+            class="absolute text-4xl top-5 left-4 cursor-pointer"
+            onclick="openSidebar()">
+      <i class="bi bi-filter-left px-2 bg-gray-900"></i>
+    </span>
+    <div
+            class="sidebar fixed top-0 bottom-0 lg:left-0 p-2 w-[300px] overflow-y-auto text-center bg-gray-900 hidden">
+        <div class="text-gray-100 text-xl">
+            <div class="p-2.5 mt-1 flex items-center cursor-pointer"
+                 onclick="openSidebar()">
+                <img
+                        src="/public/MBundestagLogo.png"
+                        alt="Logo"
+                        class="h-[25px] ml-3"
+                >
+                <h1 class="font-bold text-gray-200 text-[15px] ml-3">MBundestag</h1>
+            </div>
+            <div class="my-2 bg-gray-600 h-[1px]"></div>
+        </div>
+        <!-- <sidebar-button href="/reload/start" site="s">Neu laden</sidebar-button>  remove this -->
+        <!-- <sidebar-button href="/preview" site="testPreview">Vorschautest</sidebar-button>  remove this -->
+        <sidebar-button href="/start" site="start">Startseite</sidebar-button>
+        <sidebar-button href="/organisation" site="displayOrganisation">Organisationsübersicht</sidebar-button>
+        <sidebar-button href="/documents" site="listDocuments">Dokumentenliste</sidebar-button>
+        <sidebar-button href="/title" site="displayTitle">Titleübersicht</sidebar-button>
+        <sidebar-button href="/newspaper" site="newspaperList">Zeitungsliste</sidebar-button>
+        <sidebar-button href="/zwitscher" site="zwitscherList">Zwitscher</sidebar-button>
+        {{if fullFillsClass 5 .User.Role}}
+            <sidebar-breaker></sidebar-breaker>
+        <sidebar-submenu id="6" text="Veröffentlichen" site="`postNavigation` `createArticle` `createLetter`">
+            <sidebar-submenu-button href="create-document" site="postNavigation">Dokument erstellen</sidebar-submenu-button>
+            <sidebar-submenu-button href="/create-article" site="createArticle">Artikel einreichen</sidebar-submenu-button>
+            <sidebar-submenu-button href="/create-letter" site="createLetter">Brief erstellen</sidebar-submenu-button>
+        </sidebar-submenu>
+        <sidebar-submenu id="4" text="Meine Seiten" site="`letterList` `viewPersonalInfo` `password`">
+            <sidebar-submenu-button href="/letter-list" site="letterList">Meine Briefe</sidebar-submenu-button>
+            <sidebar-submenu-button href="/self-info" site="viewPersonalInfo">Meine Übersicht</sidebar-submenu-button>
+            <sidebar-submenu-button href="/password" site="password">Passwort ändern</sidebar-submenu-button>
+        </sidebar-submenu>
+        {{end}}
+        {{if fullFillsClass 4 .User.Role}}
+            <sidebar-breaker></sidebar-breaker>
+        <sidebar-submenu id="5" text="Moderationstools" site="`newspaperAdminList` `modMailList` `createModMail` `adminViewLetter`">
+            <sidebar-submenu-button href="/newspaper-approval" site="newspaperAdminList">Zeitungsgenehmigung</sidebar-submenu-button>
+            <sidebar-submenu-button href="/mod-mails" site="modMailList">Moderationsbriefe</sidebar-submenu-button>
+            {{if fullFillsClass 3 .User.Role}}
+            <sidebar-submenu-button href="/create-mod-mail" site="createModMail">Moderationsbrief erstellen</sidebar-submenu-button>
+            <sidebar-submenu-button href="/admin-letter-view" site="adminViewLetter">Brief suchen</sidebar-submenu-button>
+            {{end}}
+        </sidebar-submenu>
+        {{end}}
+        {{if fullFillsClass 3 .User.Role}}
+            <sidebar-submenu id="2" text="Organisationen verwalten" site="`createOrganisation` `editOrganisation` `hiddenOrganisation`">
+                <sidebar-submenu-button href="/hidden-organisation" site="hiddenOrganisation">Versteckte Organisationen</sidebar-submenu-button>
+                <sidebar-submenu-button href="/create-organisation" site="createOrganisation">Organisation erstellen</sidebar-submenu-button>
+                <sidebar-submenu-button href="/edit-organisation" site="editOrganisation">Organisation verändern</sidebar-submenu-button>
+            </sidebar-submenu>
+            <sidebar-submenu id="3" text="Titel verwalten" site="`createTitle` `editTitle`">
+                <sidebar-submenu-button href="/create-title" site="createTitle">Titel erstellen</sidebar-submenu-button>
+                <sidebar-submenu-button href="/edit-title" site="editTitle">Titel verändern/löschen</sidebar-submenu-button>
+            </sidebar-submenu>
+        {{end}}
+        {{if fullFillsClass 2 .User.Role}}
+            <sidebar-submenu id="1" text="Benutzer verwalten" site="`createUser` `editUser` `adminViewUser`">
+                <sidebar-submenu-button href="/view-user" site="adminViewUser">Nutzerliste</sidebar-submenu-button>
+                <sidebar-submenu-button href="/create-user" site="createUser">Benutzer erstellen</sidebar-submenu-button>
+                <sidebar-submenu-button href="/edit-user" site="editUser">Benutzer verändern</sidebar-submenu-button>
+            </sidebar-submenu>
+        {{end}}
+
+    </div>
+    {{block "content" .Page}}{{end}}
+    {{template "standardScript"}}
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{{define "content"}}
+  <std-div>
+    <headline>Diskussion</headline>
+      {{if .Admin}}
+          <form action="/document?type=blockDocument&uuid={{queryEscape .UUID}}" method="POST">
+              {{if .Blocked}}
+                  <submit-button>Wiederherstellen</submit-button>
+              {{else}}
+                  <submit-button>Dokument blockieren</submit-button>
+              {{end}}
+          </form>
+      {{end}}
+    <standard-document>
+        {{if .Private}}
+            <p>Diskussion ist privat</p>
+        {{end}}
+        <p>Diese Diskussion endet am {{dateFormat .FormatString .Info.Finishing}}</p>
+        <p>Zusätzlich erlaubte Kommentatoren: {{arrayOrEmpty "Keine zusätzlichen Kommentatoren eingetragen" .Info.Poster}}</p>
+        <p>Zusätzlich erlaubte Zuhörer: {{arrayOrEmpty "Keine zusätzlichen Zuhörer eingetragen" .Info.Viewer}}</p>
+        {{if .Info.OrganisationPosterAllowed}}
+            <p>Alle Mitglieder der Organisation dürfen kommentieren</p>
+        {{end}}
+        {{if .Info.AnyPosterAllowed}}
+            <p>Alle Personen dürfen zuhören und kommentieren</p>
+        {{end}}
+        <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+    </standard-document>
+    <div class="w-[800px] flex flex-col flex-wrap">
+      {{$format := .FormatString}}
+      {{$admin := .Admin}}
+      {{$uuid := .UUID}}
+      {{range $i, $discussion := .Info.Discussion}}
+        {{if $discussion.Hidden}}
+          <standard-comment format="$format" submitted="$discussion.Written"
+                            color="`#9f1239`" info="{{$discussion.Info}}" extra="[Kommentar wird nicht angezeigt]"
+                            author="$discussion.Author" flair="$discussion.Flair">
+          {{if $admin}}
+            {{noescape $discussion.HTMLContent}}
+            <form action="/document?type=hideComment&uuid={{queryEscape $uuid}}&comment={{queryEscape $discussion.UUID}}" method="POST">
+              <submit-button>Wiederherstellen</submit-button>
+            </form>
+          {{else}}
+            [Kommentar wurde entfernt]
+          {{end}}
+          </standard-comment>
+        {{else}}
+          <standard-comment format="$format" submitted="$discussion.Written"
+                            color="`#FFFFFF`" info="{{$discussion.Info}}"
+                            author="$discussion.Author" flair="$discussion.Flair">
+            {{noescape $discussion.HTMLContent}}
+            {{if $admin}}
+              <form action="/document?type=hideComment&uuid={{queryEscape $uuid}}&comment={{queryEscape $discussion.UUID}}" method="POST">
+                <submit-button>Verstecken</submit-button>
+              </form>
+            {{end}}
+          </standard-comment>
+        {{end}}
+      {{end}}
+    </div>
+    {{if .Commentable}}
+      <standard-form url="/document?type=comment&uuid={{queryEscape .UUID}}">
+        <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+          {{$name := .SelectedAccount}}
+          {{range $i, $value := .Accounts}}
+            <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+          {{end}}
+        </standard-select>
+        <standard-textarea name="content" text="Kommentarinhalt">{{.Content}}</standard-textarea>
+        <submit-button>Versenden</submit-button>
+          <button-for-preview>Vorschau anzeigen</button-for-preview>
+      </standard-form>
+      <message text=".Message"></message>
+      <preview></preview>
+      {{template "markDownScript" "Kommentarinhalt"}}
+    {{end}}
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

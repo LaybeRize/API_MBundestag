@@ -1,0 +1,76 @@
+{{define "content"}}
+    <std-div>
+        <headline>Abstimmung erstellen</headline>
+        <standard-form url="/create-vote">
+            <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+                {{$name := .SelectedAccount}}
+                {{range $i, $value := .Accounts}}
+                    <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+                {{end}}
+            </standard-select>
+            <standard-select name="selectedOrganisation" text="Organisation für Veröffentlichung" disable="false">
+                {{$orgname := .SelectedAccount}}
+                {{range $i, $value := .Organisations}}
+                    <option value="{{$value.Name}}" {{if eq $value.Name $orgname}} selected{{end}}>{{$value.Name}}</option>
+                {{end}}
+            </standard-select>
+            <standard-input type="text" name="title" value="{{.Title}}">
+                Titel
+            </standard-input>
+            <standard-input type="text" name="subtitle" value="{{.Subtitle}}">
+                Untertitel
+            </standard-input>
+            <standard-input type="datetime-local" name="until" value="{{dateFormat .FormatForTime .Info.Finishing}}">
+                Ende der Diskussion
+            </standard-input>
+            <standard-checkbox checked=".MakePrivate" value="true" name="private">
+                Abstimmung ist privat
+            </standard-checkbox>
+            <standard-checkbox checked=".Info.OrganisationPosterAllowed" value="true" name="orgPoster">
+                Alle Mitglieder der Organisation können abstimment
+            </standard-checkbox>
+            <standard-checkbox checked=".Info.AnyPosterAllowed" value="true" name="anyPoster">
+                Alle Personen können abstimmen
+            </standard-checkbox>
+            <datalist id="userNameList">
+                {{range $i, $item := .Names}}
+                <option value="{{$item}}">
+                    {{end}}
+            </datalist>
+            <div class="flex flex-row">
+                <custom-list name="poster" divName="listDivPoster"
+                             list="userNameList" class="w-[400px]"
+                             loop=".Info.Poster">Abstimmungsberechtigte Hinzufügen</custom-list>
+                <custom-list name="allowed" divName="listDivAllowed"
+                             list="userNameList" class="w-[400px] ml-2"
+                             loop=".Info.Viewer">Zuschauer Hinzufügen</custom-list>
+            </div>
+            <breaker class="w-[800px]"></breaker>
+            <button class="bg-slate-700 text-white p-2 mt-2 mr-2" onclick="copyAndModifyDiv()">Abstimmung hinzufügen</button>
+            <script>let empty = ''</script>
+            <div  class="w-[800px]" id="listDiv">
+                <make-vote class="hidden"
+                           id="divClasses"
+                           object=".EmptyVote"
+                           onclick="false"></make-vote>
+                {{range $j, $vote := .Votes}}
+                    <make-vote number="{{$j}}"
+                               numerator="{{add $j 1}}"
+                               object="$vote"
+                               onclick="true"></make-vote>
+                {{end}}
+            </div>
+            <breaker class="w-[800px]"></breaker>
+            <standard-textarea name="content" text="Abstimmungsbeitrag">{{.Content}}</standard-textarea>
+            <submit-button>Versenden</submit-button>
+            <button-for-preview>Vorschau anzeigen</button-for-preview>
+        </standard-form>
+        <message text=".Message"></message>
+        <preview></preview>
+    </std-div>
+    {{template "markDownScript" "Abstimmungsbeitrag"}}
+    {{template "addAndRemoveScript"}}
+    {{template "voteScript" .AmountVotes}}
+{{end}}
+
+{{/* use basic */}}

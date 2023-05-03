@@ -1,0 +1,36 @@
+{{define "content"}}
+    <std-div>
+        <headline>Organisationsübersicht</headline>
+        <standard-table id="sortTable">
+            <tr>
+                <table-header-start>Hauptkategorie</table-header-start>
+                <table-header-mid>Unterkategorie</table-header-mid>
+                <table-header-end>Name</table-header-end>
+            </tr>
+            {{range $i, $main := .}}
+                <tr>
+                    <table-element-start rowspan="{{$main.Amount}}">
+                        {{$main.Name}}
+                    </table-element-start>
+                {{range $j, $sub := $main.Groups}}
+                    {{if notZero $j}}<tr>{{end}}
+                    <table-element-mid rowspan="{{$sub.Amount}}">
+                        {{$sub.Name}}
+                    </table-element-mid>
+                    {{range $k, $org := $sub.Organisations}}
+                        {{if notZero $k}}<tr>{{end}}
+                        <table-element-end>
+                            <a href="/edit-organisation?org={{queryEscape $org.Name}}">
+                                {{$org.Name}}
+                            </a>
+                        </table-element-end>
+                        </tr>
+                    {{end}}
+                {{end}}
+            {{end}}
+        </standard-table>
+    </std-div>
+    {{template "overviewScript"}}
+{{end}}
+
+{{/* use basic */}}

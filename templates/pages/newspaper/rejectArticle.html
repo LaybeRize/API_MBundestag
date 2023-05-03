@@ -1,0 +1,32 @@
+{{define "content"}}
+  <std-div >
+    <headline>Artikel Ablehnen</headline>
+    <div class="w-[800px] mt-4">
+      <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+      <h1 class="text-2xl text-white mb-2">
+        {{.Article.Headline}}
+      </h1>
+      {{if .Article.Subtitle.Valid}}
+        <h1 class="text-xl text-white mb-2">
+          {{.Article.Subtitle.String}}
+        </h1>
+      {{end}}
+      <p><i>{{dateFormat .ArticleFormat .Article.Written}}</i></p>
+      <p><i>{{withFlair .Article.Author .Article.Flair}}</i></p>
+      <breaker class="w-[300px]"></breaker>
+      {{noescape .Article.HTMLContent}}
+      <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+      <standard-form url="/reject-article">
+        <input type="text" value="{{.Article.UUID}}" name="uuid" hidden>
+        <standard-textarea name="content" text="Ablehnungsgrund">{{.ModMessageContent}}</standard-textarea>
+        <submit-button>Versenden</submit-button>
+        <button-for-preview>Vorschau anzeigen</button-for-preview>
+      </standard-form>
+      <message text=".Message"></message>
+      <preview></preview>
+    </div>
+  </std-div>
+  {{template "markDownScript" "Ablehnungsgrund"}}
+{{end}}
+
+{{/* use basic */}}

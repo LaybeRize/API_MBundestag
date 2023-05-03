@@ -1,0 +1,53 @@
+{{define "content"}}
+  <std-div>
+    <headline>Legislativer Text</headline>
+      {{if .Admin}}
+          <form action="/document?type=blockDocument&uuid={{queryEscape .UUID}}" method="POST">
+              {{if .Blocked}}
+                <submit-button>Wiederherstellen</submit-button>
+              {{else}}
+                  <submit-button>Dokument blockieren</submit-button>
+              {{end}}
+          </form>
+      {{end}}
+    {{if arrayLengthEq .Info.Post 0}}
+      <standard-document>
+          <standard-filler-tag></standard-filler-tag>
+      </standard-document>
+    {{else}}
+      <div class="flex items-start flex-row">
+          <div class="w-[300px] mr-2">
+          </div>
+          <standard-document>
+              <standard-filler-tag></standard-filler-tag>
+          </standard-document>
+          <div class="w-[300px] flex items-start flex-col ml-2">
+              {{$format := .FormatString}}
+              {{$admin := .Admin}}
+              {{$uuid := .UUID}}
+              {{range $i, $post := .Info.Post}}
+                  {{if $post.Hidden}}{{if $admin}}
+                      <standard-tag format="$format" submitted="$post.Submitted"
+                                    color="$post.Color" info="{{$post.Info}}" extra="[Tag wird nicht angezeigt]">
+                          <form action="/document?type=hideTag&uuid={{queryEscape $uuid}}&tag={{queryEscape $post.UUID}}" method="POST">
+                              <submit-button>Wiederherstellen</submit-button>
+                          </form>
+                      </standard-tag>
+                  {{end}}{{else}}
+                      <standard-tag format="$format" submitted="$post.Submitted"
+                                    color="$post.Color" info="{{$post.Info}}">
+                          {{if $admin}}
+                              <form action="/document?type=hideTag&uuid={{queryEscape $uuid}}&tag={{queryEscape $post.UUID}}" method="POST">
+                                  <submit-button>Verstecken</submit-button>
+                              </form>
+                          {{end}}
+                      </standard-tag>
+                  {{end}}
+              {{end}}
+          </div>
+      </div>
+    {{end}}
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

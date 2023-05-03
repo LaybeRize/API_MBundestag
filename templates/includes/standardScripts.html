@@ -1,0 +1,269 @@
+{{define "markDownScript"}}
+<script>
+    function sendMarkdown() {
+        event.preventDefault()
+        const url = "/markdown"; // Replace with your API endpoint
+
+        // Get the markdown input field value from the form
+        const markdownInput = document.getElementById("{{.}}");
+        const markdownValue = markdownInput.value;
+
+        // Create a new XMLHttpRequest object
+        const xhr = new XMLHttpRequest();
+
+        // Set the request method and URL
+        xhr.open("POST", url);
+
+        // Set the request headers to specify the content type as JSON
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        // Set up the callback function for when the response is received
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Parse the response JSON and get the HTML field
+                const responseJSON = JSON.parse(xhr.responseText);
+                const htmlValue = responseJSON.html;
+
+                // Do something with the HTML value, such as adding it to the page
+                const htmlOutput = document.getElementById("htmlOutput");
+                htmlOutput.innerHTML = htmlValue;
+            } else {
+                console.log("Request failed. Status: " + xhr.status);
+            }
+        };
+
+        // Send the request with the JSON data
+        xhr.send(JSON.stringify({markdown: markdownValue}));
+    }
+</script>
+{{end}}
+
+{{define "voteScript"}}
+    <script>
+        let array = getNumberRange({{.}},10);
+        function copyAndModifyDiv() {
+            event.preventDefault();
+            let counter = getFirstAndRemove(array);
+            if (counter === -1) {
+                return
+            }
+            const divClasses = document.getElementById("divClasses");
+            const clonedDiv = divClasses.cloneNode(true); // Make a deep clone of the divClasses div
+            clonedDiv.classList.toggle("hidden");
+            clonedDiv.id = counter
+
+            // Add "a" to the name attribute of all input elements
+            const inputs = clonedDiv.getElementsByTagName("input");
+            for (let i = 0; i < inputs.length; i++) {
+                const existingName = inputs[i].getAttribute("name");
+                if (existingName) {
+                    inputs[i].setAttribute("name", existingName + counter);
+                }
+            }
+
+            const pElement = clonedDiv.querySelector("#headerText");
+            pElement.innerHTML = pElement.innerHTML + (counter+1)
+            const divElement = clonedDiv.querySelector("#optionDiv");
+            divElement.id = divElement.id + (counter)
+            const cloneButton = clonedDiv.querySelector("#cloneButton");
+            const cloneDiv = clonedDiv.querySelector("#cloneOption");
+            const selectElement = clonedDiv.querySelector("#voteType");
+            selectElement.name = selectElement.name + (counter)
+
+            cloneButton.addEventListener("click", () => {
+                event.preventDefault();
+                const c = cloneDiv.cloneNode(true);
+                c.classList.toggle("hidden");
+                divElement.appendChild(c);
+            })
+
+            // Add a click event listener to the delete button in the cloned div
+            const deleteButton = clonedDiv.querySelector("#buttonClasses");
+            deleteButton.addEventListener("click", () => {
+                if (confirm("Are you sure you want to delete this div?")) {
+                    array.push(counter-1);
+                    clonedDiv.remove(); // Remove the parent div when the user confirms the deletion
+                }else {
+                    event.preventDefault(); // Prevent the form from submitting when the user cancels the confirmation dialog
+                }
+            });
+
+            // Add the modified clone to the end of the listDiv div
+            const listDiv = document.getElementById("listDiv");
+            listDiv.appendChild(clonedDiv);
+            counter += 1;
+        }
+
+        function cloneFromMe(self) {
+            event.preventDefault();
+            const c = self.parentElement.querySelector("#cloneOption").cloneNode(true);
+            c.classList.toggle("hidden");
+            self.parentElement.querySelector("#optionDiv").appendChild(c);
+        }
+
+        function removeSelf(self,value) {
+            if (value !== -1) {
+                array.push(value);
+            }
+            event.preventDefault();
+            self.parentElement.remove();
+        }
+
+        function getNumberRange(min, max) {
+
+            // Check if min and max are valid numbers
+            if (isNaN(min) || isNaN(max)) {
+                throw new Error("Invalid input values");
+            }
+
+            const result = [];
+
+            // Add numbers between min (exclusive) and max (inclusive) to the result array
+            for (let i = min ; i < max; i++) {
+                result.push(i);
+            }
+
+            return result;
+        }
+
+        function getFirstAndRemove(array) {
+            if (array.length === 0) {
+                return -1;
+            } else {
+                return array.shift();
+            }
+        }
+    </script>
+{{end}}
+
+{{define "standardScript"}}
+<script>
+    if ( window.history.replaceState ) {
+        window.history.replaceState( null, null, window.location.href );
+    }
+
+    function dropdown(str) {
+        document.querySelector("#submenu" + str).classList.toggle("hidden");
+        document.querySelector("#arrow" + str).classList.toggle("rotate-180");
+    }
+
+    function openSidebar() {
+        document.querySelector(".sidebar").classList.toggle("hidden");
+        if (window.sessionStorage.getItem("sidebar") === "true") {
+            window.sessionStorage.setItem("sidebar","false")
+        } else {
+            window.sessionStorage.setItem("sidebar","true")
+        }
+    }
+
+    if (window.sessionStorage.getItem("sidebar") === null) {
+        window.sessionStorage.setItem("sidebar","true")
+    }
+
+    if (window.sessionStorage.getItem("sidebar") === "true") {
+        document.querySelector(".sidebar").classList.toggle("hidden");
+    }
+</script>
+{{end}}
+
+{{define "overviewScript"}}
+    <script>
+        function hideElement(str) {
+            document.getElementById(str).classList.toggle("hidden")
+        }
+    </script>
+{{end}}
+
+{{define "addAndRemoveScript"}}
+    <script>
+        function addElementToList(root, unique, id) {
+            var nameElement = document.getElementById(root);
+            var divClasses = document.getElementById("divClasses" + unique);
+            var inputClasses = document.getElementById("inputClasses" + unique);
+            var buttonClasses = document.getElementById("buttonClasses" + unique);
+            var newEntry = document.createElement("div");
+            var newInput = document.createElement("input");
+            var newButton = document.createElement("button");
+            newEntry.classList.add(...divClasses.classList.values())
+            newInput.name = inputClasses.name
+            newInput.type = "text"
+            newInput.setAttribute("list",id)
+            newInput.classList.add(...inputClasses.classList.values())
+            newButton.onclick = function () {return deleteDiv(root, newEntry)}
+            newButton.innerHTML = buttonClasses.innerHTML
+            newButton.classList.add(...buttonClasses.classList.values())
+            newEntry.appendChild(newInput)
+            newEntry.appendChild(newButton)
+            nameElement.appendChild(newEntry)
+        }
+
+        function deleteDiv(root, div) {
+            document.getElementById(root).removeChild(div);
+        }
+
+        function deleteDivFromSelf(element) {
+            var parent = element.parentElement
+            var root = parent.parentElement
+            root.removeChild(parent)
+        }
+    </script>
+{{end}}
+
+{{define "sortScript"}}
+    <script>
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("sortTable");
+            switching = true;
+            //Set the sorting direction to ascending:
+            dir = "asc";
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /*check if the two rows should switch place,
+                    based on the direction, asc or desc:*/
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch= true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    //Each time a switch is done, increase this count by 1:
+                    switchcount ++;
+                } else {
+                    /*If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again.*/
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+{{end}}

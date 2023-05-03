@@ -1,0 +1,32 @@
+{{define "content"}}
+  <std-div>
+    <headline>Benutzer erstellen</headline>
+    <standard-form url="/create-user">
+      <standard-input type="text" name="username" value="{{.Account.Username}}">
+        Nutzername
+      </standard-input>
+      <standard-input type="text" name="displayname" value="{{.Account.DisplayName}}">
+        Anzeigename
+      </standard-input>
+      <standard-input type="text" name="password" value="{{.Account.Password}}">
+        Passwort
+      </standard-input>
+      <standard-input type="text" name="flair" value="{{.Account.Flair}}">
+        Flair
+      </standard-input>
+      <standard-select name="role" text="Rolle" disable="false">
+        {{range $value := roleLoop .Account.Role}}
+          <option value="{{$value.Loop}}" {{$value.Attribute}}>{{roleTranslations $value.Loop}}</option>
+        {{end}}
+      </standard-select>
+      <script>var empty = ''</script>
+      <standard-input type="number" name="linked" value="{{.Account.Linked.Int64}}" addition="min='0' oninput='validity.valid||(value=empty);'">
+        ID des zu verlinkenden Nutzer
+      </standard-input>
+      <submit-button>Erstellen</submit-button>
+      </standard-form>
+    <message text=".Message"></message>
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

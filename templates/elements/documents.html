@@ -1,0 +1,98 @@
+<!-- standard-document: class -->
+<div class="w-[800px] mt-4">
+  <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+  <h1 class="text-2xl text-white mb-2">
+    {{.Title}}
+  </h1>
+  {{if .Subtitle.Valid}}
+    <h1 class="text-xl text-white mb-2">
+      {{.Subtitle.String}}
+    </h1>
+  {{end}}
+  <p><i>Veröffentlicht am {{dateFormat .FormatString .Written}}</i></p>
+  <p><i>Veröffentlichungsort: {{.Organisation}}</i></p>
+  <p><i>{{withFlair .Author .Flair}}</i></p>
+  <breaker class="w-[300px]"></breaker>
+  {{noescape .HTMLContent}}
+  <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+  #content#
+</div>
+<!-- standard-tag: format,submitted,color,info,extra -->
+<div class="p-2 my-2 bg-gray-900 w-[300px]">
+  <p class="{{if ueq "#extra#" ""}}text-rose-600{{else}}text-white{{end}}">
+    <i>{{dateFormat #format# #submitted#}}</i>
+  </p>
+  {{if ueq "#extra#" ""}}
+  <p class="text-rose-600">
+    <i>#extra#</i>
+  </p>
+  {{end}}
+  <p style="color: {{#color#}};">
+    #info#
+  </p>
+  #content#
+</div>
+<!-- standard-comment: author,flair,format,submitted,color,extra -->
+<div class="p-2 my-2 bg-gray-900 w-[800px]">
+  <p style="color: {{#color#}};">
+    Kommentiert von {{withFlair #author# #flair#}}
+  </p>
+  <p style="color: {{#color#}};">
+    <i>{{dateFormat #format# #submitted#}} #extra#</i>
+  </p>
+  <breaker class="w-[300px]"></breaker>
+  #content#
+</div>
+<!-- standard-filler-tag: -->
+{{if .CanAddTag}}
+  <standard-form url="/document?type=addTag&uuid={{queryEscape .UUID}}">
+    <standard-input type="text" name="tag" value="{{.TagText}}">
+      Tagbeschreibung
+    </standard-input>
+    <standard-input type="color" name="color" value="{{.TagColor}}" class="h-[40px]">
+      Textfarbe
+    </standard-input>
+    <submit-button>Versenden</submit-button>
+  </standard-form>
+  <div class="flex items-center flex-col w-full">
+    <message text=".Message"></message>
+  </div>
+{{end}}
+<!-- make-vote: onclick,class,object,number,numerator,id -->
+<div class="w-[800px] #class#" id="#id##number#">
+  <breaker class="w-[800px]"></breaker>
+  <p class="text-white text-xl" id="headerText">Abstimmung #numerator#</p>
+  <standard-input type="text" name="question#number#" value="{{#object#.Question}}">
+    Frage
+  </standard-input>
+  <advanced-select name="selectVoteType#number#" id="voteType" text="Abstimmungsverfahren" disable="false">
+    {{range $value := voteLoop #object#.Type}}
+      <option value="{{$value.Loop}}" {{$value.Attribute}}>{{voteTranslations $value.Loop}}</option>
+    {{end}}
+  </advanced-select>
+  <standard-input type="number" name="maxValue#number#" value="{{#object#.Number}}" addition="min='2' max='50' oninput='validity.valid||(value=empty);'">
+    Anzahl der Bewertungsstufen (nur relevant, wenn gewichtete Wahl ausgewählt ist)
+  </standard-input>
+  <standard-checkbox name="showNumsW#number#" value="true" checked="#object#.ShowNumbersWhileVoting">
+    Zeige Abstimmungsergebnis während der Wahl an
+  </standard-checkbox>
+  <standard-checkbox name="showNamesW#number#" value="true" checked="#object#.ShowNamesWhileVoting">
+    Zeige Abstimmungsergebnis mit zugehörigem Namen während der Wahl an
+  </standard-checkbox>
+  <standard-checkbox name="showNamesA#number#" value="true" checked="#object#.ShowNamesAfterVoting">
+    Zeige Abstimmungsergebnis mit zugehörigem Namen nach der Wahl an
+  </standard-checkbox>
+  <button class="bg-slate-700 text-white p-2 mt-2 mr-2" id="cloneButton" {{if #onclick#}}onclick="cloneFromMe(this)"{{end}}>Option hinzufügen</button>
+  <div class="w-[800px]" id="optionDiv">
+    <make-option class="hidden"></make-option>
+    {{range $i, $value := #object#.Options}}
+      <make-option number="#number#" value="{{$value}}"></make-option>
+    {{end}}
+  </div>
+  <button class="bg-slate-700 text-white p-4 mt-2 hover:bg-rose-800" id="buttonClasses" {{if #onclick#}}onclick="removeSelf(this,#number#)"{{end}}>Abstimmung Löschen</button>
+</div>
+<!-- make-option: class,value,number -->
+<div class="flex flex-row w-[800px] #class#" id="cloneOption">
+  <input class="bg-slate-700 appearance-none w-full py-2  px-3 mt-2" name="option#number#" id="option" value="#value#">
+  <button class="bg-slate-700 text-white p-4 mt-2 ml-2 hover:bg-rose-800" id="optionDelete" onclick="removeSelf(this,-1)">Löschen</button>
+</div>

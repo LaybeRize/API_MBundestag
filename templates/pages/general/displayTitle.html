@@ -1,0 +1,28 @@
+{{define "content"}}
+    <std-div>
+        <headline>Titelübersicht</headline>
+        <listing-div>
+            {{range $i, $main := .}}
+            <outer-listing main="{{$main.Name}}">
+            {{range $j, $sub := $main.Groups}}
+                <inner-listing main="{{$main.Name}}" sub="{{$sub.Name}}">
+                    {{range $k, $title := $sub.Titles}}
+                        <div class="mt-2">
+                            {{if notZero $k}}<breaker class="w-[500px]"></breaker>{{end}}
+                            <p class="text-xl">{{$title.Name}}</p>
+                            {{if $title.Flair.Valid}}
+                                <p class="text-base mt-2">Flairtext: {{$title.Flair.String}}</p>
+                            {{end}}
+                            <p class="text-base mt-2">Träger: {{arrayOrEmpty "Keine Träger eingetragen" $title.Info.Names}}</p>
+                        </div>
+                    {{end}}
+                </inner-listing>
+            {{end}}
+            </outer-listing>
+            {{end}}
+        </listing-div>
+    </std-div>
+    {{template "overviewScript"}}
+{{end}}
+
+{{/* use basic */}}

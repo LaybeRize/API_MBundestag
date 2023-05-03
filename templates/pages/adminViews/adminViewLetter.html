@@ -1,0 +1,12 @@
+{{define "content"}}
+    <std-div>
+        <headline>Brief suchen</headline>
+        <standard-form url="/admin-letter-view">
+            <standard-input type="text" name="uuid" value="{{.UUID}}">Brief UUID</standard-input>
+            <submit-button>Suchen</submit-button>
+        </standard-form>
+        <message text=".Message"></message>
+    </std-div>
+{{end}}
+
+{{/* use basic */}}

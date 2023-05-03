@@ -1,0 +1,68 @@
+{{define "content"}}
+  <std-div>
+    <headline>Zwitscherübersicht</headline>
+    <div class="w-[800px] mt-2">
+      <div class="p-2 w-[800px] mt-2 bg-gray-900 mt-2 {{if .Self.Blocked}}text-rose-600{{end}}">
+          <h1 class="text-xl font-bold">
+            {{.Self.Author}}
+          </h1>
+          <p><i>{{dateFormat .DateFormatString .Self.Written}}</i></p>
+          <p class="text-justify break-words mt-2">{{.Self.HTMLContent}}</p>
+      </div>
+      {{if .Self.ConnectedTo.Valid}}
+      <h1 class="text-2xl font-bold mt-3">
+        Antwort auf:
+      </h1>
+      <div class="p-2 w-[800px] mt-2 bg-gray-900 mt-2">
+        <a href="/zwitscher?uuid={{queryEscape .Parent.UUID}}" class="{{if .Parent.Blocked}}text-rose-600{{end}}">
+          <h1 class="text-xl font-bold">
+            {{.Parent.Author}}
+          </h1>
+          <p><i>{{dateFormat .DateFormatString .Parent.Written}}</i></p>
+          <p class="text-justify break-words mt-2">{{.Parent.HTMLContent}}</p>
+        </a>
+      </div>
+      {{end}}
+      {{if.CanSuspendZwitscher}}
+      <standard-form url="/zwitscher?uuid={{queryEscape .Self.UUID}}">
+        <input type="text" name="block" value="true" hidden>
+        <submit-button>Tweet {{if .Self.Blocked}}freischalten{{else}}löschen{{end}}</submit-button>
+      </standard-form>
+      {{end}}
+      {{if .CanZwitscher}}
+        <standard-form url="/zwitscher?uuid={{queryEscape .Self.UUID}}">
+          <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+            {{$name := .SelectedAccount}}
+            {{range $i, $value := .Accounts}}
+              <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+            {{end}}
+          </standard-select>
+          <standard-textarea name="content" text="Zwitscherinhalt">{{.Content}}</standard-textarea>
+          <submit-button>Versenden</submit-button>
+        </standard-form>
+        <div class="w-[800px] flex items-center flex-col w-full">
+          <message text=".Message"></message>
+        </div>
+      {{end}}
+      <h1 class="text-2xl font-bold mt-3">
+        Kommentare
+      </h1>
+      <div class="w-[800px] mt-2">
+        {{$format := .DateFormatString}}
+        {{range $i, $zwitscher := .Zwitscher}}
+        <div class="p-2 w-[800px] bg-gray-900 mt-2">
+          <a href="/zwitscher?uuid={{queryEscape $zwitscher.UUID}}" class="{{if $zwitscher.Blocked}}text-rose-600{{end}}">
+            <h1 class="text-xl font-bold">
+              {{$zwitscher.Author}}
+            </h1>
+            <p><i>{{dateFormat $format $zwitscher.Written}}</i></p>
+            <p class="text-justify break-words mt-2">{{$zwitscher.HTMLContent}}</p>
+          </a>
+        </div>
+        {{end}}
+      </div>
+    </div>
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

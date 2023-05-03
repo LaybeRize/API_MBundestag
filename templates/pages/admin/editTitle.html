@@ -1,0 +1,45 @@
+{{define "content"}}
+  <std-div>
+    <headline>Titel verändern</headline>
+    <standard-form url="/edit-title?type=search">
+      <datalist id="namesList">
+        {{range $i, $item := .TitleNames}}
+          <option value="{{$item}}">
+        {{end}}
+      </datalist>
+      <standard-input list="namesList" type="text" name="name" value="{{.Title.Name}}">
+        Name
+      </standard-input>
+      <submit-button>Suchen</submit-button>
+    </standard-form>
+      <standard-form url="/edit-title?type=edit">
+        <input name="name" value="{{.Title.Name}}" type="text" hidden>
+        <standard-input list="namesList" type="text" name="newName" value="{{.Title.Name}}">
+          Neuer Name
+        </standard-input>
+        <standard-input type="text" name="mainGroup" value="{{.Title.MainGroup}}">
+          Hauptkategorie
+        </standard-input>
+        <standard-input type="text" name="subGroup" value="{{.Title.SubGroup}}">
+          Unterkategorie
+        </standard-input>
+        <standard-input type="text" name="flair" value="{{.Title.Flair.String}}">
+          Flair
+        </standard-input>
+        <datalist id="userNameList">
+          {{range $i, $item := .Names}}
+            <option value="{{$item}}">
+          {{end}}
+        </datalist>
+        <custom-list name="user" divName="listDivUser"
+                     list="userNameList" class="w-[800px] mt-2"
+                     loop=".Title.Info.Names">Nutzer Hinzufügen</custom-list>
+        <submit-button>Verändern</submit-button>
+        <submit-button url="/edit-title?type=delete">Löschen</submit-button>
+      </standard-form>
+    <message text=".Message"></message>
+  </std-div>
+  {{template "addAndRemoveScript"}}
+{{end}}
+
+{{/* use basic */}}

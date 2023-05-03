@@ -1,0 +1,40 @@
+<!-- sidebar-button: href,site -->
+<a href="#href#"
+   {{if eq .Site "#site#" }}
+   class="p-2.5 mt-3 flex items-center px-4 duration-300 cursor-pointer bg-blue-600 text-white"
+        {{else}}
+            class="p-2.5 mt-3 flex items-center px-4 duration-300 cursor-pointer hover:bg-blue-600 text-white"
+        {{end}} >
+    <span class="text-[15px] ml-4 text-gray-200 font-bold">#content#</span>
+</a>
+<!-- sidebar-breaker: -->
+<div class="my-2 bg-gray-600 h-[1px]"></div>
+<!-- sidebar-submenu: id,text,site -->
+<div class="p-2.5 mt-3 flex items-center px-4 duration-300 cursor-pointer
+{{if oneOfValues .Site #site# }} bg-blue-600
+{{else}} hover:bg-blue-600{{end}} text-white"
+ onclick="dropdown('#id#')">
+    <div class="flex justify-between w-full items-center">
+        <span class="text-[15px] ml-4 text-gray-200 font-bold">#text#</span>
+        <span class="text-sm" id="arrow#id#">
+            <i class="bi bi-chevron-down"></i>
+        </span>
+    </div>
+</div>
+<div class="text-left text-sm mt-2 w-4/5 mx-auto text-gray-200 font-bold"
+     id="submenu#id#">
+    #content#
+</div>
+<script>
+    {{if oneOfValues .Site #site#}}
+    document.querySelector("#arrow#id#").classList.toggle("rotate-180");
+    {{else}}
+    document.querySelector("#submenu#id#").classList.toggle("hidden");
+    {{end}}
+</script>
+<!-- sidebar-submenu-button: href,site -->
+<a href="#href#">
+    <h1 {{if eq .Site "#site#" }} class="cursor-pointer p-2 bg-blue-600 mt-1 w-full"
+    {{else}} class="cursor-pointer p-2 hover:bg-blue-600 mt-1 w-full"
+    {{end}}>#content#</h1>
+</a>

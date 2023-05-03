@@ -1,0 +1,16 @@
+<!-- standard-table: id -->
+<table id="#id#" class="table-auto mt-4 w-[800px]">
+  #content#
+</table>
+<!-- table-header-start: click -->
+<th {{if ueq "#click#" ""}}onclick="#click#"{{end}} class="p-2 border-r-2 border-gray-600">#content#</th>
+<!-- table-header-mid: click -->
+<th {{if ueq "#click#" ""}}onclick="#click#"{{end}} class="p-2 border-r-2 border-gray-600">#content#</th>
+<!-- table-header-end: click -->
+<th {{if ueq "#click#" ""}}onclick="#click#"{{end}} class="p-2">#content#</th>
+<!-- table-element-start: rowspan -->
+<td {{if ueq "#rowspan#" ""}}rowspan="#rowspan#" {{end}}class="p-2 border-r-2 border-t-2 border-gray-600">#content#</td>
+<!-- table-element-mid: rowspan -->
+<td {{if ueq "#rowspan#" ""}}rowspan="#rowspan#" {{end}}class="p-2 border-r-2 border-t-2 border-gray-600">#content#</td>
+<!-- table-element-end: rowspan -->
+<td {{if ueq "#rowspan#" ""}}rowspan="#rowspan#" {{end}}class="p-2 border-t-2 border-gray-600">#content#</td>

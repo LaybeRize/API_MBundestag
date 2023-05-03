@@ -1,0 +1,39 @@
+{{define "content"}}
+    <std-div>
+        <headline>Organisationsübersicht</headline>
+        <listing-div>
+            {{range $i, $main := .}}
+                <outer-listing main="{{$main.Name}}">
+                {{range $j, $sub := $main.Groups}}
+                <inner-listing main="{{$main.Name}}" sub="{{$sub.Name}}">
+                    {{range $k, $org := $sub.Organisations}}
+                        <a href="/documents?organisation={{queryEscape $org.Name}}" class="mt-2">
+                            {{if notZero $k}}<breaker class="w-[500px]"></breaker>{{end}}
+                            <div class="flex items-center">
+                                <p class="text-xl">{{$org.Name}}</p>
+                                {{if orgStatus "secret" $org.Status}}
+                                    <i class="text-xl bi bi-eye-slash px-2"></i>
+                                {{else}}
+                                    <i class="text-xl bi bi-eye px-2"></i>
+                                {{end}}
+                                {{if orgStatus "private" $org.Status}}
+                                    <i class="text-xl bi bi-file-lock"></i>
+                                {{end}}
+                            </div>
+                            {{if $org.Flair.Valid}}
+                                <p class="text-base mt-2">Flairtext: {{$org.Flair.String}}</p>
+                            {{end}}
+                            <p class="text-base mt-2">Administratoren: {{arrayOrEmpty "Keine Administratoren eingetragen" $org.Info.Admins}}</p>
+                            <p class="text-base mt-2">Nutzer: {{arrayOrEmpty "Keine Nutzer eingetragen" $org.Info.User}}</p>
+                        </a>
+                    {{end}}
+                </inner-listing>
+                {{end}}
+                </outer-listing>
+            {{end}}
+        </listing-div>
+    </std-div>
+    {{template "overviewScript"}}
+{{end}}
+
+{{/* use basic */}}

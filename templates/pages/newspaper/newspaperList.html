@@ -1,0 +1,25 @@
+{{define "content"}}
+    <std-div>
+        <headline>Zeitungsübersicht</headline>
+        <div class="w-[800px] mt-2">
+            {{$normal := .NormalNewsFormat}}
+            {{$breaking := .BreakingNewsFormat}}
+            {{range $i, $pub := .PubList}}
+            <div class="p-2 w-[800px] mt-2 bg-gray-900">
+                <div class="text-3xl font-bold">
+                    {{if $pub.BreakingNews}}
+                        <a href="/publication?uuid={{queryEscape $pub.UUID}}" class="w-full">{{dateFormat $breaking $pub.PublishTime}}</a>
+                    {{else}}
+                        <a href="/publication?uuid={{queryEscape $pub.UUID}}" class="w-full">{{dateFormat $normal $pub.PublishTime}}</a>
+                    {{end}}
+                </div>
+            </div>
+            {{end}}
+        </div>
+        <pager boolBefore=".HasBefore" boolNext=".HasNext"
+               linkBefore="/newspaper?type=before&uuid={{queryEscape .BeforeUUID}}&amount={{.Amount}}"
+               linkNext="/newspaper?uuid={{queryEscape .NextUUID}}&amount={{.Amount}}"></pager>
+    </std-div>
+{{end}}
+
+{{/* use basic */}}

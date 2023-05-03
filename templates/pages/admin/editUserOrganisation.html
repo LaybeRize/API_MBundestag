@@ -1,0 +1,21 @@
+{{define "content"}}
+  <std-div>
+    <headline>Nutzer in {{.OrganisationName}} verändern</headline>
+    <standard-form url="/edit-user-organisation">
+      <input type="text" name="name" value="{{.OrganisationName}}" hidden>
+      <datalist id="userNameList">
+        {{range $i, $item := .Names}}
+          <option value="{{$item}}">
+        {{end}}
+      </datalist>
+      <custom-list name="user" divName="listDivUser"
+                   list="userNameList" class="w-[800px]"
+                   loop=".User">Nutzer Hinzufügen</custom-list>
+      <submit-button>Verändern</submit-button>
+    </standard-form>
+    <message text=".Message"></message>
+  </std-div>
+  {{template "addAndRemoveScript"}}
+{{end}}
+
+{{/* use basic */}}

@@ -1,0 +1,70 @@
+{{define "content"}}
+  <std-div>
+    <headline>Briefansicht</headline>
+    <script>
+      function copyValue() {
+        var copyText = document.getElementById("copyValue");
+        navigator.clipboard.writeText(copyText.innerText);
+      }
+    </script>
+    <div class="w-[800px] mt-4">
+      <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+      <h1 class="text-2xl text-white mb-2">
+        {{.Letter.Title}}
+      </h1>
+      <h1 class="text-xl text-white mb-2">
+        {{if .Letter.Info.ModMessage}}
+          Brief von {{.Letter.Author}} <i>{{.Letter.Flair}}</i>
+        {{else}}
+          Brief der Moderation im Namen von {{.Letter.Author}} <i>{{.Letter.Flair}}</i>
+        {{end}}
+      </h1>
+      <p><i>Ausgestellt am {{dateFormat .FormatString .Letter.Written}}</i></p>
+      <p onclick="copyValue()" class="cursor-pointer">Brief-ID: {{.Letter.UUID}}</p>
+      <p id="copyValue" hidden>{{.Letter.UUID}}</p>
+      <breaker class="w-[300px]"></breaker>
+      {{noescape .Letter.HTMLContent}}
+      <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+      {{if .Letter.Info.ModMessage}}
+        <p>Dieser Brief wurde an die folgenden Personen von der Moderation versandt: {{arrayOrEmpty "" .Letter.Info.PeopleInvitedToSign}}</p>
+      {{else}}
+        <p>Der Brief liegt den folgenden Personen vor: {{arrayOrEmpty "" .Letter.Info.PeopleInvitedToSign}}</p>
+      {{end}}
+      {{if not .Letter.Info.NoSigning}}
+        {{if .Letter.Info.AllHaveToAgree}}
+          {{if lenStrNotZero .Letter.Info.Rejected}}
+            <p>Mindestens eine Person hat das Unterschreiben des Briefes abgelehnt</p>
+          {{else}}
+            {{if lenStrNotZero .Letter.Info.PeopleNotYetSigned}}
+              <p>Es haben noch nicht alle Personen unterschrieben</p>
+            {{else}}
+              <p>Dieser Brief wurde von allen Personen, denen der Brief vorliegt, unterschrieben</p>
+            {{end}}
+          {{end}}
+        {{else}}
+          <p>Folgende Personen haben weder unterschrieben noch abgelehnt: {{arrayOrEmpty "Niemand" .Letter.Info.PeopleNotYetSigned}}</p>
+          <p>Folgende Personen haben unterschrieben: {{arrayOrEmpty "Niemand" .Letter.Info.Signed}}</p>
+          <p>Folgende Personen haben abgelehnt: {{arrayOrEmpty "Niemand" .Letter.Info.Rejected}}</p>
+        {{end}}
+      {{end}}
+    </div>
+    {{if oneOfValuesArray .Account.DisplayName .Letter.Info.PeopleNotYetSigned}}
+      <div class="w-[800px] mt-4 flex flex-row">
+        <form action="/letter" method="GET">
+          <input type="text" name="type" value="sign" hidden>
+          <input type="text" name="uuid" value="{{.Letter.UUID}}" hidden>
+          <input type="text" name="usr" value="{{.Account.DisplayName}}" hidden>
+          <submit-button>Unterschreiben</submit-button>
+        </form>
+        <form action="/letter" method="GET">
+          <input type="text" name="type" value="reject" hidden>
+          <input type="text" name="uuid" value="{{.Letter.UUID}}" hidden>
+          <input type="text" name="usr" value="{{.Account.DisplayName}}" hidden>
+          <submit-button>Ablehnen</submit-button>
+        </form>
+      </div>
+    {{end}}
+  </std-div>
+{{end}}
+
+{{/* use basic */}}

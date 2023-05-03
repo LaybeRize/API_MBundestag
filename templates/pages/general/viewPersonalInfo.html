@@ -1,0 +1,24 @@
+{{define "content"}}
+  <std-div>
+    <headline>Meine Übersicht</headline>
+    <standard-table id="sortTable">
+      <tr>
+        <table-header-start click="sortTable(0)">Name</table-header-start>
+        <table-header-mid click="sortTable(1)">Flair</table-header-mid>
+        <table-header-mid click="sortTable(2)">Titel</table-header-mid>
+        <table-header-end click="sortTable(3)">Organisationen</table-header-end>
+      </tr>
+      {{range $i, $item := .}}
+        <tr>
+          <table-element-start>{{$item.DisplayName}}</table-element-start>
+          <table-element-mid>{{$item.Flair}}</table-element-mid>
+          <table-element-mid>{{$item.Title}}</table-element-mid>
+          <table-element-end>{{$item.Organisation}}</table-element-end>
+        </tr>
+      {{end}}
+    </standard-table>
+  </std-div>
+  {{template "sortScript"}}
+{{end}}
+
+{{/* use basic */}}

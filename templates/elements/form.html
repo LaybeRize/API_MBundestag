@@ -1,0 +1,68 @@
+<!-- standard-form: url -->
+<form action="#url#" method="POST" class="mt-4 w-[800px]">
+    #content#
+</form>
+<!-- standard-input: class,type,name,value,list,addition -->
+<div class="mt-2">
+    <label for="#content#">#content#</label>
+    <input {{if ueq "#list#" ""}}list="#list#"{{end}} type="#type#" name="#name#" id="#content#" value="#value#" class="bg-slate-700 appearance-none w-full py-2 px-3 #class#" #addition#>
+</div>
+<!-- submit-button: url -->
+<button type="submit" class="bg-slate-700 text-white p-2 mt-2 mr-2" {{if ueq "#url#" ""}}formaction="#url#"{{end}}>
+    #content#
+</button>
+<!-- button-for-preview: -->
+<button class="bg-slate-700 text-white p-2 mt-2 mr-2" onclick="sendMarkdown()">
+    #content#
+</button>
+<!-- standard-checkbox: name,checked,value -->
+<div class="form-check mt-2">
+    <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+           type="checkbox" value="#value#" name="#name#" id="#content#"
+           {{if #checked#}}checked{{end}}>
+    <label class="form-check-label inline-block" for="#content#">
+        #content#
+    </label>
+</div>
+<!-- hidable-checkbox: id,hide,name,checked,value -->
+<div id="#id#" class="form-check mt-2 {{if #hide#}}hidden{{end}}">
+    <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
+           type="checkbox" value="#value#" name="#name#" id="#content#"
+           {{if #checked#}}checked{{end}}>
+    <label class="form-check-label inline-block" for="#content#">
+        #content#
+    </label>
+</div>
+<!-- standard-select: text,name,disable -->
+<div class="mt-2">
+    <label for="#text#">#text#</label>
+    <select name="#name#" id="#text#" class="bg-slate-700 appearance-none w-full py-2 px-3"
+            {{if #disable#}}disabled{{end}}>
+        #content#
+    </select>
+</div>
+<!-- advanced-select: id,text,name,disable -->
+<div class="mt-2">
+    <label for="#id#">#text#</label>
+    <select name="#name#" id="#id#" class="bg-slate-700 appearance-none w-full py-2 px-3"
+            {{if #disable#}}disabled{{end}}>
+        #content#
+    </select>
+</div>
+<!-- standard-textarea: text,name -->
+<div class="mt-2">
+    <label for="#text#">#text#</label> <br>
+    <textarea name="#name#" id="#text#" class="bg-slate-700 appearance-none w-full h-[200px] py-2 px-3">#content#</textarea>
+</div>
+<!-- custom-list: divName,class,name,list,loop -->
+<div id="#divName#" class="#class#">
+    <button class="bg-gray-900 text-white p-2 mt-2" type="button" onclick="addElementToList('#divName#','#name#','#list#')">#content#</button>
+    {{range $e := userLoop "#name#" #loop#}}
+    <div class="flex flex-row" {{$e.Div}}>
+        <input list="#list#" class="bg-slate-700 appearance-none w-full py-2 px-3 mt-2" name="#name#" {{$e.Input}}>
+        <button class="bg-slate-700 text-white p-4 ml-2 mt-2 hover:bg-rose-800" {{$e.Button}}>
+            Löschen
+        </button>
+    </div>
+    {{end}}
+</div>

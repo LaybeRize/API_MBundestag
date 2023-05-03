@@ -1,0 +1,14 @@
+{{define "content"}}
+  <div class="flex items-center flex-col w-full">
+    <h1 class="text-3xl font-bold mt-3">
+      Vorschau testen
+    </h1>
+      <standard-form url="/preview">
+        <standard-textarea name="text" text="Markdown">{{.Text}}</standard-textarea>
+        <submit-button>Vorschau anzeigen</submit-button>
+      </standard-form>
+    <preview>{{.Preview}}</preview>
+  </div>
+{{end}}
+
+{{/* use basic */}}

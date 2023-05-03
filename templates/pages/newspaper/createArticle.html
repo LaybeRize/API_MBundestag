@@ -1,0 +1,30 @@
+{{define "content"}}
+    <std-div>
+        <headline>Artikel einreichen</headline>
+        <standard-form url="/create-article">
+            <standard-select name="selectedAccount" text="Senderaccount" disable="false">
+                {{$name := .SelectedAccount}}
+                {{range $i, $value := .Accounts}}
+                    <option value="{{$value.DisplayName}}" {{if eq $value.DisplayName $name}} selected{{end}}>{{$value.DisplayName}}</option>
+                {{end}}
+            </standard-select>
+            <standard-input type="text" name="title" value="{{.Article.Headline}}">
+                Titel
+            </standard-input>
+            <standard-input type="text" name="subtitle" value="{{.Article.Subtitle.String}}">
+                Untertitel
+            </standard-input>
+            <standard-checkbox checked=".BreakingNews" value="true" name="breakingNews">
+                Eilmeldung
+            </standard-checkbox>
+            <standard-textarea name="content" text="Artikelinhalt">{{.Article.Content}}</standard-textarea>
+            <submit-button>Versenden</submit-button>
+            <button-for-preview>Vorschau anzeigen</button-for-preview>
+        </standard-form>
+        <message text=".Message"></message>
+        <preview></preview>
+    </std-div>
+    {{template "markDownScript" "Artikelinhalt"}}
+{{end}}
+
+{{/* use basic */}}

@@ -1,0 +1,32 @@
+{{define "content"}}
+  <std-div>
+    <headline>Titel erstellen</headline>
+    <standard-form url="/create-title">
+      <standard-input type="text" name="name" value="{{.Title.Name}}">
+        Name
+      </standard-input>
+      <standard-input type="text" name="mainGroup" value="{{.Title.MainGroup}}">
+        Hauptkategorie
+      </standard-input>
+      <standard-input type="text" name="subGroup" value="{{.Title.SubGroup}}">
+        Unterkategorie
+      </standard-input>
+      <standard-input type="text" name="flair" value="{{.Title.Flair.String}}">
+        Flair
+      </standard-input>
+      <datalist id="userNameList">
+        {{range $i, $item := .Names}}
+          <option value="{{$item}}">
+        {{end}}
+      </datalist>
+      <custom-list name="user" divName="listDivUser"
+                   list="userNameList" class="w-[800px] mt-2"
+                   loop=".Title.Info.Names">Nutzer Hinzufügen</custom-list>
+      <submit-button>Erstellen</submit-button>
+    </standard-form>
+    <message text=".Message"></message>
+  </std-div>
+  {{template "addAndRemoveScript"}}
+{{end}}
+
+{{/* use basic */}}

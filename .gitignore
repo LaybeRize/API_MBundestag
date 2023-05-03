@@ -1,0 +1,5 @@
+/ts-watch.txt
+/resources/dataSource.txt
+/node_modules/
+/.idea/
+.env

@@ -1,0 +1,48 @@
+<!-- std-div: -->
+<div class="flex items-center flex-col w-full">
+    #content#
+</div>
+<!-- headline: -->
+<h1 class="text-3xl font-bold mt-3">
+    #content#
+</h1>
+<!-- message: text -->
+<p id="info" {{if ueq #text# ""}} class="bg-rose-800 text-white p-2 mt-2" {{end}}>
+    {{#text#}}
+</p>
+<!-- preview: code -->
+<div class="w-[800px] mt-2">
+    <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+    <h1 class="text-2xl text-white mb-2">Vorschau</h1>
+    <breaker class="w-[300px]"></breaker>
+    <div class="w-[800px]" id="htmlOutput">
+        #content#
+    </div>
+    <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+</div>
+<!-- breaker: class -->
+<div class="my-2 bg-gray-600 h-[1px] #class#"></div>
+<!-- custom-breaker: class -->
+<div class="my-2 bg-gray-600 #class#"></div>
+<!-- pager: boolBefore,boolNext,linkBefore,linkNext -->
+<custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+<div class="w-[800px] flex justify-between flex-row">
+    <div>
+        {{if #boolBefore#}}
+            <a href="#linkBefore#" class="bg-slate-700 text-white p-2 mt-2">Vorherige Seite</a>
+        {{end}}
+    </div>
+    <div>
+        {{if #boolNext#}}
+            <a href="#linkNext#" class="bg-slate-700 text-white p-2 mt-2">Nächste Seite</a>
+        {{end}}
+    </div>
+</div>
+<!-- warper-link: link -->
+<a href="#link#" class="font-bold text-2xl p-2 bg-gray-900 m-2">
+    #content#
+</a>
+<!-- button-link: link -->
+<a href="#link#" class="font-bold p-2 bg-gray-900 m-2">
+    #content#
+</a>

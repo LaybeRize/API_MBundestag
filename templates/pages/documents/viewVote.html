@@ -1,0 +1,37 @@
+{{define "content"}}
+  <std-div>
+    <headline>Abstimmung</headline>
+    {{if .Admin}}
+      <form action="/document?type=blockDocument&uuid={{queryEscape .UUID}}" method="POST">
+        {{if .Blocked}}
+          <submit-button>Wiederherstellen</submit-button>
+        {{else}}
+          <submit-button>Dokument blockieren</submit-button>
+        {{end}}
+      </form>
+    {{end}}
+    <standard-document>
+        {{if .Private}}
+            <p>Abstimmung ist privat</p>
+        {{end}}
+        <p>Diese Abstimmung endet am {{dateFormat .FormatString .Info.Finishing}}</p>
+        <p>Zusätzlich erlaubte Kommentatoren: {{arrayOrEmpty "Keine zusätzlichen Abstimmungsberechtigte eingetragen" .Info.Poster}}</p>
+        <p>Zusätzlich erlaubte Zuhörer: {{arrayOrEmpty "Keine zusätzlichen Zuschauer eingetragen" .Info.Viewer}}</p>
+        {{if .Info.OrganisationPosterAllowed}}
+            <p>Alle Mitglieder der Organisation dürfen abstimmen</p>
+        {{end}}
+        {{if .Info.AnyPosterAllowed}}
+            <p>Alle Personen dürfen zuschauen und abstimmen</p>
+        {{end}}
+        <custom-breaker class="h-[3px] w-[800px]"></custom-breaker>
+    </standard-document>
+    <message text=".Message"></message>
+    {{range $i, $uuid := .Info.Votes}}
+        <button-link link="/vote?uuid={{queryEscape $uuid}}">
+            Zur Abstimmung Nr. {{add $i 1}}
+        </button-link>
+    {{end}}
+  </std-div>
+{{end}}
+
+{{/* use basic */}}
