@@ -14,7 +14,7 @@ import (
 
 type CreateUserStruct struct {
 	Account database.Account
-	generics.MessageStruct
+	htmlHandler.MessageStruct
 }
 
 func GetCreateUserPage(c *gin.Context) {
@@ -39,10 +39,10 @@ func PostCreateUserPage(c *gin.Context) {
 
 func validateCreateAccount(self *database.Account, c *gin.Context) (createStruct *CreateUserStruct) {
 	createStruct = &CreateUserStruct{Account: database.Account{
-		DisplayName: generics.GetText(c, "displayname"),
-		Flair:       generics.GetText(c, "flair"),
-		Username:    generics.GetText(c, "username"),
-		Password:    generics.GetText(c, "password"),
+		DisplayName: htmlHandler.GetText(c, "displayname"),
+		Flair:       htmlHandler.GetText(c, "flair"),
+		Username:    htmlHandler.GetText(c, "username"),
+		Password:    htmlHandler.GetText(c, "password"),
 		Role:        database.User,
 	}}
 	result := &createStruct.Account
@@ -61,7 +61,7 @@ func validateCreateAccount(self *database.Account, c *gin.Context) (createStruct
 }
 
 func (s *CreateUserStruct) linkValue(c *gin.Context) bool {
-	i, err := strconv.Atoi(generics.GetText(c, "linked"))
+	i, err := strconv.Atoi(htmlHandler.GetText(c, "linked"))
 	if err != nil {
 		s.Message = generics.LinkedValueNotANumberError
 		return true
@@ -77,7 +77,7 @@ func (s *CreateUserStruct) getRole(c *gin.Context, self *database.Account) bool 
 		array = database.Roles
 	}
 	//Check if the role exists
-	r := generics.GetText(c, "role")
+	r := htmlHandler.GetText(c, "role")
 	if help.GetPositionOfString(array, r) == -1 {
 		s.Message = generics.RoleCanNotBeSelectedError
 		return true
@@ -90,7 +90,7 @@ func (s *CreateUserStruct) getRole(c *gin.Context, self *database.Account) bool 
 
 func (s *CreateUserStruct) generatePassword(c *gin.Context, hash *[]byte) bool {
 	var err error
-	*hash, err = bcrypt.GenerateFromPassword([]byte(generics.GetText(c, "password")), bcrypt.DefaultCost)
+	*hash, err = bcrypt.GenerateFromPassword([]byte(htmlHandler.GetText(c, "password")), bcrypt.DefaultCost)
 	if err != nil {
 		s.Message = generics.ErrorWhileGeneratingPasswordHash
 		return true

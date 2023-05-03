@@ -3,7 +3,6 @@ package htmlDocuments
 import (
 	"API_MBundestag/dataLogic"
 	"API_MBundestag/database_old"
-	gen "API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
@@ -91,7 +90,7 @@ func handleVotePostRequests(s *SingleVoteViewStruct, c *gin.Context, acc *databa
 	if doc.Type == database.UnfinishedVote && doc.Info.Finishing.Before(time.Now().UTC()) {
 		err = dataLogic.CloseDiscussionOrVote(doc.UUID)
 	}
-	s.SelectedAccount = gen.GetText(c, "selectedAccount")
+	s.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
 	if err != nil {
 		s.Message = ErrorWhileVoting + "\n" + s.Message
 		emptyVote(s, c, acc)
@@ -111,9 +110,9 @@ var SelectedTypeNotValid = "Der übergebene type Parameter existiert nicht"
 func handleVoting(s *SingleVoteViewStruct, c *gin.Context) {
 	isValid := false
 	switch true {
-	case gen.GetIfType(c, "vote"):
+	case htmlHandler.GetIfType(c, "vote"):
 		isValid = true
-	case gen.GetIfType(c, "invalid"):
+	case htmlHandler.GetIfType(c, "invalid"):
 	default:
 		s.Message = SelectedTypeNotValid + "\n" + s.Message
 		return
@@ -161,7 +160,7 @@ func (s *SingleVoteViewStruct) readIntoMap(c *gin.Context) bool {
 }
 
 func (s *SingleVoteViewStruct) readSingleVote(c *gin.Context) bool {
-	op := gen.GetText(c, "option")
+	op := htmlHandler.GetText(c, "option")
 	if helper.GetPositionOfString(s.Vote.Info.Options, op) == -1 {
 		s.Message = SelectedOptionNotValid + "\n" + s.Message
 		s.Options[s.Vote.Info.Options[0]] = 1
@@ -174,7 +173,7 @@ func (s *SingleVoteViewStruct) readSingleVote(c *gin.Context) bool {
 func (s *SingleVoteViewStruct) readMultipleVote(c *gin.Context) bool {
 	valid := false
 	for _, opt := range s.Vote.Info.Options {
-		if gen.GetBool(c, opt) {
+		if htmlHandler.GetBool(c, opt) {
 			s.Options[opt] = 1
 			valid = true
 		}
@@ -191,7 +190,7 @@ func (s *SingleVoteViewStruct) readRankingVote(c *gin.Context) bool {
 	sameNumber := false
 	selected := []int{}
 	for _, opt := range s.Vote.Info.Options {
-		i := gen.GetNumber(c, opt, 0, 0, s.Vote.Info.MaxPosition)
+		i := htmlHandler.GetNumber(c, opt, 0, 0, s.Vote.Info.MaxPosition)
 		if alreadyUsedNumber(selected, i) {
 			sameNumber = true
 		}
@@ -215,7 +214,7 @@ func (s *SingleVoteViewStruct) readRankingVote(c *gin.Context) bool {
 func (s *SingleVoteViewStruct) readThreeCategoryVote(c *gin.Context) bool {
 	valid := false
 	for _, opt := range s.Vote.Info.Options {
-		op := gen.GetText(c, opt)
+		op := htmlHandler.GetText(c, opt)
 		if op == "for" {
 			s.Options[opt] = 1
 			valid = true

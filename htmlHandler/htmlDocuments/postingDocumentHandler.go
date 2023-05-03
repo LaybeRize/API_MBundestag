@@ -39,13 +39,13 @@ func GetDocumentNavigationPage(c *gin.Context) {
 
 func (doc *DocumentNavigationStruct) getCorrectFunction(c *gin.Context, acc *database.Account) {
 	switch true {
-	case generics.GetIfEmptyQuery(c, "usr") && generics.GetIfEmptyQuery(c, "org"):
+	case htmlHandler.GetIfEmptyQuery(c, "usr") && htmlHandler.GetIfEmptyQuery(c, "org"):
 		doc.selectFromAllYourAccounts(acc)
-	case generics.GetIfEmptyQuery(c, "usr") && !generics.GetIfEmptyQuery(c, "org"):
+	case htmlHandler.GetIfEmptyQuery(c, "usr") && !htmlHandler.GetIfEmptyQuery(c, "org"):
 		doc.selectFromAccountsForOrg(c, acc)
-	case !generics.GetIfEmptyQuery(c, "usr") && generics.GetIfEmptyQuery(c, "org"):
+	case !htmlHandler.GetIfEmptyQuery(c, "usr") && htmlHandler.GetIfEmptyQuery(c, "org"):
 		doc.selectFromAccountOrganisation(c, acc)
-	case !generics.GetIfEmptyQuery(c, "usr") && !generics.GetIfEmptyQuery(c, "org"):
+	case !htmlHandler.GetIfEmptyQuery(c, "usr") && !htmlHandler.GetIfEmptyQuery(c, "org"):
 		doc.selectEverythingYouCanDoWithTheOrg(c, acc)
 	}
 }

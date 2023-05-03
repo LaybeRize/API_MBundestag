@@ -68,18 +68,18 @@ func PostDiscussionCreatePage(c *gin.Context) {
 }
 
 func (discuss *DiscussionCreateStruct) fillStructFromContext(c *gin.Context) {
-	discuss.SelectedOrganisation = generics.GetText(c, "selectedOrganisation")
-	discuss.SelectedAccount = generics.GetText(c, "selectedAccount")
-	discuss.Content = generics.GetText(c, "content")
-	discuss.Title = generics.GetText(c, "title")
-	discuss.Subtitle = generics.GetText(c, "subtitle")
-	discuss.MakePrivate = generics.GetBool(c, "private")
+	discuss.SelectedOrganisation = htmlHandler.GetText(c, "selectedOrganisation")
+	discuss.SelectedAccount = htmlHandler.GetText(c, "selectedAccount")
+	discuss.Content = htmlHandler.GetText(c, "content")
+	discuss.Title = htmlHandler.GetText(c, "title")
+	discuss.Subtitle = htmlHandler.GetText(c, "subtitle")
+	discuss.MakePrivate = htmlHandler.GetBool(c, "private")
 	discuss.FormatForTime = generics.TimeParseDiscussion
 	discuss.Info = database.DocumentInfo{
-		Poster:                    generics.GetStringArray(c, "poster"),
-		Viewer:                    generics.GetStringArray(c, "allowed"),
-		AnyPosterAllowed:          generics.GetBool(c, "anyPoster"),
-		OrganisationPosterAllowed: generics.GetBool(c, "orgPoster"),
+		Poster:                    htmlHandler.GetStringArray(c, "poster"),
+		Viewer:                    htmlHandler.GetStringArray(c, "allowed"),
+		AnyPosterAllowed:          htmlHandler.GetBool(c, "anyPoster"),
+		OrganisationPosterAllowed: htmlHandler.GetBool(c, "orgPoster"),
 		Finishing:                 time.Now().Add(time.Hour*24 + 10*time.Minute),
 	}
 }
@@ -101,14 +101,14 @@ func (discuss *DiscussionCreateStruct) makeDiscussion(c *gin.Context, acc *datab
 	switch true {
 	case discuss.parseFinishingTime(c):
 	case discuss.checkIfTimeInWindow():
-	case generics.CheckWriter(discuss, writer, acc):
-	case generics.CheckOrgExists(discuss, orga):
+	case htmlHandler.CheckWriter(discuss, writer, acc):
+	case htmlHandler.CheckOrgExists(discuss, orga):
 	case discuss.organisationCheck(orga, writer):
 	case discuss.checkIfBoolsAreCorrect(orga, writer):
-	case generics.CheckTitelAndContentEmpty(discuss):
-	case generics.CheckLengthContent(discuss, generics.PostContentLimit):
-	case generics.CheckLengthTitle(discuss, generics.PostTitleLimit):
-	case generics.CheckLengthSubtitle(discuss, generics.PostSubtitleLimit):
+	case htmlHandler.CheckTitelAndContentEmpty(discuss):
+	case htmlHandler.CheckLengthContent(discuss, generics.PostContentLimit):
+	case htmlHandler.CheckLengthTitle(discuss, generics.PostTitleLimit):
+	case htmlHandler.CheckLengthSubtitle(discuss, generics.PostSubtitleLimit):
 	case gen.CheckAccountList(discuss, &discuss.Info.Poster):
 	case gen.CheckAccountList(discuss, &discuss.Info.Viewer):
 	case discuss.addViewer(discuss.Info.Poster):
@@ -133,7 +133,7 @@ func (discuss *DiscussionCreateStruct) organisationCheck(orga *database.Organisa
 }
 
 func (discuss *DiscussionCreateStruct) parseFinishingTime(c *gin.Context) bool {
-	t, err := time.ParseInLocation(generics.TimeParseDiscussion, generics.GetText(c, "until"), time.Now().Location())
+	t, err := time.ParseInLocation(generics.TimeParseDiscussion, htmlHandler.GetText(c, "until"), time.Now().Location())
 	if err == nil {
 		discuss.Info.Finishing = t
 	} else {

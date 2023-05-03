@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help/generics"
+	"API_MBundestag/htmlHandler"
 	"database/sql"
 	"fmt"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +21,7 @@ func TestOrganisationLogic(t *testing.T) {
 
 func testUpdateOnlyMemebers(t *testing.T) {
 	org := Organsation{Name: "test_fail_orgLogic"}
-	var msg generics.Message = ""
+	var msg htmlHandler.Message = ""
 	var positiv = false
 	org.ChangeOnlyMembers(&msg, &positiv)
 	assert.Equal(t, false, positiv)
@@ -65,7 +65,7 @@ func testUpdateOnlyMemebers(t *testing.T) {
 
 func testUpdateOrganisation(t *testing.T) {
 	org := Organsation{Name: "test_fail_orgLogic"}
-	var msg generics.Message = ""
+	var msg htmlHandler.Message = ""
 	var positiv = false
 	org.ChangeMe(&msg, &positiv)
 	assert.Equal(t, false, positiv)
@@ -136,7 +136,7 @@ func testCreateOrganisation(t *testing.T) {
 		Member:    []string{"fail_me_now"},
 		Admins:    []string{"fail_me_now"},
 	}
-	var msg generics.Message = ""
+	var msg htmlHandler.Message = ""
 	var positiv = false
 
 	org.CreateMe(&msg, &positiv)

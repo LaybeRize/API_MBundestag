@@ -23,7 +23,7 @@ func GetAdminLetterViewPage(c *gin.Context) {
 		return
 	}
 
-	if generics.GetIfEmptyQuery(c, "uuid") {
+	if htmlHandler.GetIfEmptyQuery(c, "uuid") {
 		htmlHandler.MakeSite(&AdminLetterViewStruct{}, c, &acc)
 		return
 	}

@@ -2,17 +2,17 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help/generics"
+	"API_MBundestag/htmlHandler"
 	"time"
 )
 
-var VoteAlreadyFinished generics.Message = "Die Abstimmung ist bereits beendet"
-var SuccessfulVote generics.Message = "Deine Stimme wurde erfolgreich abgestimmt"
-var ErrorWhileSavingVote generics.Message = "Beim Speichern der Stimme ist ein Fehler aufgetreten"
-var YouAlreadyVoted generics.Message = "Du hast bereits abgestimmt"
-var ErrorNotAVote generics.Message = "Dies ist keine Abstimmung"
+var VoteAlreadyFinished htmlHandler.Message = "Die Abstimmung ist bereits beendet"
+var SuccessfulVote htmlHandler.Message = "Deine Stimme wurde erfolgreich abgestimmt"
+var ErrorWhileSavingVote htmlHandler.Message = "Beim Speichern der Stimme ist ein Fehler aufgetreten"
+var YouAlreadyVoted htmlHandler.Message = "Du hast bereits abgestimmt"
+var ErrorNotAVote htmlHandler.Message = "Dies ist keine Abstimmung"
 
-func AddResultForUser(vote *database.Votes, m map[string]int, makeInvalid bool, user string, msg *generics.Message, positiv *bool) (err error) {
+func AddResultForUser(vote *database.Votes, m map[string]int, makeInvalid bool, user string, msg *htmlHandler.Message, positiv *bool) (err error) {
 	documentLock.Lock()
 	defer documentLock.Unlock()
 

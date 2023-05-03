@@ -84,7 +84,7 @@ func (zwitscher *ZwitscherSingleViewStruct) getSelfTweet(c *gin.Context, acc *da
 }
 
 func (zwitscher *ZwitscherSingleViewStruct) tryBlocking(c *gin.Context, acc *database.Account) bool {
-	if generics.GetBool(c, "block") {
+	if htmlHandler.GetBool(c, "block") {
 		if acc.Role == database.User {
 			htmlBasics.MakeErrorPage(c, acc, generics.NotAuthorizedToView)
 			return true
@@ -111,7 +111,7 @@ func (zwitscher *ZwitscherSingleViewStruct) trySelfConnect(c *gin.Context, acc *
 }
 
 func (zwitscher *ZwitscherSingleViewStruct) tryNotBlocked(c *gin.Context, acc *database.Account) bool {
-	if !generics.GetBool(c, "block") {
+	if !htmlHandler.GetBool(c, "block") {
 		zwitscher.validateMakeComment(c, acc)
 	}
 
@@ -143,9 +143,9 @@ func (zwitscher *ZwitscherSingleViewStruct) validateMakeComment(c *gin.Context, 
 	zwitscher.Content = c.PostForm("content")
 	writer := &database.Account{}
 	switch true {
-	case generics.CheckWriter(zwitscher, writer, acc):
-	case generics.CheckFieldNotEmpty(zwitscher, "Content", generics.ZwitscherIsNotAllowedToBeEmpty):
-	case generics.CheckLengthField(zwitscher, generics.CharacterLimitZwitscher, "Content", generics.ZwitscherIsToLong):
+	case htmlHandler.CheckWriter(zwitscher, writer, acc):
+	case htmlHandler.CheckFieldNotEmpty(zwitscher, "Content", generics.ZwitscherIsNotAllowedToBeEmpty):
+	case htmlHandler.CheckLengthField(zwitscher, generics.CharacterLimitZwitscher, "Content", generics.ZwitscherIsToLong):
 	case zwitscher.tryCreation(writer):
 	default:
 		zwitscher.Content = ""

@@ -48,19 +48,19 @@ func PostCreateTitlePage(c *gin.Context) {
 func validateCreateTitle(c *gin.Context) (titleStruct *CreateTitleStruct) {
 	titleStruct = getEmptyCreateTitleStruct()
 	titleStruct.Title = database.Title{
-		Name:      generics.GetText(c, "name"),
-		MainGroup: generics.GetText(c, "mainGroup"),
-		SubGroup:  generics.GetText(c, "subGroup"),
+		Name:      htmlHandler.GetText(c, "name"),
+		MainGroup: htmlHandler.GetText(c, "mainGroup"),
+		SubGroup:  htmlHandler.GetText(c, "subGroup"),
 		Flair:     gen.GetNullString(c, "flair"),
 		Info: database.TitleInfo{
-			Names: generics.GetStringArray(c, "user"),
+			Names: htmlHandler.GetStringArray(c, "user"),
 		},
 	}
 	titleRef := &titleStruct.Title
 	infoRef := &titleRef.Info
 
 	switch true {
-	case generics.CheckOrgOrTitle(titleStruct, titleRef):
+	case htmlHandler.CheckOrgOrTitle(titleStruct, titleRef):
 	case gen.CheckAccountList(titleStruct, &infoRef.Names):
 	case titleStruct.tryCreation():
 	default:

@@ -131,7 +131,7 @@ func publishIfNotNormalNewspaper(id *string, pub *database.Publication) bool {
 }
 
 func getPublication(c *gin.Context, pub *database.Publication) bool {
-	err := pub.GetByID(generics.GetText(c, "uuid"))
+	err := pub.GetByID(htmlHandler.GetText(c, "uuid"))
 	if err != nil {
 		return true
 	}

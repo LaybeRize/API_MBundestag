@@ -48,7 +48,7 @@ func PostRejectArticlePage(c *gin.Context) {
 	rejectStruct := &RejectArticleStruct{
 		Article:           database.Article{},
 		ArticleFormat:     generics.FormatTimeForArticle,
-		ModMessageContent: generics.GetText(c, "content"),
+		ModMessageContent: htmlHandler.GetText(c, "content"),
 	}
 
 	success := rejectStruct.validateRejection(c)
@@ -79,7 +79,7 @@ func (rejectStruct *RejectArticleStruct) validateRejection(c *gin.Context) bool 
 }
 
 func (rejectStruct *RejectArticleStruct) getArticle(c *gin.Context) bool {
-	err := rejectStruct.Article.GetByID(generics.GetText(c, "uuid"))
+	err := rejectStruct.Article.GetByID(htmlHandler.GetText(c, "uuid"))
 	if err != nil {
 		rejectStruct.Message = generics.CanNotFindArticle
 		return false
@@ -105,7 +105,7 @@ func (rejectStruct *RejectArticleStruct) createRejectionLetter(c *gin.Context) b
 		UUID:    uuid.New().String(),
 		Author:  generics.AuthorQualityCheck,
 		Title:   fmt.Sprintf(generics.LetterRejectTitle, rejectStruct.Article.Headline),
-		Content: fmt.Sprintf(generics.LetterRejectText, rejectStruct.Article.Subtitle.String, rejectStruct.Article.Content, generics.GetText(c, "content")),
+		Content: fmt.Sprintf(generics.LetterRejectText, rejectStruct.Article.Subtitle.String, rejectStruct.Article.Content, htmlHandler.GetText(c, "content")),
 		Info: database.LetterInfo{
 			ModMessage:          true,
 			AllHaveToAgree:      false,

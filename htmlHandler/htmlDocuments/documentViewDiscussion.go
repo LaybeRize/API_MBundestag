@@ -96,8 +96,8 @@ func commentOnDiscussion(c *gin.Context, acc *database.Account, doc database.Doc
 	b := BackgroundInfo{
 		Admin:           dataLogic.CheckIfHasRole(acc, database.HeadAdmin, database.Admin),
 		FormatString:    generics.LongTimeString,
-		Content:         generics.GetText(c, "content"),
-		SelectedAccount: generics.GetText(c, "selectedAccount"),
+		Content:         htmlHandler.GetText(c, "content"),
+		SelectedAccount: htmlHandler.GetText(c, "selectedAccount"),
 	}
 	htmlHandler.FillOwnAccounts(&b, acc)
 
@@ -106,9 +106,9 @@ func commentOnDiscussion(c *gin.Context, acc *database.Account, doc database.Doc
 	switch true {
 	case b.checkIfRunningDiscussion(&doc, &legiable):
 	case b.checkIfDiscussionHasRunOut(&doc, &legiable):
-	case generics.CheckFieldNotEmpty(&b, "Content", CommentCanNotBeEmpty):
-	case generics.CheckLengthContent(&b, DiscussionCommentLength):
-	case generics.CheckWriter(&b, writer, acc):
+	case htmlHandler.CheckFieldNotEmpty(&b, "Content", CommentCanNotBeEmpty):
+	case htmlHandler.CheckLengthContent(&b, DiscussionCommentLength):
+	case htmlHandler.CheckWriter(&b, writer, acc):
 	case b.checkIfAllowedComment(&doc, writer):
 	case b.trySavingComment(&doc, writer):
 	default:

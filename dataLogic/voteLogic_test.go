@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help/generics"
+	"API_MBundestag/htmlHandler"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm"
 	"testing"
@@ -22,7 +22,7 @@ func TestVoteLogic(t *testing.T) {
 func testFailAlreadyVoted(t *testing.T) {
 	time.Sleep(time.Millisecond * 100)
 	vote := database.Votes{UUID: "testVoteLogicSingle"}
-	var msg generics.Message
+	var msg htmlHandler.Message
 	var positive bool
 	err := AddResultForUser(&vote, map[string]int{}, false, "test", &msg, &positive)
 	assert.Nil(t, err)
@@ -53,7 +53,7 @@ func testFailAlreadyVoted(t *testing.T) {
 
 func testSucessVote(t *testing.T) {
 	vote := database.Votes{UUID: "testVoteLogicSingle"}
-	var msg generics.Message
+	var msg htmlHandler.Message
 	var positive bool
 	err := AddResultForUser(&vote, map[string]int{
 		"test 1": 0,
@@ -194,7 +194,7 @@ func testSucessVote(t *testing.T) {
 
 func testFailDocument(t *testing.T) {
 	vote := database.Votes{UUID: "testVoteLogicFail"}
-	var msg generics.Message
+	var msg htmlHandler.Message
 	var positive bool
 	err := AddResultForUser(&vote, map[string]int{}, false, "", &msg, &positive)
 	assert.Equal(t, gorm.ErrRecordNotFound, err)
@@ -226,7 +226,7 @@ func testFailDocument(t *testing.T) {
 
 func testFailVoteFinish(t *testing.T) {
 	vote := database.Votes{UUID: "alsdopawbejqnkie"}
-	var msg generics.Message
+	var msg htmlHandler.Message
 	var positive bool
 	err := AddResultForUser(&vote, map[string]int{}, false, "", &msg, &positive)
 	assert.Equal(t, gorm.ErrRecordNotFound, err)

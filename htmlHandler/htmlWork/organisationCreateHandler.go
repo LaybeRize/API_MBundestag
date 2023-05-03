@@ -57,14 +57,14 @@ func PostCreateOrganisationPage(c *gin.Context) {
 func validateOrganisationCreate(c *gin.Context) (orgStruct *CreateOrganisationStruct) {
 	orgStruct = getEmptyCreateOrgStruct()
 	orgStruct.Organisation = database.Organisation{
-		Name:      generics.GetText(c, "name"),
-		MainGroup: generics.GetText(c, "mainGroup"),
-		SubGroup:  generics.GetText(c, "subGroup"),
+		Name:      htmlHandler.GetText(c, "name"),
+		MainGroup: htmlHandler.GetText(c, "mainGroup"),
+		SubGroup:  htmlHandler.GetText(c, "subGroup"),
 		Flair:     gen.GetNullString(c, "flair"),
-		Status:    database.StatusString(generics.GetText(c, "status")),
+		Status:    database.StatusString(htmlHandler.GetText(c, "status")),
 		Info: database.OrganisationInfo{
-			Admins: generics.GetStringArray(c, "admins"),
-			User:   generics.GetStringArray(c, "user"),
+			Admins: htmlHandler.GetStringArray(c, "admins"),
+			User:   htmlHandler.GetStringArray(c, "user"),
 			Viewer: []string{},
 		},
 	}
@@ -77,10 +77,10 @@ func validateOrganisationCreate(c *gin.Context) (orgStruct *CreateOrganisationSt
 	}
 
 	switch true {
-	case generics.CheckOrgOrTitle(orgStruct, orgRef):
+	case htmlHandler.CheckOrgOrTitle(orgStruct, orgRef):
 	case gen.CheckAccountList(orgStruct, &infoRef.Admins):
 	case gen.CheckAccountList(orgStruct, &infoRef.User):
-	case generics.CheckOrgStatus(orgStruct, orgRef.Status):
+	case htmlHandler.CheckOrgStatus(orgStruct, orgRef.Status):
 	case orgStruct.addViewer(infoRef.Admins):
 	case orgStruct.addViewer(infoRef.User):
 	case orgStruct.tryCreation():

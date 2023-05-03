@@ -2,7 +2,7 @@ package dataLogic
 
 import (
 	"API_MBundestag/database"
-	"API_MBundestag/help/generics"
+	"API_MBundestag/htmlHandler"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -20,10 +20,10 @@ type Account struct {
 	RemoveFromOrganisation bool
 }
 
-var CouldNotFindAccount generics.Message = "Der Account konnte nicht gefunden werden"
-var CouldFindAccount generics.Message = "Der Account wurde gefunden"
+var CouldNotFindAccount htmlHandler.Message = "Der Account konnte nicht gefunden werden"
+var CouldFindAccount htmlHandler.Message = "Der Account wurde gefunden"
 
-func (acc *Account) GetUser(displayName string, username string, msg *generics.Message, positiv *bool) {
+func (acc *Account) GetUser(displayName string, username string, msg *htmlHandler.Message, positiv *bool) {
 	userLock.Lock()
 	defer userLock.Unlock()
 	var get = database.Account{}
@@ -52,12 +52,12 @@ func (acc *Account) GetUser(displayName string, username string, msg *generics.M
 	acc.Linked = get.Linked.Int64
 }
 
-var CouldNotChangeAccount generics.Message = "Der Account konnte nicht geändert werden"
-var CouldChangeAccount generics.Message = "Der Account wurde geändert"
-var AccountRetainsOrgs generics.Message = "Account konnte nicht von allen Organisationen entfernt werden"
-var AccountRetainsTitles generics.Message = "Account konnte nicht von allen Titeln enfernt werden"
+var CouldNotChangeAccount htmlHandler.Message = "Der Account konnte nicht geändert werden"
+var CouldChangeAccount htmlHandler.Message = "Der Account wurde geändert"
+var AccountRetainsOrgs htmlHandler.Message = "Account konnte nicht von allen Organisationen entfernt werden"
+var AccountRetainsTitles htmlHandler.Message = "Account konnte nicht von allen Titeln enfernt werden"
 
-func (acc *Account) ChangeUser(msg *generics.Message, positiv *bool) {
+func (acc *Account) ChangeUser(msg *htmlHandler.Message, positiv *bool) {
 	userLock.Lock()
 	defer userLock.Unlock()
 	var change = database.Account{}
@@ -109,13 +109,13 @@ func (acc *Account) ChangeUser(msg *generics.Message, positiv *bool) {
 	acc.RemoveFromOrganisation = false
 }
 
-var AccountCloudNotBeFound generics.Message = "Dein Account konnte nicht gefunden werden"
-var OldPasswordNotcorrect generics.Message = "Das alte Password ist nicht korrekt"
-var CouldNotHashPassword generics.Message = "Das neue Passwort konnte nicht korrekt gehashed werden"
-var AccountPasswordCouldNotBeSaved generics.Message = "Es ist ein Fehler beim verändern des Passwords aufgetreten"
-var AccountPasswordSuccessfulChanged generics.Message = "Password erfolgreich angepasst"
+var AccountCloudNotBeFound htmlHandler.Message = "Dein Account konnte nicht gefunden werden"
+var OldPasswordNotcorrect htmlHandler.Message = "Das alte Password ist nicht korrekt"
+var CouldNotHashPassword htmlHandler.Message = "Das neue Passwort konnte nicht korrekt gehashed werden"
+var AccountPasswordCouldNotBeSaved htmlHandler.Message = "Es ist ein Fehler beim verändern des Passwords aufgetreten"
+var AccountPasswordSuccessfulChanged htmlHandler.Message = "Password erfolgreich angepasst"
 
-func ChangePassword(displayName string, oldPassword string, newPassword string, msg *generics.Message, positiv *bool) {
+func ChangePassword(displayName string, oldPassword string, newPassword string, msg *htmlHandler.Message, positiv *bool) {
 	userLock.Lock()
 	defer userLock.Unlock()
 	acc := database.Account{}

@@ -14,7 +14,7 @@ import (
 type EditUserStruct struct {
 	Account dataLogic.Account
 	Names   database.NameList
-	generics.MessageStruct
+	htmlHandler.MessageStruct
 }
 
 func getEmptyEditUserStruct() *EditUserStruct {
@@ -77,8 +77,8 @@ func validateChangeAccount(c *gin.Context, self *database.Account) (editStruct *
 }
 
 func (s *EditUserStruct) setAccount(c *gin.Context) bool {
-	var temp generics.Message
-	s.Account.GetUser("", generics.GetText(c, "username"), &temp, &s.Positiv)
+	var temp htmlHandler.Message
+	s.Account.GetUser("", htmlHandler.GetText(c, "username"), &temp, &s.Positiv)
 
 	if !s.Positiv {
 		s.Message = generics.CanNotChangeNoExistentAccount + "\n" + s.Message
@@ -96,8 +96,8 @@ func (s *EditUserStruct) checkIfOnlyFlair(c *gin.Context, self *database.Account
 		return false
 	}
 
-	s.Account.Flair = generics.GetText(c, "flair")
-	s.Account.ChangeFlair = generics.GetBool(c, "changeFlair")
+	s.Account.Flair = htmlHandler.GetText(c, "flair")
+	s.Account.ChangeFlair = htmlHandler.GetBool(c, "changeFlair")
 	s.Account.ChangeUser(&s.Message, &s.Positiv)
 	return true
 }
@@ -116,13 +116,13 @@ func (s *EditUserStruct) checkRolePrivileges(self *database.Account) bool {
 }
 
 func (s *EditUserStruct) setFlairAndCheckLinked(c *gin.Context) bool {
-	s.Account.Flair = generics.GetText(c, "flair")
-	s.Account.ChangeFlair = generics.GetBool(c, "changeFlair")
-	s.Account.Suspended = generics.GetBool(c, "suspended")
-	s.Account.RemoveFromTitle = generics.GetBool(c, "removeTitles")
-	s.Account.RemoveFromOrganisation = generics.GetBool(c, "removeOrgs")
+	s.Account.Flair = htmlHandler.GetText(c, "flair")
+	s.Account.ChangeFlair = htmlHandler.GetBool(c, "changeFlair")
+	s.Account.Suspended = htmlHandler.GetBool(c, "suspended")
+	s.Account.RemoveFromTitle = htmlHandler.GetBool(c, "removeTitles")
+	s.Account.RemoveFromOrganisation = htmlHandler.GetBool(c, "removeOrgs")
 
-	i, err := strconv.Atoi(generics.GetText(c, "linked"))
+	i, err := strconv.Atoi(htmlHandler.GetText(c, "linked"))
 	if err != nil {
 		s.Message = generics.LinkedValueNotANumberError + "\n" + s.Message
 		return true
@@ -141,7 +141,7 @@ func (s *EditUserStruct) changeRoleCheck(c *gin.Context, self *database.Account)
 	if self.ID == 1 {
 		array = append(array, string(database.HeadAdmin))
 	}
-	r := generics.GetText(c, "role")
+	r := htmlHandler.GetText(c, "role")
 	if help.GetPositionOfString(array, r) == -1 {
 		s.Message = generics.RoleCanNotBeSelectedError + "\n" + s.Message
 		return true
