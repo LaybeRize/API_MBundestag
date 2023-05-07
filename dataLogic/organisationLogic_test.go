@@ -20,7 +20,7 @@ func TestOrganisationLogic(t *testing.T) {
 }
 
 func testUpdateOnlyMemebers(t *testing.T) {
-	org := Organsation{Name: "test_fail_orgLogic"}
+	org := Organisation{Name: "test_fail_orgLogic"}
 	var msg generics.Message = ""
 	var positiv = false
 	org.ChangeOnlyMembers(&msg, &positiv)
@@ -64,7 +64,7 @@ func testUpdateOnlyMemebers(t *testing.T) {
 }
 
 func testUpdateOrganisation(t *testing.T) {
-	org := Organsation{Name: "test_fail_orgLogic"}
+	org := Organisation{Name: "test_fail_orgLogic"}
 	var msg generics.Message = ""
 	var positiv = false
 	org.ChangeMe(&msg, &positiv)
@@ -111,7 +111,7 @@ func testUpdateOrganisation(t *testing.T) {
 }
 
 func testGetOrganisation(t *testing.T) {
-	expected := Organsation{
+	expected := Organisation{
 		Name:      "test_orgLogic",
 		MainGroup: "test_orgLogic",
 		SubGroup:  "test_orgLogic",
@@ -120,14 +120,14 @@ func testGetOrganisation(t *testing.T) {
 		Member:    []string{"test_OrgLogic"},
 		Admins:    []string{"test_OrgLogic2"},
 	}
-	org := Organsation{}
+	org := Organisation{}
 	err := org.GetMe("test_orgLogic")
 	assert.Nil(t, err)
 	assert.Equal(t, expected, org)
 }
 
 func testCreateOrganisation(t *testing.T) {
-	org := Organsation{
+	org := Organisation{
 		Name:      "test_orgLogic",
 		MainGroup: "test_orgLogic",
 		SubGroup:  "test_orgLogic",

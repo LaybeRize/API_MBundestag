@@ -2,10 +2,9 @@ package htmlWork
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +45,7 @@ func PostCreateTitlePage(c *gin.Context) {
 }
 
 func validateCreateTitle(c *gin.Context) (titleStruct *CreateTitleStruct) {
-	titleStruct = getEmptyCreateTitleStruct()
+	/*titleStruct = getEmptyCreateTitleStruct()
 	titleStruct.Title = database.Title{
 		Name:      generics.GetText(c, "name"),
 		MainGroup: generics.GetText(c, "mainGroup"),
@@ -68,7 +67,7 @@ func validateCreateTitle(c *gin.Context) (titleStruct *CreateTitleStruct) {
 		titleStruct.updateFlairs()
 		titleStruct.refreshHierarchy()
 		titleStruct.Message = generics.SuccessFullCreationTitle + "\n" + titleStruct.Message
-	}
+	}*/
 
 	return
 }
@@ -83,23 +82,23 @@ func (titleStruct *CreateTitleStruct) tryCreation() bool {
 }
 
 func (titleStruct *CreateTitleStruct) updateGroups() {
-	if helper.GetPositionOfString(titleStruct.ExistingSubGroup, titleStruct.Title.SubGroup) == -1 {
+	/*if helper.GetPositionOfString(titleStruct.ExistingSubGroup, titleStruct.Title.SubGroup) == -1 {
 		titleStruct.ExistingSubGroup = append(titleStruct.ExistingSubGroup, titleStruct.Title.SubGroup)
 	}
 	if helper.GetPositionOfString(titleStruct.ExistingMainGroup, titleStruct.Title.MainGroup) == -1 {
 		titleStruct.ExistingMainGroup = append(titleStruct.ExistingMainGroup, titleStruct.Title.MainGroup)
-	}
+	}*/
 }
 
 func (titleStruct *CreateTitleStruct) updateFlairs() {
-	titleRef := &titleStruct.Title
+	/*titleRef := &titleStruct.Title
 	//TODO rework flair system
 	if titleRef.Flair.Valid {
 		err := dataLogic.UpdateFlairs([]string{}, titleRef.Info.Names, titleRef.Flair.String)
 		if err != nil {
 			titleStruct.Message = generics.FlairUpdateError + "\n" + titleStruct.Message
 		}
-	}
+	}*/
 }
 
 func (titleStruct *CreateTitleStruct) refreshHierarchy() {

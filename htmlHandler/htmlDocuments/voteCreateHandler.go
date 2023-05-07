@@ -2,17 +2,12 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
-	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -87,7 +82,7 @@ func PostVoteCreatePage(c *gin.Context) {
 }
 
 func (voteStruct *VoteCreateStruct) fillVoteStructFromContext(c *gin.Context) {
-	voteStruct.SelectedOrganisation = generics.GetText(c, "selectedOrganisation")
+	/*voteStruct.SelectedOrganisation = generics.GetText(c, "selectedOrganisation")
 	voteStruct.SelectedAccount = generics.GetText(c, "selectedAccount")
 	voteStruct.Content = generics.GetText(c, "content")
 	voteStruct.Title = generics.GetText(c, "title")
@@ -102,7 +97,7 @@ func (voteStruct *VoteCreateStruct) fillVoteStructFromContext(c *gin.Context) {
 		Finishing:                 time.Now().Add(time.Hour*24 + 10*time.Minute),
 	}
 	voteStruct.Votes = *extractVotesFromContext(c)
-	voteStruct.AmountVotes = len(voteStruct.Votes)
+	voteStruct.AmountVotes = len(voteStruct.Votes)*/
 }
 
 func extractVotesFromContext(c *gin.Context) *[]CreateSingleVote {
@@ -139,7 +134,7 @@ var QuestionMissingOnVote = "Keine Frage bei Abstimmung %d angegeben"
 var WrongVoteMethod = "In Abstimmung %d ist keine valide Abstimmungsmethode ausgewählt"
 
 func (voteStruct *VoteCreateStruct) makeVote(c *gin.Context, acc *database.Account) {
-	writer := &database.Account{}
+	/*writer := &database.Account{}
 	orga := &database.Organisation{}
 	id := ""
 	switch true {
@@ -164,7 +159,7 @@ func (voteStruct *VoteCreateStruct) makeVote(c *gin.Context, acc *database.Accou
 		return
 	}
 
-	htmlHandler.MakeSite(voteStruct, c, acc)
+	htmlHandler.MakeSite(voteStruct, c, acc)*/
 }
 
 func (voteStruct *VoteCreateStruct) parseFinishingTime(c *gin.Context) bool {
@@ -188,17 +183,17 @@ func (voteStruct *VoteCreateStruct) checkIfTimeInWindow() bool {
 }
 
 func (voteStruct *VoteCreateStruct) organisationCheck(orga *database.Organisation, writer *database.Account) bool {
-	isAdmin := helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) != -1 || writer.Role == database.HeadAdmin
+	/*isAdmin := helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) != -1 || writer.Role == database.HeadAdmin
 	isUser := helper.GetPositionOfString(orga.Info.User, writer.DisplayName) != -1
 	if !isAdmin && !isUser {
 		voteStruct.Message = generics.YouAreNotAllowedForOrganisation + "\n" + voteStruct.Message
 		return true
-	}
+	}*/
 	return false
 }
 
 func (voteStruct *VoteCreateStruct) checkIfBoolsAreCorrect(orga *database.Organisation, writer *database.Account) bool {
-	isSecret := orga.Status == database.Secret
+	/*isSecret := orga.Status == database.Secret
 	isPublic := orga.Status == database.Public
 	isAdmin := helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) != -1 || writer.Role == database.HeadAdmin
 	//make sure that in secrete Organisation only private discussions are posted
@@ -225,12 +220,12 @@ func (voteStruct *VoteCreateStruct) checkIfBoolsAreCorrect(orga *database.Organi
 	if !isAdmin && voteStruct.Info.AnyPosterAllowed {
 		voteStruct.Message = NonAdminsAreNotAllowedToLetEveryoneVote + "\n" + voteStruct.Message
 		return true
-	}
+	}*/
 	return false
 }
 
 func (voteStruct *VoteCreateStruct) addViewer(array []string) bool {
-	infoRef := &voteStruct.Info
+	/*infoRef := &voteStruct.Info
 	acc := database.Account{}
 	for _, str := range array {
 		err := acc.GetByDisplayName(str)
@@ -243,12 +238,12 @@ func (voteStruct *VoteCreateStruct) addViewer(array []string) bool {
 		}
 		infoRef.Allowed = append(infoRef.Allowed, acc.DisplayName)
 	}
-	infoRef.Allowed = helper.RemoveDuplicates(infoRef.Allowed)
+	infoRef.Allowed = helper.RemoveDuplicates(infoRef.Allowed)*/
 	return false
 }
 
 func (voteStruct *VoteCreateStruct) checkVotes() bool {
-	if len(voteStruct.Info.Poster) == 0 && !voteStruct.Info.OrganisationPosterAllowed && !voteStruct.Info.AnyPosterAllowed {
+	/*if len(voteStruct.Info.Poster) == 0 && !voteStruct.Info.OrganisationPosterAllowed && !voteStruct.Info.AnyPosterAllowed {
 		voteStruct.Message = CanNotCreateVoteWithoutVotees + "\n" + voteStruct.Message
 		return true
 	}
@@ -269,7 +264,7 @@ func (voteStruct *VoteCreateStruct) checkVotes() bool {
 			voteStruct.Message = fmt.Sprintf(WrongVoteMethod, pos+1) + "\n" + voteStruct.Message
 			return true
 		}
-	}
+	}*/
 	return false
 }
 
@@ -277,7 +272,7 @@ var ErrorWhileCreatingVotes = "Es ist ein Fehler beim erstellen der Abstimmungen
 var ErrorWhileCreatingVoteItself = "Es ist ein Fehler beim erstellen des Abstimmungsdokument aufgetreten. Bitte wende dich an eine Moderator"
 
 func (voteStruct *VoteCreateStruct) createDocument(id *string, flair string) bool {
-	*id = uuid.New().String()
+	/**id = uuid.New().String()
 	voteIds := []string{}
 	for _, v := range voteStruct.Votes {
 		newVote := database.Votes{
@@ -332,6 +327,6 @@ func (voteStruct *VoteCreateStruct) createDocument(id *string, flair string) boo
 		voteStruct.Info.Finishing = voteStruct.Info.Finishing.In(time.Now().Location())
 		voteStruct.Message = ErrorWhileCreatingVoteItself + "\n" + voteStruct.Message
 		return true
-	}
+	}*/
 	return false
 }

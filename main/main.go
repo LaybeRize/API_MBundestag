@@ -2,7 +2,7 @@ package main
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlAccount"
@@ -14,49 +14,22 @@ import (
 	"API_MBundestag/htmlHandler/htmlZwitscher"
 	"API_MBundestag/htmlHandler/websocket"
 	wr "API_MBundestag/htmlWrapper"
-	"database/sql"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/robfig/cron"
-	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
-	"strings"
-	"time"
 )
 
 func main() {
-	helper.UpdateAttributes()
+	help.UpdateAttributes()
 	setup()
 }
 
 func setup() {
 	//gin.SetMode(gin.ReleaseMode)
-
-	database.DataSource = fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable",
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DOCKER"),
-		os.Getenv("DB_NAME"))
-	var err error
-	database.DB, err = sqlx.Connect("postgres", database.DataSource)
-	if err != nil {
-		log.Fatal(err)
-	}
-	database.Connected = true
-
-	database.InitAccountDatabase()
-	database.InitLettersDatabase()
-	database.InitTitlesDatabase()
-	database.InitOrganisationsDatabase()
-	database.InitNewsDatabase()
-	database.InitZwitscherDatabase()
-	database.InitDocumentsDatabase()
-	database.InitVotesDatabase()
+	database.Setup()
 
 	htmlAccount.Setup()
 	htmlBasics.Setup()
@@ -66,23 +39,10 @@ func setup() {
 	htmlWork.Setup()
 	htmlZwitscher.Setup()
 
-	err = dataLogic.RefreshTitleHierarchy()
+	err := dataLogic.RefreshTitleHierarchy()
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	createHeadAdmin(os.Getenv("INIT_NAME"),
-		os.Getenv("INIT_USERNAME"),
-		os.Getenv("INIT_PASSWORD"))
-
-	createFirstPublication()
-
-	c := cron.New()
-	err = c.AddFunc("@daily", checkForClosingDiscussionsAndVotes)
-	if err != nil {
-		log.Fatal(err)
-	}
-	c.Start()
 
 	router := gin.New()
 	router.Use(gin.Logger(), gin.Recovery())
@@ -111,69 +71,6 @@ func setup() {
 
 	err = router.Run(os.Getenv("ADRESS") + ":8080")
 	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func checkForClosingDiscussionsAndVotes() {
-	t := time.Now().UTC()
-	list := database.DocumentList{}
-	err := list.GetAllOpenDiscussionsAndVotes()
-	if err != nil {
-		log.Println("Error while trying to check discussions and votes")
-		return
-	}
-	for _, doc := range list {
-		if doc.Info.Finishing.Before(t) {
-			err = dataLogic.CloseDiscussionOrVote(doc.UUID)
-		}
-	}
-}
-
-func createFirstPublication() {
-	pub := database.Publication{}
-
-	err := pub.GetByID(database.EternatityPublicationName)
-	if err == nil {
-		return
-	}
-
-	pub = database.Publication{
-		UUID:         database.EternatityPublicationName,
-		PublishTime:  time.Now().UTC(),
-		Publicated:   false,
-		BreakingNews: false,
-	}
-
-	err = pub.CreateMe()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func createHeadAdmin(displayName string, userName string, password string) {
-	displayName = strings.Trim(displayName, " '\"")
-	acc := database.Account{}
-	err := acc.GetByID(1)
-	if err != sql.ErrNoRows {
-		return
-	}
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	acc = database.Account{
-		DisplayName: displayName,
-		Flair:       "",
-		Username:    userName,
-		Password:    string(hashedPassword),
-		Role:        database.HeadAdmin,
-	}
-
-	err = acc.CreateMe()
-	if err != nil && err.Error() != "pq: duplicate key value violates unique constraint \"account_name_key\"" {
 		log.Fatal(err)
 	}
 }

@@ -1,7 +1,7 @@
 package websocket
 
 import (
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -44,7 +44,7 @@ func GetWebsocket(c *gin.Context) {
 	token := c.Param("token")
 	chat := database.Chat{}
 	userToken := c.Param("user")
-	err := chat.GetByID(token, userToken)
+	err := chat.GetByID(token)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -157,9 +157,5 @@ func setUpUser(m *Room, conn *websocket.Conn, chat database.Chat, myToken string
 }
 
 func getUserByToken(chat database.Chat, token string) (string, string, string) {
-	if chat.User1 == token {
-		return chat.Username1, chat.Message1, chat.Message2
-	} else {
-		return chat.Username2, chat.Message2, chat.Message1
-	}
+	return chat.Username1, "chat.Message1", " chat.Message2"
 }

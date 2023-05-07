@@ -2,12 +2,11 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -44,7 +43,7 @@ func hideCommentFromDiscussion(c *gin.Context, acc *database.Account, doc databa
 }
 
 func (b *BackgroundInfo) checkIfDiscussion(doc *database.Document) bool {
-	if doc.Type != database.Discussion && doc.Type != database.FinishedDiscussion {
+	if doc.Type != database.RunningDiscussion && doc.Type != database.FinishedDiscussion {
 		b.Message = DocumentIsNotADiscussion + "\n" + b.Message
 		return true
 	}
@@ -53,7 +52,7 @@ func (b *BackgroundInfo) checkIfDiscussion(doc *database.Document) bool {
 
 func (b *BackgroundInfo) checkIfCommentExists(doc *database.Document, comment string, hide *bool, legible *bool) bool {
 	exists := false
-	*legible = doc.Type == database.Discussion
+	*legible = doc.Type == database.RunningDiscussion
 	for i, tag := range doc.Info.Discussion {
 		if tag.UUID == comment {
 			*hide = !doc.Info.Discussion[i].Hidden
@@ -120,7 +119,7 @@ func commentOnDiscussion(c *gin.Context, acc *database.Account, doc database.Doc
 }
 
 func (b *BackgroundInfo) checkIfRunningDiscussion(doc *database.Document, legiable *bool) bool {
-	if doc.Type != database.Discussion {
+	if doc.Type != database.RunningDiscussion {
 		b.Message = CanNotCommentOnNonDiscussions + "\n" + b.Message
 		return true
 	}
@@ -141,12 +140,12 @@ func (b *BackgroundInfo) checkIfDiscussionHasRunOut(doc *database.Document, legi
 }
 
 func (b *BackgroundInfo) checkIfAllowedComment(doc *database.Document, writer *database.Account) bool {
-	if doc.Info.AnyPosterAllowed {
+	/*if doc.Info.AnyPosterAllowed {
 		return false
 	}
 	//check if user is added as poster if neither org-members or anyone is allowed to comment
 	if !doc.Info.OrganisationPosterAllowed {
-		if helper.GetPositionOfString(doc.Info.Poster, writer.DisplayName) == -1 {
+		if help.GetPositionOfString(doc.Info.Poster, writer.DisplayName) == -1 {
 			b.Message = YouCanNotCommentWithThisAccount + "\n" + b.Message
 			return true
 		}
@@ -164,12 +163,12 @@ func (b *BackgroundInfo) checkIfAllowedComment(doc *database.Document, writer *d
 		helper.GetPositionOfString(org.Info.Admins, writer.DisplayName) == -1 {
 		b.Message = YouCanNotCommentWithThisAccount + "\n" + b.Message
 		return true
-	}
+	}*/
 	return false
 }
 
 func (b *BackgroundInfo) trySavingComment(doc *database.Document, writer *database.Account) bool {
-	doc.Info.Discussion = append(doc.Info.Discussion, database.Discussions{
+	/*doc.Info.Discussion = append(doc.Info.Discussion, database.Discussions{
 		UUID:        uuid.New().String(),
 		Hidden:      false,
 		Written:     time.Now().UTC(),
@@ -182,6 +181,6 @@ func (b *BackgroundInfo) trySavingComment(doc *database.Document, writer *databa
 		doc.Info.Discussion = doc.Info.Discussion[:len(doc.Info.Discussion)-1]
 		b.Message = ErrorWhileCreatingComment + "\n" + b.Message
 		return true
-	}
+	}*/
 	return false
 }

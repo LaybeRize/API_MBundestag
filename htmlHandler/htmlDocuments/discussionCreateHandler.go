@@ -2,17 +2,12 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
-	"database/sql"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -76,8 +71,8 @@ func (discuss *DiscussionCreateStruct) fillStructFromContext(c *gin.Context) {
 	discuss.MakePrivate = generics.GetBool(c, "private")
 	discuss.FormatForTime = generics.TimeParseDiscussion
 	discuss.Info = database.DocumentInfo{
-		Poster:                    generics.GetStringArray(c, "poster"),
-		Viewer:                    generics.GetStringArray(c, "allowed"),
+		//Poster:                    generics.GetStringArray(c, "poster"),
+		//Viewer:                    generics.GetStringArray(c, "allowed"),
 		AnyPosterAllowed:          generics.GetBool(c, "anyPoster"),
 		OrganisationPosterAllowed: generics.GetBool(c, "orgPoster"),
 		Finishing:                 time.Now().Add(time.Hour*24 + 10*time.Minute),
@@ -95,7 +90,7 @@ var NonAdminsAreNotAllowedToLetEveryoneComment = "Normale Nutzer können nicht a
 var DiscussionCreationFailed = "Es ist ein Fehler beim erstellen der Diskussion aufgetreten"
 
 func (discuss *DiscussionCreateStruct) makeDiscussion(c *gin.Context, acc *database.Account) {
-	writer := &database.Account{}
+	/*writer := &database.Account{}
 	orga := &database.Organisation{}
 	id := ""
 	switch true {
@@ -119,16 +114,17 @@ func (discuss *DiscussionCreateStruct) makeDiscussion(c *gin.Context, acc *datab
 		return
 	}
 
-	htmlHandler.MakeSite(discuss, c, acc)
+	htmlHandler.MakeSite(discuss, c, acc)*/
 }
 
 func (discuss *DiscussionCreateStruct) organisationCheck(orga *database.Organisation, writer *database.Account) bool {
-	isAdmin := helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) != -1 || writer.Role == database.HeadAdmin
+	/*isAdmin := helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) != -1 || writer.Role == database.HeadAdmin
 	isUser := helper.GetPositionOfString(orga.Info.User, writer.DisplayName) != -1
 	if !isAdmin && !isUser {
 		discuss.Message = generics.YouAreNotAllowedForOrganisation + "\n" + discuss.Message
 		return true
 	}
+	*/
 	return false
 }
 
@@ -153,7 +149,7 @@ func (discuss *DiscussionCreateStruct) checkIfTimeInWindow() bool {
 }
 
 func (discuss *DiscussionCreateStruct) checkIfBoolsAreCorrect(orga *database.Organisation, writer *database.Account) bool {
-	isSecret := orga.Status == database.Secret
+	/*isSecret := orga.Status == database.Secret
 	isPublic := orga.Status == database.Public
 	isAdmin := helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) != -1 || writer.Role == database.HeadAdmin
 	//make sure that in secrete Organisation only private discussions are posted
@@ -180,12 +176,12 @@ func (discuss *DiscussionCreateStruct) checkIfBoolsAreCorrect(orga *database.Org
 	if !isAdmin && discuss.Info.AnyPosterAllowed {
 		discuss.Message = NonAdminsAreNotAllowedToLetEveryoneComment + "\n" + discuss.Message
 		return true
-	}
+	}*/
 	return false
 }
 
 func (discuss *DiscussionCreateStruct) addViewer(array []string) bool {
-	infoRef := &discuss.Info
+	/*infoRef := &discuss.Info
 	acc := database.Account{}
 	for _, str := range array {
 		err := acc.GetByDisplayName(str)
@@ -198,33 +194,33 @@ func (discuss *DiscussionCreateStruct) addViewer(array []string) bool {
 		}
 		infoRef.Allowed = append(infoRef.Allowed, acc.DisplayName)
 	}
-	infoRef.Allowed = helper.RemoveDuplicates(infoRef.Allowed)
+	infoRef.Allowed = helper.RemoveDuplicates(infoRef.Allowed)*/
 	return false
 }
 
 func (discuss *DiscussionCreateStruct) createDocument(id *string, flair string) bool {
 
-	discuss.Info.Finishing = discuss.Info.Finishing.UTC()
+	/*	discuss.Info.Finishing = discuss.Info.Finishing.UTC()
 
-	doc := database.Document{
-		UUID:         uuid.New().String(),
-		Organisation: discuss.SelectedOrganisation,
-		Type:         database.Discussion,
-		Author:       discuss.SelectedAccount,
-		Flair:        flair,
-		Title:        discuss.Title,
-		Subtitle:     sql.NullString{Valid: discuss.Subtitle != "", String: discuss.Subtitle},
-		HTMLContent:  helper.CreateHTML(discuss.Content),
-		Private:      discuss.MakePrivate,
-		Info:         discuss.Info,
-	}
+		doc := database.Document{
+			UUID:         uuid.New().String(),
+			Organisation: discuss.SelectedOrganisation,
+			Type:         database.Discussion,
+			Author:       discuss.SelectedAccount,
+			Flair:        flair,
+			Title:        discuss.Title,
+			Subtitle:     sql.NullString{Valid: discuss.Subtitle != "", String: discuss.Subtitle},
+			HTMLContent:  helper.CreateHTML(discuss.Content),
+			Private:      discuss.MakePrivate,
+			Info:         discuss.Info,
+		}
 
-	err := doc.CreateMe()
-	if err != nil {
-		discuss.Info.Finishing = discuss.Info.Finishing.In(time.Now().Location())
-		discuss.Message = DiscussionCreationFailed + "\n" + discuss.Message
-		return true
-	}
-	*id = doc.UUID
+		err := doc.CreateMe()
+		if err != nil {
+			discuss.Info.Finishing = discuss.Info.Finishing.In(time.Now().Location())
+			discuss.Message = DiscussionCreationFailed + "\n" + discuss.Message
+			return true
+		}
+		*id = doc.UUID*/
 	return false
 }

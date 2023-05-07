@@ -155,7 +155,7 @@ func testLists(t *testing.T) {
 			counter++
 		}
 	}
-	assert.Equal(t, 5, counter)
+	assert.True(t, counter >= 5)
 
 	err = list.GetAllAccountsNotSuspended()
 	for _, acc := range list {

@@ -2,7 +2,7 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -47,7 +47,7 @@ func GetDocumentListView(c *gin.Context) {
 
 func (listStruct *ViewDocumentListStruct) validateDocumentReadPageNext(c *gin.Context, i int, acc *database.Account, admin bool) error {
 	m := getMapForDocument(c, acc, admin)
-	err, exists := listStruct.DocumentList.GetDocumentsAfter(c.Query("uuid"), i+1, m, getTypesForDocument(c)...)
+	err, exists := listStruct.DocumentList.GetDocumentsAfter(c.Query("uuid"), i+1, acc.ID, m, getTypesForDocument(c)...)
 	if len(listStruct.DocumentList) == 0 {
 		return err
 	}
@@ -66,7 +66,7 @@ func (listStruct *ViewDocumentListStruct) validateDocumentReadPageNext(c *gin.Co
 
 func (listStruct *ViewDocumentListStruct) validateDocumentReadPageBefore(c *gin.Context, i int, acc *database.Account, admin bool) error {
 	m := getMapForDocument(c, acc, admin)
-	err, exists := listStruct.DocumentList.GetGetDocumentsBefore(c.Query("uuid"), i+1, m, getTypesForDocument(c)...)
+	err, exists := listStruct.DocumentList.GetDocumentsBefore(c.Query("uuid"), i+1, acc.ID, m, getTypesForDocument(c)...)
 	if len(listStruct.DocumentList) == 0 {
 		return err
 	}
@@ -88,18 +88,18 @@ func getTypesForDocument(c *gin.Context) (arr []database.DocumentType) {
 	case "post":
 		arr = []database.DocumentType{database.LegislativeText}
 	case "discussion":
-		arr = []database.DocumentType{database.Discussion, database.FinishedDiscussion}
+		arr = []database.DocumentType{database.RunningDiscussion, database.FinishedDiscussion}
 	case "vote":
-		arr = []database.DocumentType{database.FinishedVote, database.UnfinishedVote}
+		arr = []database.DocumentType{database.FinishedVote, database.RunningVote}
 	case "post,discussion":
-		arr = []database.DocumentType{database.Discussion, database.FinishedDiscussion,
+		arr = []database.DocumentType{database.RunningDiscussion, database.FinishedDiscussion,
 			database.LegislativeText}
 	case "post,vote":
-		arr = []database.DocumentType{database.FinishedVote, database.UnfinishedVote,
+		arr = []database.DocumentType{database.FinishedVote, database.RunningVote,
 			database.LegislativeText}
 	case "discussion,vote":
-		arr = []database.DocumentType{database.Discussion, database.FinishedDiscussion,
-			database.FinishedVote, database.UnfinishedVote}
+		arr = []database.DocumentType{database.RunningDiscussion, database.FinishedDiscussion,
+			database.FinishedVote, database.RunningVote}
 	default:
 	}
 	return

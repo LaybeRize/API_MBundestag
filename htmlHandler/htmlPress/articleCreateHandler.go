@@ -2,10 +2,10 @@ package htmlPress
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
+	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -51,7 +51,7 @@ func validateCreateArticle(c *gin.Context, acc *database.Account) (articleStruct
 
 	articleStruct.Article = database.Article{
 		Headline: generics.GetText(c, "title"),
-		Subtitle: gen.GetNullString(c, "subtitle"),
+		Subtitle: generics.GetNullString(c, "subtitle"),
 		Content:  generics.GetText(c, "content"),
 	}
 	articleStruct.SelectedAccount = generics.GetText(c, "selectedAccount")
@@ -86,7 +86,7 @@ func (s *CreateArticleStruct) updateFields(writer *database.Account) bool {
 	s.Article.Author = writer.DisplayName
 	s.Article.Flair = writer.Flair
 	s.Article.UUID = uuid.New().String()
-	s.Article.HTMLContent = helper.CreateHTML(s.Article.Content)
+	s.Article.HTMLContent = help.CreateHTML(s.Article.Content)
 	return false
 }
 

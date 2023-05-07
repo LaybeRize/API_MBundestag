@@ -2,7 +2,8 @@ package htmlPress
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
+	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -107,16 +108,16 @@ func (rejectStruct *RejectArticleStruct) createRejectionLetter(c *gin.Context) b
 		Title:   fmt.Sprintf(generics.LetterRejectTitle, rejectStruct.Article.Headline),
 		Content: fmt.Sprintf(generics.LetterRejectText, rejectStruct.Article.Subtitle.String, rejectStruct.Article.Content, generics.GetText(c, "content")),
 		Info: database.LetterInfo{
-			ModMessage:          true,
-			AllHaveToAgree:      false,
-			NoSigning:           true,
-			PeopleInvitedToSign: []string{rejectStruct.Article.Author},
-			PeopleNotYetSigned:  []string{},
-			Signed:              []string{},
-			Rejected:            []string{},
+			//ModMessage:          true,
+			AllHaveToAgree: false,
+			NoSigning:      true,
+			//PeopleInvitedToSign: []string{rejectStruct.Article.Author},
+			PeopleNotYetSigned: []string{},
+			Signed:             []string{},
+			Rejected:           []string{},
 		},
 	}
-	letter.HTMLContent = helper.CreateHTML(letter.Content)
+	letter.HTMLContent = help.CreateHTML(letter.Content)
 	err := letter.CreateMe()
 	if err != nil {
 		rejectStruct.Message = generics.RejectionCouldNotBeCreated

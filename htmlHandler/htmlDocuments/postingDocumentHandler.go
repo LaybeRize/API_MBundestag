@@ -2,7 +2,7 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -59,7 +59,7 @@ func (doc *DocumentNavigationStruct) selectFromAllYourAccounts(acc *database.Acc
 }
 
 func (doc *DocumentNavigationStruct) selectFromAccountsForOrg(c *gin.Context, acc *database.Account) {
-	doc.AccountSelect = true
+	/*doc.AccountSelect = true
 	doc.OrgAlreadySelected = true
 	doc.OrganisationSelect = false
 	doc.DocumentSelect = false
@@ -74,11 +74,11 @@ func (doc *DocumentNavigationStruct) selectFromAccountsForOrg(c *gin.Context, ac
 	}
 	newList := database.AccountList{}
 	for _, rangeAcc := range doc.Accounts {
-		if helper.GetPositionOfString(org.Info.User, rangeAcc.DisplayName) != -1 || helper.GetPositionOfString(org.Info.Admins, rangeAcc.DisplayName) != -1 {
+		if help.GetPositionOfString(org.Info.User, rangeAcc.DisplayName) != -1 || help.GetPositionOfString(org.Info.Admins, rangeAcc.DisplayName) != -1 {
 			newList = append(newList, rangeAcc)
 		}
 	}
-	doc.Accounts = newList
+	doc.Accounts = newList*/
 }
 
 func (doc *DocumentNavigationStruct) selectFromAccountOrganisation(c *gin.Context, acc *database.Account) {
@@ -103,7 +103,7 @@ func (doc *DocumentNavigationStruct) selectFromAccountOrganisation(c *gin.Contex
 }
 
 func (doc *DocumentNavigationStruct) selectEverythingYouCanDoWithTheOrg(c *gin.Context, acc *database.Account) {
-	doc.AccountSelect = false
+	/*doc.AccountSelect = false
 	doc.OrganisationSelect = false
 	doc.DocumentSelect = true
 	doc.CanPost = false
@@ -137,5 +137,5 @@ func (doc *DocumentNavigationStruct) selectEverythingYouCanDoWithTheOrg(c *gin.C
 	if helper.GetPositionOfString(org.Info.Admins, author.DisplayName) != -1 || author.Role == database.HeadAdmin {
 		doc.CanDiscussOrVote = true
 		doc.CanPost = true
-	}
+	}*/
 }

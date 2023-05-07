@@ -2,7 +2,7 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	gen "API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -43,7 +43,7 @@ type BackgroundInfo struct {
 func GetDocumentViewPage(c *gin.Context) {
 	doc := database.Document{}
 	acc, legiable := dataLogic.CheckUserPrivileged(c, database.HeadAdmin, database.Admin, database.MediaAdmin, database.User)
-	err := doc.GetByIDForAccount(c.Query("uuid"), acc.DisplayName)
+	err := doc.GetByIDOnlyWithAccount(c.Query("uuid"), acc.ID)
 
 	if err != nil {
 		htmlBasics.MakeErrorPage(c, &acc, gen.DocumentDoesNotExists)
@@ -63,12 +63,12 @@ func makeDocumentToPage(doc database.Document, legiable bool, c *gin.Context, ac
 	case database.LegislativeText:
 		canEdit := b.Admin || checkIfAdminInOrg(doc.Organisation, acc)
 		htmlHandler.MakeSite(&PostViewStruct{Document: doc, CanAddTag: canEdit, BackgroundInfo: b}, c, acc)
-	case database.Discussion:
+	case database.RunningDiscussion:
 		htmlHandler.FillOwnAccounts(&b, acc)
 		htmlHandler.MakeSite(&DiscussionViewStruct{Document: doc, Commentable: legiable, BackgroundInfo: b}, c, acc)
 	case database.FinishedDiscussion:
 		htmlHandler.MakeSite(&DiscussionViewStruct{Document: doc, Commentable: false, BackgroundInfo: b}, c, acc)
-	case database.UnfinishedVote:
+	case database.RunningVote:
 		htmlHandler.MakeSite(&VoteViewStruct{Document: doc, Voteable: legiable, BackgroundInfo: b}, c, acc)
 	case database.FinishedVote:
 		htmlHandler.MakeSite(&VoteViewStruct{Document: doc, Voteable: false, BackgroundInfo: b}, c, acc)
@@ -76,7 +76,7 @@ func makeDocumentToPage(doc database.Document, legiable bool, c *gin.Context, ac
 }
 
 func checkIfAdminInOrg(organisation string, acc *database.Account) bool {
-	org := database.Organisation{}
+	/*org := database.Organisation{}
 	err := org.GetByNameAndOnlyWithAccount(organisation, acc.DisplayName)
 	if err != nil {
 		return false
@@ -93,14 +93,14 @@ func checkIfAdminInOrg(organisation string, acc *database.Account) bool {
 		if admin.Linked.Valid && admin.Linked.Int64 == acc.ID {
 			return true
 		}
-	}
+	}*/
 	return false
 }
 
 func PostDocumentViewPage(c *gin.Context) {
 	doc := database.Document{}
 	acc, _ := dataLogic.CheckUserPrivileged(c)
-	err := doc.GetByIDForAccount(c.Query("uuid"), acc.DisplayName)
+	err := doc.GetByIDOnlyWithAccount(c.Query("uuid"), acc.ID)
 
 	if err != nil {
 		htmlBasics.MakeErrorPage(c, &acc, gen.DocumentDoesNotExists)

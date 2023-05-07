@@ -14,22 +14,25 @@ import (
 )
 
 var db *gorm.DB
-var connected = false
+var first = false
 var parallel = sync.Mutex{}
 
 func TestSetup() {
 	parallel.Lock()
 	defer parallel.Unlock()
 
-	if connected {
+	var err error
+	if db == nil {
+		db, err = gorm.Open(postgres.Open("user=postgres password=root dbname=test sslmode=disable"), &gorm.Config{})
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	if first {
 		return
 	}
-	connected = true
-	var err error
-	db, err = gorm.Open(postgres.Open("user=postgres password=root dbname=test sslmode=disable"), &gorm.Config{})
-	if err != nil {
-		fmt.Println(err)
-	}
+	first = true
 	err = db.Migrator().DropTable(&Account{}, &Letter{}, "letter_account", &Publication{}, &Article{}, &Title{}, "title_account",
 		&Organisation{}, "organisation_member", "organisation_admins", "organisation_account",
 		&Document{}, "doc_viewer", "doc_poster", "doc_allowed", &Zwitscher{}, &Votes{}, &Chat{})

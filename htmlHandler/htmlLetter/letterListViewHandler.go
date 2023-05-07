@@ -2,7 +2,7 @@ package htmlLetter
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -56,9 +56,9 @@ func GetViewModMailListPage(c *gin.Context) {
 	var err error
 	letterStruct := getEmtpyViewModMailListStruct()
 	if generics.GetIfType(c, "before") {
-		err = letterStruct.validateLetterReadPageBefore(c, i, "", true)
+		err = letterStruct.validateLetterReadPageBefore(c, i, 0, true)
 	} else {
-		err = letterStruct.validateLetterReadNextPage(c, i, "", true)
+		err = letterStruct.validateLetterReadNextPage(c, i, 0, true)
 	}
 	if err != nil {
 		htmlBasics.MakeErrorPage(c, &acc, generics.ErrorWhileLoadingLetters)
@@ -96,9 +96,9 @@ func GetViewLetterListPage(c *gin.Context) {
 	letterStruct := getEmtpyViewLetterListStruct(&acc)
 	letterStruct.SelectedAccount = viewer.DisplayName
 	if generics.GetIfType(c, "before") {
-		err = letterStruct.validateLetterReadPageBefore(c, i, viewer.DisplayName, false)
+		err = letterStruct.validateLetterReadPageBefore(c, i, viewer.ID, false)
 	} else {
-		err = letterStruct.validateLetterReadNextPage(c, i, viewer.DisplayName, false)
+		err = letterStruct.validateLetterReadNextPage(c, i, viewer.ID, false)
 	}
 	if err != nil {
 		htmlBasics.MakeErrorPage(c, &acc, generics.ErrorWhileLoadingLetters)
@@ -119,8 +119,14 @@ func PostViewLetterListPage(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/letter-list?usr="+url.QueryEscape(c.PostForm("selectedAccount")))
 }
 
-func (listStruct *ViewLetterListStruct) validateLetterReadNextPage(c *gin.Context, i int, acc string, modMails bool) error {
-	err, exists := listStruct.LetterList.GetPublicationAfter(c.Query("uuid"), i+1, acc, modMails)
+func (listStruct *ViewLetterListStruct) validateLetterReadNextPage(c *gin.Context, i int, acc int64, modMails bool) error {
+	var err error
+	var exists bool
+	if modMails {
+		err, exists = listStruct.LetterList.GetModMailsAfter(c.Query("uuid"), i+1)
+	} else {
+		err, exists = listStruct.LetterList.GetLettersAfter(c.Query("uuid"), i+1, acc)
+	}
 	if len(listStruct.LetterList) == 0 {
 		return err
 	}
@@ -136,8 +142,14 @@ func (listStruct *ViewLetterListStruct) validateLetterReadNextPage(c *gin.Contex
 	return err
 }
 
-func (listStruct *ViewLetterListStruct) validateLetterReadPageBefore(c *gin.Context, i int, acc string, modMails bool) error {
-	err, exists := listStruct.LetterList.GetPublicationBefore(c.Query("uuid"), i+1, acc, modMails)
+func (listStruct *ViewLetterListStruct) validateLetterReadPageBefore(c *gin.Context, i int, acc int64, modMails bool) error {
+	var err error
+	var exists bool
+	if modMails {
+		err, exists = listStruct.LetterList.GetModMailsBefore(c.Query("uuid"), i+1)
+	} else {
+		err, exists = listStruct.LetterList.GetLettersBefore(c.Query("uuid"), i+1, acc)
+	}
 	if len(listStruct.LetterList) == 0 {
 		return err
 	}

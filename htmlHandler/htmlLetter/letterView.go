@@ -2,7 +2,7 @@ package htmlLetter
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -48,7 +48,7 @@ func GetViewSingleLetter(c *gin.Context) {
 }
 
 func getLetter(c *gin.Context, letter *database.Letter, viewer *database.Account, acc *database.Account) bool {
-	err := letter.GetByID(c.Query("uuid"))
+	/*err := letter.GetByID(c.Query("uuid"))
 	//if the user is a moderator, and it's a modMail, just display it, no question asked
 	b := (acc.Role == database.HeadAdmin || acc.Role == database.Admin) && letter.Info.ModMessage
 	for i := 0; i < len(letter.Info.PeopleInvitedToSign) && !b; i++ {
@@ -60,7 +60,7 @@ func getLetter(c *gin.Context, letter *database.Letter, viewer *database.Account
 	if !b || err != nil {
 		htmlBasics.MakeErrorPage(c, acc, generics.LetterDoesntExistOrNotAccessable)
 		return true
-	}
+	}*/
 	return false
 }
 
@@ -81,7 +81,7 @@ func getViewer(c *gin.Context, viewer *database.Account, acc *database.Account) 
 }
 
 func (viewLetter *ViewSingleLetter) rejectLetter(viewer database.Account) {
-	letter := viewLetter.Letter
+	/*letter := viewLetter.Letter
 	if helper.GetPositionOfString(letter.Info.PeopleNotYetSigned, viewer.DisplayName) == -1 {
 		return
 	}
@@ -90,11 +90,11 @@ func (viewLetter *ViewSingleLetter) rejectLetter(viewer database.Account) {
 	err := letter.SaveChanges()
 	if err == nil {
 		viewLetter.Letter = letter
-	}
+	}*/
 }
 
 func (viewLetter *ViewSingleLetter) signLetter(viewer database.Account) {
-	letter := viewLetter.Letter
+	/*letter := viewLetter.Letter
 	if helper.GetPositionOfString(letter.Info.PeopleNotYetSigned, viewer.DisplayName) == -1 {
 		return
 	}
@@ -103,7 +103,7 @@ func (viewLetter *ViewSingleLetter) signLetter(viewer database.Account) {
 	err := letter.SaveChanges()
 	if err == nil {
 		viewLetter.Letter = letter
-	}
+	}*/
 }
 
 func getLetterWithoutAccount(uuid string) (viewStruct *ViewSingleLetter, err error) {

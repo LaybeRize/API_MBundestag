@@ -2,10 +2,9 @@ package htmlWork
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
 	"strings"
@@ -33,7 +32,7 @@ func GetOrganisationUserHandler(c *gin.Context) {
 
 	orgEdit := &OrgansationNameEdit{
 		OrganisationName: org.Name,
-		User:             org.Info.User,
+		//User:             org.Info.User,
 	}
 	htmlHandler.FillAllNotSuspendedNames(orgEdit)
 	htmlHandler.MakeSite(orgEdit, c, &acc)
@@ -62,15 +61,15 @@ func PostOrganisationUserHandler(c *gin.Context) {
 	}
 	htmlHandler.FillAllNotSuspendedNames(orgEdit)
 
-	old := make([]string, len(org.Info.User))
-	copy(old, org.Info.User)
+	//old := make([]string, len(org.Info.User))
+	//copy(old, org.Info.User)
 
 	switch true {
-	case gen.CheckAccountList(orgEdit, &orgEdit.User):
+	//case gen.CheckAccountList(orgEdit, &orgEdit.User):
 	case orgEdit.updateAllowed(org):
 	case orgEdit.trySaving(org):
 	default:
-		orgEdit.tryChangingFlair(org, old)
+		//orgEdit.tryChangingFlair(org, old)
 		orgEdit.Message = UserSuccessfullyChanged + "\n" + orgEdit.Message
 	}
 
@@ -78,7 +77,7 @@ func PostOrganisationUserHandler(c *gin.Context) {
 }
 
 func checkIfUserHasAdminAccount(acc database.Account, name string) (b bool, org *database.Organisation) {
-	b = false
+	/*b = false
 	org = &database.Organisation{}
 	err := org.GetByName(name)
 	if err != nil {
@@ -96,12 +95,12 @@ func checkIfUserHasAdminAccount(acc database.Account, name string) (b bool, org 
 		if helper.GetPositionOfString(org.Info.Admins, p.DisplayName) != -1 {
 			return true, org
 		}
-	}
+	}*/
 	return
 }
 
 func (e *OrgansationNameEdit) updateAllowed(org *database.Organisation) bool {
-	for _, name := range org.Info.Admins {
+	/*for _, name := range org.Info.Admins {
 		e.User = helper.RemoveFirstStringOccurrenceFromArray(e.User, name)
 	}
 	org.Info.User = e.User
@@ -130,7 +129,7 @@ func (e *OrgansationNameEdit) updateAllowed(org *database.Organisation) bool {
 		}
 		org.Info.Viewer = append(org.Info.Viewer, acc.DisplayName)
 	}
-	org.Info.Viewer = helper.RemoveDuplicates(org.Info.Viewer)
+	org.Info.Viewer = helper.RemoveDuplicates(org.Info.Viewer)*/
 	return false
 }
 
@@ -144,10 +143,10 @@ func (e *OrgansationNameEdit) trySaving(org *database.Organisation) bool {
 }
 
 func (e *OrgansationNameEdit) tryChangingFlair(org *database.Organisation, old []string) {
-	if org.Flair.Valid {
+	/*if org.Flair.Valid {
 		err := dataLogic.UpdateFlairs(old, org.Info.User, org.Flair.String)
 		if err != nil {
 			e.Message = FlairUserChangeError + "\n" + e.Message
 		}
-	}
+	}*/
 }

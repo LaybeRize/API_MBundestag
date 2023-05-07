@@ -2,10 +2,9 @@ package htmlWork
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -42,9 +41,9 @@ func GetEditOrganisationPage(c *gin.Context) {
 	}
 
 	if err != nil {
-		org.Status = database.Public
+		/*org.Status = database.Public
 		org.Info.Admins = []string{}
-		org.Info.User = []string{}
+		org.Info.User = []string{}*/
 	}
 
 	editOrg := getEmptyEditOrgStruct()
@@ -86,16 +85,16 @@ func vaildateOrganisationSearch(c *gin.Context) (editOrg *EditOrganisationStruct
 	editOrg.Organisation = database.Organisation{
 		Name:   generics.GetText(c, "name"),
 		Status: database.Public,
-		Info: database.OrganisationInfo{
+		/*Info: database.OrganisationInfo{
 			Admins: []string{},
 			User:   []string{},
-		},
+		},*/
 	}
 	return
 }
 
 func validateOrganisationEdit(c *gin.Context) (orgStruct *EditOrganisationStruct) {
-	orgStruct = getEmptyEditOrgStruct()
+	/*orgStruct = getEmptyEditOrgStruct()
 	orgStruct.Organisation = database.Organisation{
 		Name:      generics.GetText(c, "name"),
 		MainGroup: generics.GetText(c, "mainGroup"),
@@ -128,7 +127,7 @@ func validateOrganisationEdit(c *gin.Context) (orgStruct *EditOrganisationStruct
 		orgStruct.updateGroups()
 		orgStruct.tryUpdatingFlairs(original)
 		orgStruct.Message = generics.SuccessFullChangeOrg + "\n" + orgStruct.Message
-	}
+	}*/
 	return
 }
 
@@ -142,7 +141,7 @@ func (orgStruct *EditOrganisationStruct) checkIfExists(original *database.Organi
 }
 
 func (orgStruct *EditOrganisationStruct) addViewer(array []string) bool {
-	infoRef := &orgStruct.Organisation.Info
+	/*infoRef := &orgStruct.Organisation.Info
 	acc := database.Account{}
 	for _, str := range array {
 		err := acc.GetByDisplayName(str)
@@ -155,12 +154,12 @@ func (orgStruct *EditOrganisationStruct) addViewer(array []string) bool {
 		}
 		infoRef.Viewer = append(infoRef.Viewer, acc.DisplayName)
 	}
-	infoRef.Viewer = helper.RemoveDuplicates(infoRef.Viewer)
+	infoRef.Viewer = helper.RemoveDuplicates(infoRef.Viewer)*/
 	return false
 }
 
 func (orgStruct *EditOrganisationStruct) tryCreation() bool {
-	orgRef := &orgStruct.Organisation
+	/*orgRef := &orgStruct.Organisation
 	infoRef := &orgRef.Info
 	//invalidate string if the status is secret
 	if orgRef.Status == database.Secret {
@@ -181,21 +180,21 @@ func (orgStruct *EditOrganisationStruct) tryCreation() bool {
 	if err != nil {
 		orgStruct.Message = generics.OrganisationEditError + "\n" + orgStruct.Message
 		return true
-	}
+	}*/
 	return false
 }
 
 func (orgStruct *EditOrganisationStruct) updateGroups() {
-	if helper.GetPositionOfString(orgStruct.ExistingSubGroup, orgStruct.Organisation.SubGroup) == -1 {
+	/*if helper.GetPositionOfString(orgStruct.ExistingSubGroup, orgStruct.Organisation.SubGroup) == -1 {
 		orgStruct.ExistingSubGroup = append(orgStruct.ExistingSubGroup, orgStruct.Organisation.SubGroup)
 	}
 	if helper.GetPositionOfString(orgStruct.ExistingMainGroup, orgStruct.Organisation.MainGroup) == -1 {
 		orgStruct.ExistingMainGroup = append(orgStruct.ExistingMainGroup, orgStruct.Organisation.MainGroup)
-	}
+	}*/
 }
 
 func (orgStruct *EditOrganisationStruct) tryUpdatingFlairs(original *database.Organisation) {
-	org := &orgStruct.Organisation
+	/*org := &orgStruct.Organisation
 	var err error
 	var err2 error
 	//TODO rework flair system
@@ -217,5 +216,5 @@ func (orgStruct *EditOrganisationStruct) tryUpdatingFlairs(original *database.Or
 
 	if err != nil || err2 != nil {
 		orgStruct.Message = generics.FlairUpdateError + "\n" + orgStruct.Message
-	}
+	}*/
 }

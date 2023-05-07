@@ -8,9 +8,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"html/template"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
+	"path"
+	"regexp"
+	"runtime"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -141,4 +147,20 @@ func GetContextSetForUserWithFormAndQuery(t *testing.T, acc database.Account, m 
 	w, ctx := GetContextSetForUserWithForm(t, acc, m)
 	ctx.Request.URL.RawQuery = query
 	return w, ctx
+}
+
+func ChangePath() {
+	_, filename, _, _ := runtime.Caller(0)
+	pathStr := path.Dir(filename)
+	if strings.HasSuffix(pathStr, "API_MBundestag") {
+		return
+	}
+	var re = regexp.MustCompile(`(?m)^.*API_MBundestag`)
+
+	pathStr = re.FindAllString(pathStr, -1)[0]
+
+	err := os.Chdir(pathStr) // change to suit test file location
+	if err != nil {
+		log.Println(err)
+	}
 }

@@ -2,7 +2,7 @@ package htmlZwitscher
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -75,7 +75,7 @@ func PostZwitscherSingleViewPage(c *gin.Context) {
 }
 
 func (zwitscher *ZwitscherSingleViewStruct) getSelfTweet(c *gin.Context, acc *database.Account) bool {
-	err := zwitscher.Self.GetByID(c.Query("uuid"))
+	err := zwitscher.Self.GetByUUID(c.Query("uuid"))
 	if err != nil {
 		htmlBasics.MakeErrorPage(c, acc, generics.CouldNotFindTweet)
 		return true
@@ -101,7 +101,7 @@ func (zwitscher *ZwitscherSingleViewStruct) tryBlocking(c *gin.Context, acc *dat
 
 func (zwitscher *ZwitscherSingleViewStruct) trySelfConnect(c *gin.Context, acc *database.Account) bool {
 	if zwitscher.Self.ConnectedTo.Valid {
-		err := zwitscher.Parent.GetByID(zwitscher.Self.ConnectedTo.String)
+		err := zwitscher.Parent.GetByUUID(zwitscher.Self.ConnectedTo.String)
 		if err != nil {
 			htmlBasics.MakeErrorPage(c, acc, generics.CouldNotFindTweet)
 			return true
@@ -119,11 +119,11 @@ func (zwitscher *ZwitscherSingleViewStruct) tryNotBlocked(c *gin.Context, acc *d
 }
 
 func (zwitscher *ZwitscherSingleViewStruct) getComments(c *gin.Context, acc *database.Account) bool {
-	err := zwitscher.Zwitscher.GetCommentsFor(zwitscher.Self.UUID, zwitscher.CanSuspendZwitscher)
+	/*err := zwitscher.Zwitscher.GetCommentsFor(zwitscher.Self.UUID, zwitscher.CanSuspendZwitscher)
 	if err != nil {
 		htmlBasics.MakeErrorPage(c, acc, generics.CouldNotFindTweet)
 		return true
-	}
+	}*/
 	return false
 }
 

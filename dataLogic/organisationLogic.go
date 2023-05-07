@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-type Organsation struct {
+type Organisation struct {
 	Name      string
 	MainGroup string
 	SubGroup  string
@@ -17,13 +17,13 @@ type Organsation struct {
 	Admins    []string
 }
 
-func (org *Organsation) GetMe(name string) (err error) {
+func (org *Organisation) GetMe(name string) (err error) {
 	get := database.Organisation{}
 	err = get.GetByName(name)
 	if err != nil {
 		return
 	}
-	*org = Organsation{
+	*org = Organisation{
 		Name:      get.Name,
 		MainGroup: get.MainGroup,
 		SubGroup:  get.SubGroup,
@@ -51,7 +51,7 @@ var ErrorWhileRemovingFlair generics.Message = "Fehler beim Entfernen des Flairs
 var OrganisationSuccessfulCreated generics.Message = "Die Organisation wurde erfolgreich erstellt"
 var SucessfulChangedOrganisation generics.Message = "Die Organisation wurde erfolgreich geändert"
 
-func (org *Organsation) CreateMe(msg *generics.Message, positiv *bool) {
+func (org *Organisation) CreateMe(msg *generics.Message, positiv *bool) {
 	creation := database.Organisation{
 		Name:      org.Name,
 		MainGroup: org.MainGroup,
@@ -129,7 +129,7 @@ func addUsersTo(user []string, accounts *database.AccountList, msg *generics.Mes
 	return false
 }
 
-func (org *Organsation) ChangeMe(msg *generics.Message, positiv *bool) {
+func (org *Organisation) ChangeMe(msg *generics.Message, positiv *bool) {
 	orgnisationLock.Lock()
 	userLock.Lock()
 	defer orgnisationLock.Unlock()
@@ -172,7 +172,7 @@ func tryChanging(d *database.Organisation, msg *generics.Message, positiv *bool)
 	return true
 }
 
-func (org *Organsation) getOrganistion(d *database.Organisation, old *database.Organisation, msg *generics.Message) bool {
+func (org *Organisation) getOrganistion(d *database.Organisation, old *database.Organisation, msg *generics.Message) bool {
 	err := d.GetByName(org.Name)
 	err2 := old.GetByName(org.Name)
 	if err != nil || err2 != nil {
@@ -182,7 +182,7 @@ func (org *Organsation) getOrganistion(d *database.Organisation, old *database.O
 	return false
 }
 
-func (org *Organsation) Update(d *database.Organisation) bool {
+func (org *Organisation) Update(d *database.Organisation) bool {
 	d.MainGroup = org.MainGroup
 	d.SubGroup = org.SubGroup
 	d.Flair = sql.NullString{Valid: org.Flair != "", String: org.Flair}
@@ -190,7 +190,7 @@ func (org *Organsation) Update(d *database.Organisation) bool {
 	return false
 }
 
-func (org *Organsation) addFlairs(i *[]database.Account, msg *generics.Message, positiv *bool) {
+func (org *Organisation) addFlairs(i *[]database.Account, msg *generics.Message, positiv *bool) {
 	for _, acc := range *i {
 		switch true {
 		case acc.GetByDisplayName(acc.DisplayName) != nil:
@@ -214,7 +214,7 @@ func removeFlairsOrganisation(i *[]database.Account, old *database.Organisation,
 	}
 }
 
-func (org *Organsation) ChangeOnlyMembers(msg *generics.Message, positiv *bool) {
+func (org *Organisation) ChangeOnlyMembers(msg *generics.Message, positiv *bool) {
 	orgnisationLock.Lock()
 	userLock.Lock()
 	defer orgnisationLock.Unlock()

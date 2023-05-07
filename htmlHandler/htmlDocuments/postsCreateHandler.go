@@ -2,7 +2,8 @@ package htmlDocuments
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
+	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlBasics"
@@ -91,10 +92,10 @@ func (post *CreatePostPageStruct) validateCreatePost(c *gin.Context, acc *databa
 }
 
 func (post *CreatePostPageStruct) checkIfAllowedToPost(orga *database.Organisation, writer *database.Account) bool {
-	if helper.GetPositionOfString(orga.Info.Admins, writer.DisplayName) == -1 && writer.Role != database.HeadAdmin {
+	/*if help.GetPositionOfString(orga.Info.Admins, writer.DisplayName) == -1 && writer.Role != database.HeadAdmin {
 		post.Message = generics.YouAreNotAllowedForOrganisation + "\n" + post.Message
 		return true
-	}
+	}*/
 	return false
 }
 
@@ -115,7 +116,7 @@ func (post *CreatePostPageStruct) tryCreationPost(id *string, writer *database.A
 		Flair:        writer.Flair,
 		Title:        post.Title,
 		Subtitle:     sql.NullString{Valid: post.Subtitle != "", String: post.Subtitle},
-		HTMLContent:  helper.CreateHTML(post.Content),
+		HTMLContent:  help.CreateHTML(post.Content),
 		Private:      false,
 		Info: database.DocumentInfo{
 			Post: []database.Posts{},

@@ -2,10 +2,10 @@ package htmlLetter
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
+	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -110,7 +110,7 @@ func validateLetterCreate(c *gin.Context, acc *database.Account, modMail bool) (
 	letterStruct = getEmtpyLetterCreateStruct(modMail, acc)
 	//extract all infos from the context
 	letterStruct.Letter = getLetterFromContext(c)
-	letterStruct.Letter.Info.ModMessage = modMail
+	//letterStruct.Letter.Info.ModMessage = modMail
 
 	letterStruct.SelectedAccount = generics.GetText(c, "selectedAccount")
 
@@ -121,7 +121,7 @@ func validateLetterCreate(c *gin.Context, acc *database.Account, modMail bool) (
 	case generics.CheckLengthContentLayer(letterStruct, &letterStruct.Letter, generics.LetterContentLimit):
 	case generics.CheckLengthTitleLayer(letterStruct, &letterStruct.Letter, generics.LetterTitleLimit):
 	case letterStruct.checkWriter(writer, acc):
-	case gen.CheckAccountList(letterStruct, &letterStruct.Letter.Info.PeopleInvitedToSign):
+	//case gen.CheckAccountList(letterStruct, &letterStruct.Letter.Info.PeopleInvitedToSign):
 	default:
 		letterStruct.setSigning(writer)
 		errReturn = letterStruct.finishLetter(c, writer)
@@ -135,9 +135,9 @@ func getLetterFromContext(c *gin.Context) database.Letter {
 		Author:  generics.GetText(c, "author"),
 		Content: generics.GetText(c, "content"),
 		Info: database.LetterInfo{
-			AllHaveToAgree:      generics.GetBool(c, "allHaveToSign"),
-			NoSigning:           generics.GetBool(c, "noSigning"),
-			PeopleInvitedToSign: generics.GetStringArray(c, "user"),
+			AllHaveToAgree: generics.GetBool(c, "allHaveToSign"),
+			NoSigning:      generics.GetBool(c, "noSigning"),
+			//PeopleInvitedToSign: generics.GetStringArray(c, "user"),
 		},
 	}
 }
@@ -158,7 +158,7 @@ func (s *LetterCreatePageStruct) checkWriter(writer *database.Account, acc *data
 }
 
 func (s *LetterCreatePageStruct) setSigning(writer *database.Account) {
-	if s.Letter.Info.NoSigning {
+	/*if s.Letter.Info.NoSigning {
 		s.Letter.Info.PeopleNotYetSigned = []string{}
 		s.Letter.Info.Signed = []string{}
 		s.Letter.Info.Rejected = []string{}
@@ -175,12 +175,12 @@ func (s *LetterCreatePageStruct) setSigning(writer *database.Account) {
 	}
 	if helper.GetPositionOfString(s.Letter.Info.PeopleInvitedToSign, writer.DisplayName) == -1 && writer.DisplayName != "" && !s.ModMail {
 		s.Letter.Info.PeopleInvitedToSign = append(s.Letter.Info.PeopleInvitedToSign, writer.DisplayName)
-	}
+	}*/
 }
 
 func (s *LetterCreatePageStruct) finishLetter(c *gin.Context, writer *database.Account) (err error) {
 	//set other parameter needed
-	s.Letter.HTMLContent = helper.CreateHTML(s.Letter.Content)
+	s.Letter.HTMLContent = help.CreateHTML(s.Letter.Content)
 	s.Letter.UUID = uuid.New().String()
 	//set the letter parameter, either for the actual author or for the author the moderation created
 	if s.ModMail {

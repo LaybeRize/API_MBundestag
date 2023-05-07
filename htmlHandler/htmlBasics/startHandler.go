@@ -15,7 +15,7 @@ import (
 type StartPageStruct struct {
 	LoggedIn bool
 	Account  database.Account
-	Info     string
+	gen.MessageStruct
 }
 
 func GetStartPage(c *gin.Context) {
@@ -23,7 +23,10 @@ func GetStartPage(c *gin.Context) {
 
 	htmlHandler.MakeSite(&StartPageStruct{LoggedIn: b,
 		Account: acc,
-		Info:    "",
+		MessageStruct: gen.MessageStruct{
+			Message: "",
+			Positiv: false,
+		},
 	}, c, &acc)
 }
 
@@ -41,7 +44,10 @@ func PostStartLogout(c *gin.Context) {
 
 	htmlHandler.MakeSite(&StartPageStruct{LoggedIn: false,
 		Account: acc,
-		Info:    gen.SuccessfullLoggedOut,
+		MessageStruct: gen.MessageStruct{
+			Message: gen.SuccessfullLoggedOut,
+			Positiv: true,
+		},
 	}, c, &database.Account{Role: database.NotLoggedIn})
 }
 
@@ -82,8 +88,8 @@ func validateUserLogin(c *gin.Context) *StartPageStruct {
 	}
 	//if the login block timer has not run out yet, return the time until it runs out
 	if acc.NextLoginTime.Valid && !acc.NextLoginTime.Time.Before(time.Now().UTC()) {
-		return getLoggedOutStartPageStruct(
-			acc.NextLoginTime.Time.Format(gen.FormatStringForLoginTimeout))
+		return getLoggedOutStartPageStruct(gen.Message(
+			acc.NextLoginTime.Time.Format(gen.FormatStringForLoginTimeout)))
 	}
 	//check password
 	err = bcrypt.CompareHashAndPassword([]byte(acc.Password), []byte(c.PostForm("password")))
@@ -91,8 +97,8 @@ func validateUserLogin(c *gin.Context) *StartPageStruct {
 		//if the password is wrong update the login tries and return the correct error message
 		if success := updateLoginTries(&acc); success != nil {
 			if success == AccountCanNotBeLoggindBecauseOfTimeout {
-				return getLoggedOutStartPageStruct(
-					acc.NextLoginTime.Time.Format(gen.FormatStringForLoginTimeout))
+				return getLoggedOutStartPageStruct(gen.Message(
+					acc.NextLoginTime.Time.Format(gen.FormatStringForLoginTimeout)))
 			} else {
 				return getLoggedOutStartPageStruct(gen.InternalValidationError)
 			}
@@ -109,21 +115,26 @@ func validateUserLogin(c *gin.Context) *StartPageStruct {
 	err = acc.SaveChanges()
 	if err != nil {
 		return getLoggedOutStartPageStruct(gen.InternalValidationError)
-
 	}
 
 	return &StartPageStruct{
 		Account:  acc,
 		LoggedIn: true,
-		Info:     "",
+		MessageStruct: gen.MessageStruct{
+			Message: gen.SuccessfulLoggedIn,
+			Positiv: true,
+		},
 	}
 }
 
-func getLoggedOutStartPageStruct(info string) *StartPageStruct {
+func getLoggedOutStartPageStruct(info gen.Message) *StartPageStruct {
 	return &StartPageStruct{
 		Account:  database.Account{Role: database.NotLoggedIn},
 		LoggedIn: false,
-		Info:     info,
+		MessageStruct: gen.MessageStruct{
+			Message: info,
+			Positiv: false,
+		},
 	}
 }
 

@@ -2,6 +2,7 @@ package generics
 
 import (
 	"API_MBundestag/help"
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"strings"
@@ -27,6 +28,15 @@ func GetNumber(c *gin.Context, field string, standard int, min int, max int) int
 
 func GetBool(c *gin.Context, field string) bool {
 	return c.PostForm(field) == "true"
+}
+
+func GetNullString(c *gin.Context, field string) sql.NullString {
+	s := sql.NullString{
+		String: GetText(c, field),
+		Valid:  false,
+	}
+	s.Valid = s.String != ""
+	return s
 }
 
 func GetStringArray(c *gin.Context, field string) []string {

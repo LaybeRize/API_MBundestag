@@ -2,10 +2,10 @@ package htmlWork
 
 import (
 	"API_MBundestag/dataLogic"
-	"API_MBundestag/database_old"
+	"API_MBundestag/database"
+	"API_MBundestag/help"
 	"API_MBundestag/help/generics"
 	"API_MBundestag/htmlHandler"
-	gen "API_MBundestag/htmlHandler/generics"
 	"API_MBundestag/htmlHandler/htmlBasics"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -42,7 +42,7 @@ func GetEditTitlePage(c *gin.Context) {
 	}
 
 	if err != nil {
-		titleStruct.Title = database.Title{Info: database.TitleInfo{Names: []string{}}}
+		//titleStruct.Title = database.Title{Info: database.TitleInfo{Names: []string{}}}
 	}
 
 	htmlHandler.MakeSite(titleStruct, c, &acc)
@@ -90,7 +90,7 @@ func validateDeleteTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 		editStruct.Message = generics.ErrorWhileDeletingTitle + "\n" + editStruct.Message
 		return
 	}
-	editStruct.TitleNames = helper.RemoveFirstStringOccurrenceFromArray(editStruct.TitleNames, editStruct.Title.Name)
+	editStruct.TitleNames = help.RemoveFirstStringOccurrenceFromArray(editStruct.TitleNames, editStruct.Title.Name)
 
 	err = dataLogic.RefreshTitleHierarchy()
 	if err != nil {
@@ -102,7 +102,7 @@ func validateDeleteTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 }
 
 func validateEditTitle(c *gin.Context) (editStruct *EditTitleStruct) {
-	editStruct = getEmptyEditTitleStruct()
+	/*editStruct = getEmptyEditTitleStruct()
 	editStruct.Title = database.Title{
 		Name:      generics.GetText(c, "newName"),
 		MainGroup: generics.GetText(c, "mainGroup"),
@@ -128,7 +128,7 @@ func validateEditTitle(c *gin.Context) (editStruct *EditTitleStruct) {
 		editStruct.changeFlair(oldTitle)
 		editStruct.refreshHierarchy()
 		editStruct.Message = generics.SuccessFullEditTitle + "\n" + editStruct.Message
-	}
+	}*/
 	return
 }
 
@@ -153,16 +153,16 @@ func (editStruct *EditTitleStruct) tryChange(oldName string) bool {
 }
 
 func (editStruct *EditTitleStruct) updateGroups() {
-	if helper.GetPositionOfString(editStruct.ExistingSubGroup, editStruct.Title.SubGroup) == -1 {
+	if help.GetPositionOfString(editStruct.ExistingSubGroup, editStruct.Title.SubGroup) == -1 {
 		editStruct.ExistingSubGroup = append(editStruct.ExistingSubGroup, editStruct.Title.SubGroup)
 	}
-	if helper.GetPositionOfString(editStruct.ExistingMainGroup, editStruct.Title.MainGroup) == -1 {
+	if help.GetPositionOfString(editStruct.ExistingMainGroup, editStruct.Title.MainGroup) == -1 {
 		editStruct.ExistingMainGroup = append(editStruct.ExistingMainGroup, editStruct.Title.MainGroup)
 	}
 }
 
 func (editStruct *EditTitleStruct) changeFlair(old *database.Title) {
-	newTitle := &editStruct.Title
+	/*newTitle := &editStruct.Title
 	var err error
 	switch true {
 	case !old.Flair.Valid && !newTitle.Flair.Valid:
@@ -177,7 +177,7 @@ func (editStruct *EditTitleStruct) changeFlair(old *database.Title) {
 	}
 	if err != nil {
 		editStruct.Message = generics.FlairUpdateError + "\n" + editStruct.Message
-	}
+	}*/
 }
 
 func (editStruct *EditTitleStruct) refreshHierarchy() {

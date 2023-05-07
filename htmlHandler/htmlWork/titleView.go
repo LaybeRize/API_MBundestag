@@ -8,7 +8,8 @@ import (
 
 func GetTitleViewPage(c *gin.Context) {
 	acc, _ := dataLogic.CheckUserPrivileged(c)
-	gen.MakeSite(&dataLogic.TitleHierarchy, c, &acc)
+	val := dataLogic.GetTitleHierarchy()
+	gen.MakeSite(&val, c, &acc)
 }
 
 //Sorry but this doesn't need a test lol
