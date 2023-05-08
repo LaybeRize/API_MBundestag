@@ -15,6 +15,38 @@ func TestUserLogic(t *testing.T) {
 	t.Run("testGetUser", testGetUser)
 	t.Run("testChangeUser", testChangeUser)
 	t.Run("testChangePassword", testChangePassword)
+	t.Run("testChangeLoginTries", testChangeLoginTries)
+	t.Run("testUpdateResetLoginTries", testUpdateResetLoginTries)
+}
+
+func testUpdateResetLoginTries(t *testing.T) {
+	err := ResetLoginTries("accUserLogic")
+	assert.Nil(t, err)
+	acc := database.Account{}
+	err = acc.GetByUserName("accUserLogic")
+	assert.Nil(t, err)
+	assert.Equal(t, 0, acc.LoginTries)
+	assert.False(t, acc.NextLoginTime.Valid)
+}
+
+func testChangeLoginTries(t *testing.T) {
+	acc := database.Account{Username: "accUserLogic"}
+	err := UpdateLoginTries(&acc)
+	assert.Nil(t, err)
+	err = acc.GetByDisplayName(acc.DisplayName)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, acc.LoginTries)
+	assert.False(t, acc.NextLoginTime.Valid)
+	err = UpdateLoginTries(&acc)
+	assert.Nil(t, err)
+	err = UpdateLoginTries(&acc)
+	assert.Nil(t, err)
+	err = UpdateLoginTries(&acc)
+	assert.Equal(t, AccountCanNotBeLoggindBecauseOfTimeout, err)
+	err = acc.GetByDisplayName(acc.DisplayName)
+	assert.Nil(t, err)
+	assert.Equal(t, 4, acc.LoginTries)
+	assert.True(t, acc.NextLoginTime.Valid)
 }
 
 func testChangePassword(t *testing.T) {

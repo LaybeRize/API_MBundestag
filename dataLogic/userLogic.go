@@ -5,6 +5,7 @@ import (
 	"API_MBundestag/help/generics"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+	"time"
 )
 
 type Account struct {
@@ -144,4 +145,62 @@ func ChangePassword(displayName string, oldPassword string, newPassword string, 
 	}
 	*msg = AccountPasswordSuccessfulChanged + "\n" + *msg
 	*positiv = true
+}
+
+func ResetLoginTries(displayName string) (err error) {
+	userLock.Lock()
+	defer userLock.Unlock()
+	var acc database.Account
+	err = acc.GetByDisplayName(displayName)
+	if err != nil {
+		return
+	}
+	acc.LoginTries = 0
+	acc.NextLoginTime.Valid = false
+	err = acc.SaveChanges()
+	return
+}
+
+type ValidationErrors struct {
+	Info string
+}
+
+func (err ValidationErrors) Error() string {
+	return err.Info
+}
+
+var AccountCanNotBeLoggindBecauseOfTimeout = ValidationErrors{Info: "account can not be logged in at the moment, because the timer has not run out"}
+
+func UpdateLoginTries(acc *database.Account) (err error) {
+	userLock.Lock()
+	defer userLock.Unlock()
+	err = acc.GetByUserName(acc.Username)
+	if err != nil {
+		return
+	}
+	acc.LoginTries += 1
+	//set the timer appropriate for the tries
+	switch acc.LoginTries {
+	case 1, 2, 3:
+	case 4, 5:
+		acc.NextLoginTime.Time = time.Now().UTC().Add(time.Second * 5)
+	case 6, 7:
+		acc.NextLoginTime.Time = time.Now().UTC().Add(time.Minute)
+	case 8, 9:
+		acc.NextLoginTime.Time = time.Now().UTC().Add(time.Minute * 5)
+	default:
+		min := acc.LoginTries * acc.LoginTries * 10
+		acc.NextLoginTime.Time = time.Now().UTC().Add(time.Second * time.Duration(min))
+	}
+	//make it valid if it had been set
+	if acc.LoginTries > 3 {
+		acc.NextLoginTime.Valid = true
+	}
+	err = acc.SaveChanges()
+	//check if the timer was saved correctly
+	if err == nil && acc.LoginTries > 3 {
+		err = AccountCanNotBeLoggindBecauseOfTimeout
+	}
+	acc.NextLoginTime.Time = acc.NextLoginTime.Time.In(time.Local)
+	return
 }

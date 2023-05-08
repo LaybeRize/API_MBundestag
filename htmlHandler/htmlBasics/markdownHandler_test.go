@@ -34,6 +34,6 @@ func testCorrectHTMLResponse(t *testing.T) {
 	if err = json.Unmarshal([]byte(w.Body.String()), &dat); err != nil {
 		panic(err)
 	}
-	assert.Equal(t, `<p class="text-justify break-words"><em>test</em> and <strong>test</strong></p>
+	assert.Equal(t, `<p `+help.ReplacerMap["p"]+`><em`+help.ReplacerMap["em"]+`>test</em> and <strong`+help.ReplacerMap["strong"]+`>test</strong></p>
 `, dat["html"].(string))
 }

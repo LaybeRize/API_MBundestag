@@ -70,7 +70,13 @@ func requestingAccount(c *gin.Context) database.Account {
 	return account
 }
 
-func RequestToSetCookieForAccount(acc database.Account, c *gin.Context) (err error) {
+func RequestToSetCookieForAccount(acc *database.Account, c *gin.Context) (err error) {
+	userLock.Lock()
+	defer userLock.Unlock()
+	err = acc.GetByUserName(acc.Username)
+	if err != nil {
+		return
+	}
 	acc.ExpDate.Time = time.Now().UTC().Add(time.Second * time.Duration(timeUntilTokenRunsOut))
 	acc.ExpDate.Valid = true
 	acc.RefToken.String = uuid.New().String()
@@ -86,7 +92,13 @@ func RequestToSetCookieForAccount(acc database.Account, c *gin.Context) (err err
 	return nil
 }
 
-func ClearCookieFromUser(acc database.Account) (err error) {
+func ClearCookieFromUser(acc *database.Account) (err error) {
+	userLock.Lock()
+	defer userLock.Unlock()
+	err = acc.GetByUserName(acc.Username)
+	if err != nil {
+		return
+	}
 	acc.ExpDate = sql.NullTime{}
 	acc.RefToken = sql.NullString{}
 
