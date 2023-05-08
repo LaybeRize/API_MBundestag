@@ -1,114 +1,84 @@
 package generics
 
 import (
-	"API_MBundestag/database"
-	"fmt"
 	"reflect"
+
+	database "API_MBundestag/database"
 )
 
-func CheckTitelAndContentEmptyLayer[T, B any](message *T, content *B) bool {
+type Message string
+
+type MessageStruct struct {
+	Message Message
+	Positiv bool
+}
+
+var ContentOrTitleAreEmpty Message = "Inhalt oder Titel sind leer"
+
+func (m *Message) CheckTitleAndContentEmpty(content *any) bool {
 	ref := reflect.ValueOf(content).Elem()
 	if ref.FieldByName("Title").String() == "" ||
 		ref.FieldByName("Content").String() == "" {
-		//get the layer for the error and write back the message
-		ref = reflect.ValueOf(message).Elem()
-		mesg := ref.FieldByName("Message").String()
-		ref.FieldByName("Message").SetString(ContentAndTitelAreEmpty + "\n" + mesg)
+		// get the layer for the error and write back the message
+		*m = ContentOrTitleAreEmpty + "\n" + *m
 		return true
 	}
 	return false
 }
 
-func CheckOrgOrTitle[T, B any](message *T, content *B) bool {
+func (m *Message) CheckOrgOrTitle(content *any) bool {
 	ref := reflect.ValueOf(content).Elem()
 	if ref.FieldByName("MainGroup").String() == "" ||
 		ref.FieldByName("SubGroup").String() == "" ||
 		ref.FieldByName("Name").String() == "" {
-		ref = reflect.ValueOf(message).Elem()
-		mesg := ref.FieldByName("Message").String()
-		ref.FieldByName("Message").SetString(NoMainGroupSubGroupOrNameProvided + "\n" + mesg)
+		*m = NoMainGroupSubGroupOrNameProvided + "\n" + *m
 		return true
 	}
 	return false
 }
 
-func CheckFieldNotEmpty[T any](v *T, fieldName string, errorMessage string) bool {
-	ref := reflect.ValueOf(v).Elem()
+func (m *Message) CheckFieldNotEmpty(content *any, fieldName string, errorMessage Message) bool {
+	ref := reflect.ValueOf(content).Elem()
 	if ref.FieldByName(fieldName).String() == "" {
-		mesg := ref.FieldByName("Message").String()
-		ref.FieldByName("Message").SetString(errorMessage + "\n" + mesg)
+		*m = errorMessage + "\n" + *m
 		return true
 	}
 	return false
 }
 
-func CheckOrgStatus[T any](message *T, statusString database.StatusString) bool {
+func (m *Message) CheckOrgStatus(statusString database.StatusString) bool {
 	for _, r := range database.Stati {
 		if r == string(statusString) {
 			return false
 		}
 	}
-	ref := reflect.ValueOf(message).Elem()
-	mesg := ref.FieldByName("Message").String()
-	ref.FieldByName("Message").SetString(StatusIsInvalid + "\n" + mesg)
+	*m = StatusIsInvalid + "\n" + *m
 	return true
 }
 
-func CheckLengthField[T any](v *T, length int, fieldName string, errorMessage string) bool {
-	return checkLength(v, v, fieldName, length, errorMessage)
+func (m *Message) CheckLengthField(content *any, fieldName string, length int, errorMessage Message) bool {
+	ref := reflect.ValueOf(content).Elem()
+	if len([]rune(ref.FieldByName(fieldName).String())) > length {
+		*m = errorMessage + "\n" + *m
+		return true
+	}
+	return false
 }
 
-func CheckLengthFieldLayer[T, B any](message *T, content *B, length int, fieldName string, errorMessage string) bool {
-	return checkLength(message, content, fieldName, length, errorMessage)
+func (m *Message) CheckLengthContent(content *any, length int) bool {
+	return m.CheckLengthField(content, "Content", length, ContentTooLong)
 }
 
-func CheckTitelAndContentEmpty[T any](v *T) bool {
-	return CheckTitelAndContentEmptyLayer(v, v)
-}
-
-func CheckLengthContentLayer[T, B any](message *T, content *B, length int) bool {
-	return checkLength(message, content, "Content", length, ContentTooLong)
-}
-
-func CheckLengthContent[T any](v *T, length int) bool {
-	return checkLength(v, v, "Content", length, ContentTooLong)
-}
-
-func CheckLengthTitleLayer[T, B any](message *T, content *B, length int) bool {
-	return checkLength(message, content, "Title", length, TitleTooLong)
-}
-
-func CheckLengthTitle[T any](v *T, length int) bool {
-	return checkLength(v, v, "Title", length, TitleTooLong)
+func (m *Message) CheckLengthTitle(content *any, length int) bool {
+	return m.CheckLengthField(content, "Title", length, TitleTooLong)
 }
 
 // CheckLengthSubtitleLayer checks if the Subtitle.String of the content exceeds the length of the parameter length
-func CheckLengthSubtitleLayer[T, B any](message *T, content *B, length int) bool {
-	ref := reflect.ValueOf(content).Elem()
-	ref = ref.FieldByName("Subtitle")
-	if len([]rune(ref.FieldByName("String").String())) > length {
-		ref = reflect.ValueOf(message).Elem()
-		mesg := ref.FieldByName("Message").String()
-		ref.FieldByName("Message").SetString(fmt.Sprintf(SubtitleTooLong, length) + "\n" + mesg)
-		return true
-	}
-	return false
+func (m *Message) CheckLengthSubtitle(content *any, length int) bool {
+	return m.CheckLengthField(content, "Subtitle", length, SubtitleTooLong)
 }
 
-func CheckLengthSubtitle[T any](v *T, length int) bool {
-	return checkLength(v, v, "Subtitle", length, SubtitleTooLong)
-}
-
-func checkLength[T, B any](message *T, content *B, fieldName string, length int, errorMsg string) bool {
-	ref := reflect.ValueOf(content).Elem()
-	if len([]rune(ref.FieldByName(fieldName).String())) > length {
-		ref = reflect.ValueOf(message).Elem()
-		mesg := ref.FieldByName("Message").String()
-		ref.FieldByName("Message").SetString(fmt.Sprintf(errorMsg, length) + "\n" + mesg)
-		return true
-	}
-	return false
-}
+/*
 
 func CheckWriter[T any](v *T, writer *database.Account, acc *database.Account) bool {
 	ref := reflect.ValueOf(v).Elem()
@@ -135,3 +105,6 @@ func CheckOrgExists[T any](v *T, org *database.Organisation) bool {
 	}
 	return false
 }
+
+
+*/
