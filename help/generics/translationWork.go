@@ -7,8 +7,8 @@ package generics
 var ViewerError = "Etwas ist schiefgelaufen dabei die Hauptaccounts zuordnen zu können"
 var OrganisationCreationError = "Es ist ein Fehler beim erstellen der Organisation aufgetreten"
 var OrganisationEditError = "Es ist ein fehler beim Abspeichern der Veränderungen aufgetreten"
-var OrgFindingError = "Konnte die Organisation mit diesem Namen nicht finden"
-var OrgEditNonExistantElement = "Eine Organisation die nicht exisitiert kann nicht angepasst werden"
+var OrgFindingError Message = "Konnte die Organisation mit diesem Namen nicht finden"
+var OrgEditNonExistantElement Message = "Eine Organisation die nicht exisitiert kann nicht angepasst werden"
 
 //title
 
@@ -31,8 +31,8 @@ var ErrorWhileLodingOrganisationView = "Es ist ein Fehler beim laden der Organis
 
 //org
 
-var SuccessFullCreationOrg = "Organisation wurde erfolgreich erstellt"
-var SuccessFullFindOrg = "Konnte Organisation finden"
+var SuccessFullCreationOrg Message = "Organisation wurde erfolgreich erstellt"
+var SuccessFullFindOrg Message = "Konnte Organisation finden"
 var SuccessFullChangeOrg = "Organisation erfolgreich verändert"
 
 //title

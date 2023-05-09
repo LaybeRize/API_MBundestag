@@ -1,9 +1,8 @@
 package generics
 
 import (
+	"API_MBundestag/database"
 	"reflect"
-
-	database "API_MBundestag/database"
 )
 
 type Message string
@@ -13,20 +12,18 @@ type MessageStruct struct {
 	Positiv bool
 }
 
-var ContentOrTitleAreEmpty Message = "Inhalt oder Titel sind leer"
-
 func (m *Message) CheckTitleAndContentEmpty(content *any) bool {
 	ref := reflect.ValueOf(content).Elem()
 	if ref.FieldByName("Title").String() == "" ||
 		ref.FieldByName("Content").String() == "" {
 		// get the layer for the error and write back the message
-		*m = ContentOrTitleAreEmpty + "\n" + *m
+		*m = ContentAndTitelAreEmpty + "\n" + *m
 		return true
 	}
 	return false
 }
 
-func (m *Message) CheckOrgOrTitle(content *any) bool {
+func (m *Message) CheckOrgOrTitle(content any) bool {
 	ref := reflect.ValueOf(content).Elem()
 	if ref.FieldByName("MainGroup").String() == "" ||
 		ref.FieldByName("SubGroup").String() == "" ||
@@ -37,7 +34,7 @@ func (m *Message) CheckOrgOrTitle(content *any) bool {
 	return false
 }
 
-func (m *Message) CheckFieldNotEmpty(content *any, fieldName string, errorMessage Message) bool {
+func (m *Message) CheckFieldNotEmpty(content any, fieldName string, errorMessage Message) bool {
 	ref := reflect.ValueOf(content).Elem()
 	if ref.FieldByName(fieldName).String() == "" {
 		*m = errorMessage + "\n" + *m
@@ -56,7 +53,7 @@ func (m *Message) CheckOrgStatus(statusString database.StatusString) bool {
 	return true
 }
 
-func (m *Message) CheckLengthField(content *any, fieldName string, length int, errorMessage Message) bool {
+func (m *Message) CheckLengthField(content any, fieldName string, length int, errorMessage Message) bool {
 	ref := reflect.ValueOf(content).Elem()
 	if len([]rune(ref.FieldByName(fieldName).String())) > length {
 		*m = errorMessage + "\n" + *m
@@ -65,46 +62,42 @@ func (m *Message) CheckLengthField(content *any, fieldName string, length int, e
 	return false
 }
 
-func (m *Message) CheckLengthContent(content *any, length int) bool {
+func (m *Message) CheckLengthContent(content any, length int) bool {
 	return m.CheckLengthField(content, "Content", length, ContentTooLong)
 }
 
-func (m *Message) CheckLengthTitle(content *any, length int) bool {
+func (m *Message) CheckLengthTitle(content any, length int) bool {
 	return m.CheckLengthField(content, "Title", length, TitleTooLong)
 }
 
-// CheckLengthSubtitleLayer checks if the Subtitle.String of the content exceeds the length of the parameter length
-func (m *Message) CheckLengthSubtitle(content *any, length int) bool {
+// CheckLengthSubtitle checks if the Subtitle of the content exceeds the length of the parameter length
+func (m *Message) CheckLengthSubtitle(content any, length int) bool {
 	return m.CheckLengthField(content, "Subtitle", length, SubtitleTooLong)
 }
 
-/*
-
-func CheckWriter[T any](v *T, writer *database.Account, acc *database.Account) bool {
-	ref := reflect.ValueOf(v).Elem()
-	mesg := ref.FieldByName("Message").String()
-	err := writer.GetByDisplayName(ref.FieldByName("SelectedAccount").String())
+func (m *Message) CheckWriter(content any, writer *database.Account, acc *database.Account) bool {
+	ref := reflect.ValueOf(content).Elem()
+	err := writer.GetByDisplayNameWithParent(ref.FieldByName("SelectedAccount").String())
 	if err != nil {
-		ref.FieldByName("Message").SetString(AccountDoesNotExists + "\n" + mesg)
+		*m = AccountDoesNotExists + "\n" + *m
 		return true
 	}
-	if (writer.Linked.Int64 != acc.ID || writer.Suspended) && !(writer.DisplayName == acc.DisplayName) {
-		ref.FieldByName("Message").SetString(AccountIsNotYours + "\n" + mesg)
+
+	if writer.Suspended ||
+		(writer.Parent == nil && writer.ID != acc.ID) ||
+		(writer.Parent != nil && writer.Parent.ID != acc.ID) {
+		*m = AccountIsNotYours + "\n" + *m
 		return true
 	}
 	return false
 }
 
-func CheckOrgExists[T any](v *T, org *database.Organisation) bool {
-	ref := reflect.ValueOf(v).Elem()
+func (m *Message) CheckOrgExists(content any, org *database.Organisation) bool {
+	ref := reflect.ValueOf(content).Elem()
 	err := org.GetByName(ref.FieldByName("SelectedOrganisation").String())
 	if err != nil {
-		mesg := ref.FieldByName("Message").String()
-		ref.FieldByName("Message").SetString(OrganisationDoesNotExist + "\n" + mesg)
+		*m = OrganisationDoesNotExist + "\n" + *m
 		return true
 	}
 	return false
 }
-
-
-*/

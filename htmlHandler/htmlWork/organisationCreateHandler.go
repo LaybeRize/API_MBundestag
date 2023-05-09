@@ -16,11 +16,11 @@ type CreateOrganisationStruct struct {
 	ExistingMainGroup []string
 	ExistingSubGroup  []string
 	Names             []string
-	Message           string
+	generics.MessageStruct
 }
 
 func getEmptyCreateOrgStruct() *CreateOrganisationStruct {
-	request := CreateOrganisationStruct{Message: ""}
+	request := CreateOrganisationStruct{}
 	htmlHandler.FillAllNotSuspendedNames(&request)
 	htmlHandler.FillOrganisationGroups(&request)
 	return &request
@@ -67,77 +67,14 @@ func validateOrganisationCreate(c *gin.Context) (orgStruct *CreateOrganisationSt
 	orgRef := &orgStruct.Organisation
 	//remove any user also added as admins
 	for _, str := range orgRef.Member {
-		orgRef.Admins = help.RemoveFirstStringOccurrenceFromArray(orgRef.Admins, str)
+		orgStruct.Organisation.Admins = help.RemoveFirstStringOccurrenceFromArray(orgStruct.Organisation.Admins, str)
 	}
 
 	switch true {
-	case generics.CheckOrgOrTitle(orgStruct, orgRef):
-	case generics.CheckOrgStatus(orgStruct, orgRef.Status):
-	case orgStruct.tryCreation():
+	case orgStruct.Message.CheckOrgOrTitle(orgRef):
+	case orgStruct.Message.CheckOrgStatus(orgRef.Status):
 	default:
-		orgStruct.updateGroups()
-		orgStruct.tryUpdatingFlairs()
-		orgStruct.Message = generics.SuccessFullCreationOrg + "\n" + orgStruct.Message
+		orgStruct.Organisation.CreateMe(&orgStruct.Message, &orgStruct.Positiv)
 	}
 	return
-}
-
-func (orgStruct *CreateOrganisationStruct) addViewer(array []string) bool {
-	/*infoRef := &orgStruct.Organisation.Info
-	acc := database.Account{}
-	for _, str := range array {
-		err := acc.GetByDisplayName(str)
-		if acc.Role == database.PressAccount {
-			err = acc.GetByID(acc.Linked.Int64)
-		}
-		if err != nil {
-			orgStruct.Message = generics.ViewerError + "\n" + orgStruct.Message
-			return true
-		}
-		infoRef.Viewer = append(infoRef.Viewer, acc.DisplayName)
-	}
-	infoRef.Viewer = helper.RemoveDuplicates(infoRef.Viewer)*/
-	return false
-}
-
-func (orgStruct *CreateOrganisationStruct) tryCreation() bool {
-	/*orgRef := &orgStruct.Organisation
-	//hidden and secret organisation are not allowed to have a flair
-	if orgRef.Status == database.Secret || orgRef.Status == database.Hidden {
-		orgRef.Flair.Valid = false
-	}
-
-	err := orgRef.CreateMe()
-	//if anyhting goes wrong while creating the org
-	if err != nil {
-		orgStruct.Message = generics.OrganisationCreationError + "\n" + orgStruct.Message
-		return true
-	}*/
-	return false
-}
-
-func (orgStruct *CreateOrganisationStruct) updateGroups() {
-	//add to the existing main groups (because they exist now) if they are not already in the list
-	/*if helper.GetPositionOfString(orgStruct.ExistingSubGroup, orgStruct.Organisation.SubGroup) == -1 {
-		orgStruct.ExistingSubGroup = append(orgStruct.ExistingSubGroup, orgStruct.Organisation.SubGroup)
-	}
-	if helper.GetPositionOfString(orgStruct.ExistingMainGroup, orgStruct.Organisation.MainGroup) == -1 {
-		orgStruct.ExistingMainGroup = append(orgStruct.ExistingMainGroup, orgStruct.Organisation.MainGroup)
-	}*/
-}
-
-func (orgStruct *CreateOrganisationStruct) tryUpdatingFlairs() {
-	/*orgRef := &orgStruct.Organisation
-	infoRef := &orgRef.Info
-	var err error
-	var err2 error
-	//TODO rework flair system
-	if orgRef.Flair.Valid {
-		err = dataLogic.UpdateFlairs([]string{}, infoRef.Admins, orgRef.Flair.String)
-		err2 = dataLogic.UpdateFlairs([]string{}, infoRef.User, orgRef.Flair.String)
-	}
-	if err != nil || err2 != nil {
-		orgStruct.Message = generics.FlairUpdateError + "\n" + orgStruct.Message
-		return
-	}*/
 }

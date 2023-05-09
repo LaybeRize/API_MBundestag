@@ -3,14 +3,13 @@ package generics
 /* genericChecks */
 // error
 
-var ContentAndTitelAreEmpty = "Inhalt und Titel dürfen nicht leer sein"
+var ContentAndTitelAreEmpty Message = "Inhalt und Titel dürfen nicht leer sein"
 var ContentTooLong Message = "Der Inhalt überschreitet das Zeichenlimit von %d"
 var TitleTooLong Message = "Der Titel überschreitet das Zeichenlimit von %d"
 var SubtitleTooLong Message = "Der Untertitel überschreitet das Zeichenlimit von %d"
-var AccountDoesNotExists = "Der ausgewählte Account existiert nicht"
-var AccountIsNotYours = "Der ausgewählte Account steht dir nicht zur Verfügung"
-var OrganisationDoesNotExist = "Die ausgewählte Organisation existiert nicht"
-var AccountDoesNotExistError = "Account \"%s\" existiert nicht"
+var AccountDoesNotExists Message = "Der ausgewählte Account existiert nicht"
+var AccountIsNotYours Message = "Der ausgewählte Account steht dir nicht zur Verfügung"
+var OrganisationDoesNotExist Message = "Die ausgewählte Organisation existiert nicht"
 var StatusIsInvalid Message = "Der ausgewälte Status ist nicht zulässig"
 var NoMainGroupSubGroupOrNameProvided Message = "Es wurde keine Hauptkategorie, Unterkategorie oder ein Name angegeben"
 
