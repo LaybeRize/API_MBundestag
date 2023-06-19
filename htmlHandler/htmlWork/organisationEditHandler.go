@@ -76,6 +76,7 @@ func vaildateOrganisationSearch(c *gin.Context) (editOrg *EditOrganisationStruct
 
 	if err == nil {
 		editOrg.Message = generics.SuccessFullFindOrg + "\n" + editOrg.Message
+		editOrg.Positiv = true
 		return
 	}
 	editOrg.Message = generics.OrgFindingError + "\n" + editOrg.Message
@@ -104,10 +105,9 @@ func validateOrganisationEdit(c *gin.Context) (orgStruct *EditOrganisationStruct
 		orgRef.Admins = help.RemoveFirstStringOccurrenceFromArray(orgRef.Admins, str)
 	}
 
-	original := &database.Organisation{}
 	switch true {
 	case orgStruct.Message.CheckOrgOrTitle(orgRef):
-	case orgStruct.checkIfExists(original):
+	case orgStruct.checkIfExists():
 	case orgStruct.Message.CheckOrgStatus(orgRef.Status):
 	default:
 		orgStruct.Organisation.ChangeMe(&orgStruct.Message, &orgStruct.Positiv)
@@ -115,7 +115,8 @@ func validateOrganisationEdit(c *gin.Context) (orgStruct *EditOrganisationStruct
 	return
 }
 
-func (orgStruct *EditOrganisationStruct) checkIfExists(original *database.Organisation) bool {
+func (orgStruct *EditOrganisationStruct) checkIfExists() bool {
+	original := database.Organisation{}
 	err := original.GetByName(orgStruct.Organisation.Name)
 	if err != nil {
 		orgStruct.Message = generics.OrgEditNonExistantElement + "\n" + orgStruct.Message

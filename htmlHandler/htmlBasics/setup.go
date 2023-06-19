@@ -20,4 +20,8 @@ func Setup() {
 		Site:     "testPreview",
 		Template: "testPreview",
 	}
+
+	htmlHandler.AddFunctionToLinks("/start", GetStartPage)
+	htmlHandler.AddFunctionToLinks("/start", PostStartPage)
+	htmlHandler.AddFunctionToLinks("/markdown", PostJsonMarkdown)
 }

@@ -35,4 +35,14 @@ func Setup() {
 		Site:     "editUserOrganisation",
 		Template: "editUserOrganisation",
 	}
+
+	htmlHandler.AddFunctionToLinks("/create-organisation", GetCreateOrganisationPage)
+	htmlHandler.AddFunctionToLinks("/create-organisation", PostCreateOrganisationPage)
+	htmlHandler.AddFunctionToLinks("/edit-organisation", GetEditOrganisationPage)
+	htmlHandler.AddFunctionToLinks("/edit-organisation", PostEditOrganisationPage)
+	htmlHandler.AddFunctionToLinks("/edit-user-organisation", GetOrganisationUserHandler)
+	htmlHandler.AddFunctionToLinks("/edit-user-organisation", PostOrganisationUserHandler)
+
+	htmlHandler.AddFunctionToLinks("/organisation", GetOrganisationViewPage)
+	htmlHandler.AddFunctionToLinks("/hidden-organisation", GetHiddenOrganisationViewPage)
 }

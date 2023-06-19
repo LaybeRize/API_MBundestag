@@ -17,12 +17,27 @@ type Organisation struct {
 	Admins    []string
 }
 
+func (org *Organisation) GetMeWhenAdmin(name string, id int64) (err error) {
+	get := database.Organisation{}
+	err = get.GetByNameAndOnlyWhenAccountAsAdmin(name, id)
+	if err != nil {
+		return
+	}
+	org.translateTo(&get)
+	return
+}
+
 func (org *Organisation) GetMe(name string) (err error) {
 	get := database.Organisation{}
 	err = get.GetByName(name)
 	if err != nil {
 		return
 	}
+	org.translateTo(&get)
+	return
+}
+
+func (org *Organisation) translateTo(get *database.Organisation) {
 	*org = Organisation{
 		Name:      get.Name,
 		MainGroup: get.MainGroup,
@@ -38,7 +53,6 @@ func (org *Organisation) GetMe(name string) (err error) {
 	for i, acc := range get.Admins {
 		org.Admins[i] = acc.DisplayName
 	}
-	return
 }
 
 var AccountDoesNotExistError = "Account \"%s\" existiert nicht"

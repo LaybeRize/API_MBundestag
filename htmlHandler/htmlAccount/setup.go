@@ -30,4 +30,13 @@ func Setup() {
 		Site:     "password",
 		Template: "password",
 	}
+
+	htmlHandler.AddFunctionToLinks("/create-user", GetCreateUserPage)
+	htmlHandler.AddFunctionToLinks("/create-user", PostCreateUserPage)
+	htmlHandler.AddFunctionToLinks("/edit-user", GetEditUserPage)
+	htmlHandler.AddFunctionToLinks("/edit-user", PostEditUserPage)
+	htmlHandler.AddFunctionToLinks("/view-user", GetAdminListUserPage)
+	htmlHandler.AddFunctionToLinks("/self-info", GetViewOfProfilePage)
+	htmlHandler.AddFunctionToLinks("/password", GetPasswordChangePage)
+	htmlHandler.AddFunctionToLinks("/password", PostPasswordChangePage)
 }

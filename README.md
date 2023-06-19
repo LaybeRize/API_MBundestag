@@ -1,7 +1,7 @@
 # MBundestag (a political simulation)
 <img style="float: left" width="159px" src="https://github.com/LaybeRize/API_MBundestag/blob/main/public/MBundestagLogo.png?raw=true" alt="MBundestag Logo">
 
-[![Release](https://img.shields.io/badge/Version-1.0.0-blue)](https://img.shields.io)
+[![Release](https://img.shields.io/badge/Version-0.10.0-blue)](https://img.shields.io)
 
 The goal of this project is to create a webserver application, that 
 provides all the necessary pages and functionalities to run a political
@@ -447,3 +447,5 @@ is found.
 
 css and fonts from https://github.com/twbs/icons copied, to keep it local.
 package htmlWrapper is an extended version of https://github.com/Xeoncross/got.
+Every image used in the project (aside from the logo which is the offical german eagle) 
+is from https://unsplash.com/.

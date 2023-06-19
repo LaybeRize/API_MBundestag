@@ -11,7 +11,9 @@ import (
 	"log"
 	"net/http"
 	"reflect"
+	"runtime"
 	"strconv"
+	"strings"
 )
 
 var Template *wr.Templates
@@ -158,3 +160,25 @@ var PageIdentityMap = map[string]BasicStruct{
 		Template: "displayOrganisation",
 	},
 }
+
+func getFunctionName(temp interface{}) string {
+	strs := strings.Split(runtime.FuncForPC(reflect.ValueOf(temp).Pointer()).Name(), ".")
+	return strs[len(strs)-1]
+}
+
+func AddFunctionToLinks(link string, function gin.HandlerFunc) {
+	isPost := strings.HasPrefix("Post", getFunctionName(function))
+	Links = append(Links, Routing{
+		IsPost: isPost,
+		HFunc:  function,
+		Link:   link,
+	})
+}
+
+type Routing struct {
+	IsPost bool
+	HFunc  gin.HandlerFunc
+	Link   string
+}
+
+var Links = make([]Routing, 10)

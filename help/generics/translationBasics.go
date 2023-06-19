@@ -18,3 +18,4 @@ var AccountIsSuspended Message = "Dein Account wurde suspendiert"
 //error page
 
 var NotAuthorizedToView = "Du bist nicht authorisiert, diese Seite zu benutzen"
+var CouldNotFindOrganisation = "Konnte die Organisation nicht finden"

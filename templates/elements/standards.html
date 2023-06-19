@@ -7,7 +7,7 @@
     #content#
 </h1>
 <!-- message: text -->
-<p id="info" {{if ueq #text# ""}} class="bg-rose-800 text-white p-2 mt-2" {{end}}>
+<p id="info" {{if ueq #text# ""}} class="{{if .Positiv}}bg-emerald-800{{else}}bg-rose-800{{end}} text-white p-2 mt-2" {{end}}>
     {{#text#}}
 </p>
 <!-- preview: code -->

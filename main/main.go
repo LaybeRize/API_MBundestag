@@ -12,7 +12,6 @@ import (
 	"API_MBundestag/htmlHandler/htmlPress"
 	"API_MBundestag/htmlHandler/htmlWork"
 	"API_MBundestag/htmlHandler/htmlZwitscher"
-	"API_MBundestag/htmlHandler/websocket"
 	wr "API_MBundestag/htmlWrapper"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -77,67 +76,54 @@ func setup() {
 
 func initRouter(router *gin.Engine) {
 	//router.GET("/reload/*path", htmlHandler.MiddleHardwareForTests)
-	//router.GET("/preview", htmlBasics.GetPreviewPage)
-	//router.POST("/preview", htmlBasics.PostPreviewPage)
-	//TODO: make to comment all code above this in production
-	//websockets
-	router.GET("/chat/:token/:user", websocket.GetWebsocket)
-	//json
-	router.POST("/markdown", htmlBasics.PostJsonMarkdown)
-	//html
-	router.GET("/start", htmlBasics.GetStartPage)
-	router.POST("/start", htmlBasics.PostStartPage)
-	router.GET("/create-user", htmlAccount.GetCreateUserPage)
-	router.GET("/edit-user", htmlAccount.GetEditUserPage)
-	router.POST("/create-user", htmlAccount.PostCreateUserPage)
-	router.POST("/edit-user", htmlAccount.PostEditUserPage)
-	router.GET("/view-user", htmlAccount.GetAdminListUserPage)
-	router.GET("/create-organisation", htmlWork.GetCreateOrganisationPage)
-	router.POST("/create-organisation", htmlWork.PostCreateOrganisationPage)
-	router.GET("/edit-organisation", htmlWork.GetEditOrganisationPage)
-	router.POST("/edit-organisation", htmlWork.PostEditOrganisationPage)
-	router.GET("/organisation", htmlWork.GetOrganisationViewPage)
-	router.GET("/hidden-organisation", htmlWork.GetHiddenOrganisationViewPage)
-	router.GET("/create-title", htmlWork.GetCreateTitlePage)
-	router.POST("/create-title", htmlWork.PostCreateTitlePage)
-	router.GET("/edit-title", htmlWork.GetEditTitlePage)
-	router.POST("/edit-title", htmlWork.PostEditTitlePage)
-	router.GET("/title", htmlWork.GetTitleViewPage)
-	router.GET("/create-letter", htmlLetter.GetCreateLetterPage)
-	router.POST("/create-letter", htmlLetter.PostCreateLetterPage)
-	router.GET("/letter", htmlLetter.GetViewSingleLetter)
-	router.GET("/create-mod-mail", htmlLetter.GetCreateModMailPage)
-	router.POST("/create-mod-mail", htmlLetter.PostCreateModMailPage)
-	router.GET("/create-article", htmlPress.GetCreateArticlePage)
-	router.POST("/create-article", htmlPress.PostCreateArticlePage)
-	router.GET("/admin-letter-view", htmlLetter.GetAdminLetterViewPage)
-	router.POST("/admin-letter-view", htmlLetter.PostAdminLetterViewPage)
-	router.GET("/newspaper-approval", htmlPress.GetNewsPaperHiddenListPage)
-	router.GET("/newspaper", htmlPress.GetNewsPaperListPage)
-	router.GET("/publication", htmlPress.GetPublicationViewPage)
-	router.POST("/publication", htmlPress.PostPublicationViewPage)
-	router.GET("/reject-article", htmlPress.GetRejectArticlePage)
-	router.POST("/reject-article", htmlPress.PostRejectArticlePage)
-	router.GET("/mod-mails", htmlLetter.GetViewModMailListPage)
-	router.GET("/letter-list", htmlLetter.GetViewLetterListPage)
-	router.POST("/letter-list", htmlLetter.PostViewLetterListPage)
-	router.GET("/self-info", htmlAccount.GetViewOfProfilePage)
-	router.GET("/password", htmlAccount.GetPasswordChangePage)
-	router.POST("/password", htmlAccount.PostPasswordChangePage)
-	router.GET("/zwitscher", htmlZwitscher.GetZwitscherLatestViewPage)
-	router.POST("/zwitscher", htmlZwitscher.PostZwitscherLatestViewPage)
-	router.GET("/create-post", htmlDocuments.GetPostsCreateHandler)
-	router.POST("/create-post", htmlDocuments.PostPostsCreateHandler)
-	router.GET("/create-discussion", htmlDocuments.GetDiscussionCreatePage)
-	router.POST("/create-discussion", htmlDocuments.PostDiscussionCreatePage)
-	router.GET("/create-vote", htmlDocuments.GetVoteCreatePage)
-	router.POST("/create-vote", htmlDocuments.PostVoteCreatePage)
-	router.GET("/create-document", htmlDocuments.GetDocumentNavigationPage)
-	router.GET("/document", htmlDocuments.GetDocumentViewPage)
-	router.POST("/document", htmlDocuments.PostDocumentViewPage)
-	router.GET("/documents", htmlDocuments.GetDocumentListView)
-	router.GET("/vote", htmlDocuments.GetVoteHandler)
-	router.POST("/vote", htmlDocuments.PostVoteHandler)
-	router.GET("/edit-user-organisation", htmlWork.GetOrganisationUserHandler)
-	router.POST("/edit-user-organisation", htmlWork.PostOrganisationUserHandler)
+	for _, r := range htmlHandler.Links {
+		if r.IsPost {
+			router.POST(r.Link, r.HFunc)
+		} else {
+			router.GET(r.Link, r.HFunc)
+		}
+	}
+
+	/*
+		router.GET("/chat/:token/:user", websocket.GetWebsocket)
+
+		router.GET("/edit-user-organisation", htmlWork.GetOrganisationUserHandler)
+		router.POST("/edit-user-organisation", htmlWork.PostOrganisationUserHandler)
+		router.GET("/create-title", htmlWork.GetCreateTitlePage)
+		router.POST("/create-title", htmlWork.PostCreateTitlePage)
+		router.GET("/edit-title", htmlWork.GetEditTitlePage)
+		router.POST("/edit-title", htmlWork.PostEditTitlePage)
+		router.GET("/title", htmlWork.GetTitleViewPage)
+		router.GET("/create-letter", htmlLetter.GetCreateLetterPage)
+		router.POST("/create-letter", htmlLetter.PostCreateLetterPage)
+		router.GET("/letter", htmlLetter.GetViewSingleLetter)
+		router.GET("/create-mod-mail", htmlLetter.GetCreateModMailPage)
+		router.POST("/create-mod-mail", htmlLetter.PostCreateModMailPage)
+		router.GET("/create-article", htmlPress.GetCreateArticlePage)
+		router.POST("/create-article", htmlPress.PostCreateArticlePage)
+		router.GET("/admin-letter-view", htmlLetter.GetAdminLetterViewPage)
+		router.POST("/admin-letter-view", htmlLetter.PostAdminLetterViewPage)
+		router.GET("/newspaper-approval", htmlPress.GetNewsPaperHiddenListPage)
+		router.GET("/newspaper", htmlPress.GetNewsPaperListPage)
+		router.GET("/publication", htmlPress.GetPublicationViewPage)
+		router.POST("/publication", htmlPress.PostPublicationViewPage)
+		router.GET("/reject-article", htmlPress.GetRejectArticlePage)
+		router.POST("/reject-article", htmlPress.PostRejectArticlePage)
+		router.GET("/mod-mails", htmlLetter.GetViewModMailListPage)
+		router.GET("/letter-list", htmlLetter.GetViewLetterListPage)
+		router.POST("/letter-list", htmlLetter.PostViewLetterListPage)
+		router.GET("/zwitscher", htmlZwitscher.GetZwitscherLatestViewPage)
+		router.POST("/zwitscher", htmlZwitscher.PostZwitscherLatestViewPage)
+		router.GET("/create-post", htmlDocuments.GetPostsCreateHandler)
+		router.POST("/create-post", htmlDocuments.PostPostsCreateHandler)
+		router.GET("/create-discussion", htmlDocuments.GetDiscussionCreatePage)
+		router.POST("/create-discussion", htmlDocuments.PostDiscussionCreatePage)
+		router.GET("/create-vote", htmlDocuments.GetVoteCreatePage)
+		router.POST("/create-vote", htmlDocuments.PostVoteCreatePage)
+		router.GET("/create-document", htmlDocuments.GetDocumentNavigationPage)
+		router.GET("/document", htmlDocuments.GetDocumentViewPage)
+		router.POST("/document", htmlDocuments.PostDocumentViewPage)
+		router.GET("/documents", htmlDocuments.GetDocumentListView)
+		router.GET("/vote", htmlDocuments.GetVoteHandler)
+		router.POST("/vote", htmlDocuments.PostVoteHandler)*/
 }
