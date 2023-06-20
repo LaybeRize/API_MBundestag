@@ -87,13 +87,7 @@ func initRouter(router *gin.Engine) {
 	/*
 		router.GET("/chat/:token/:user", websocket.GetWebsocket)
 
-		router.GET("/edit-user-organisation", htmlWork.GetOrganisationUserHandler)
-		router.POST("/edit-user-organisation", htmlWork.PostOrganisationUserHandler)
-		router.GET("/create-title", htmlWork.GetCreateTitlePage)
-		router.POST("/create-title", htmlWork.PostCreateTitlePage)
-		router.GET("/edit-title", htmlWork.GetEditTitlePage)
-		router.POST("/edit-title", htmlWork.PostEditTitlePage)
-		router.GET("/title", htmlWork.GetTitleViewPage)
+
 		router.GET("/create-letter", htmlLetter.GetCreateLetterPage)
 		router.POST("/create-letter", htmlLetter.PostCreateLetterPage)
 		router.GET("/letter", htmlLetter.GetViewSingleLetter)

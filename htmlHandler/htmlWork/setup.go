@@ -42,7 +42,11 @@ func Setup() {
 	htmlHandler.AddFunctionToLinks("/edit-organisation", PostEditOrganisationPage)
 	htmlHandler.AddFunctionToLinks("/edit-user-organisation", GetOrganisationUserHandler)
 	htmlHandler.AddFunctionToLinks("/edit-user-organisation", PostOrganisationUserHandler)
-
+	htmlHandler.AddFunctionToLinks("/create-title", GetCreateTitlePage)
+	htmlHandler.AddFunctionToLinks("/create-title", PostCreateTitlePage)
+	htmlHandler.AddFunctionToLinks("/edit-title", GetEditTitlePage)
+	htmlHandler.AddFunctionToLinks("/edit-title", PostEditTitlePage)
 	htmlHandler.AddFunctionToLinks("/organisation", GetOrganisationViewPage)
 	htmlHandler.AddFunctionToLinks("/hidden-organisation", GetHiddenOrganisationViewPage)
+	htmlHandler.AddFunctionToLinks("/title", GetTitleViewPage)
 }

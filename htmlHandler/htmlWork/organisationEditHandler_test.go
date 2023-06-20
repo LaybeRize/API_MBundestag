@@ -70,7 +70,7 @@ func testPostSearchOrganisationEditHandler(t *testing.T) {
 
 	w, ctx = hHa.GetContextSetForUserWithFormAndQuery(t, acc, map[string]string{"name": "testEditHandler"}, "type=search")
 	PostEditOrganisationPage(ctx)
-	assert.Equal(t, "TestEditOrganisation|{testEditHandler testEditHandler testEditHandler testEditHandler "+string(database.Public)+" [] []}|"+string(generics.SuccessFullFindOrg)+"\n|true", w.Body.String())
+	assert.Equal(t, "TestEditOrganisation|{testEditHandler testEditHandler testEditHandler testEditHandler "+string(database.Public)+" [] []}|"+string(generics.SuccessfulFoundOrg)+"\n|true", w.Body.String())
 }
 
 func testGetOrganisationEditHandler(t *testing.T) {

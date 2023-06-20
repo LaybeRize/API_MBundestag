@@ -75,7 +75,7 @@ func vaildateOrganisationSearch(c *gin.Context) (editOrg *EditOrganisationStruct
 	err := editOrg.Organisation.GetMe(generics.GetText(c, "name"))
 
 	if err == nil {
-		editOrg.Message = generics.SuccessFullFindOrg + "\n" + editOrg.Message
+		editOrg.Message = generics.SuccessfulFoundOrg + "\n" + editOrg.Message
 		editOrg.Positiv = true
 		return
 	}

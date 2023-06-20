@@ -133,6 +133,7 @@ func (title *Title) tryChangeTitle(new *database.Title, msg *generics.Message, p
 	case new.ChangeTitleName(title.OldName) != nil:
 	case new.UpdateHolder() != nil:
 	default:
+		title.OldName = title.Name
 		*msg = SuccessChangedTitle + "\n" + *msg
 		*positiv = true
 		return false

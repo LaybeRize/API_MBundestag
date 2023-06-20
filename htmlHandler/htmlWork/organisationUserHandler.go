@@ -34,7 +34,7 @@ func GetOrganisationUserHandler(c *gin.Context) {
 		OrganisationName: org.Name,
 		User:             org.Member,
 		MessageStruct: generics.MessageStruct{
-			Message: generics.SuccessFullFindOrg,
+			Message: generics.SuccessfulFoundOrg,
 			Positiv: true,
 		},
 	}

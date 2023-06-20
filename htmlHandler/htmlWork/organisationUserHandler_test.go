@@ -78,7 +78,7 @@ func testGetOrganisationUserPage(t *testing.T) {
 
 	w, ctx = hHa.GetContextSetForUserWithFormAndQuery(t, acc, map[string]string{}, "name=testEditUserOrgHandler")
 	GetOrganisationUserHandler(ctx)
-	assert.Equal(t, "TestUserEditOrganisation|testEditUserOrgHandler|[]|"+string(generics.SuccessFullFindOrg)+"|true", w.Body.String())
+	assert.Equal(t, "TestUserEditOrganisation|testEditUserOrgHandler|[]|"+string(generics.SuccessfulFoundOrg)+"|true", w.Body.String())
 }
 
 func testSetupOrganisationUserPage(t *testing.T) {
