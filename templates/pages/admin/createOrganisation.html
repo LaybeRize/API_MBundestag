@@ -11,7 +11,7 @@
       <standard-input type="text" name="subGroup" value="{{.Organisation.SubGroup}}">
           Unterkategorie
       </standard-input>
-      <standard-input type="text" name="flair" value="{{.Organisation.Flair.String}}">
+      <standard-input type="text" name="flair" value="{{.Organisation.Flair}}">
           Flair
       </standard-input>
       <standard-select name="status" text="Status" disable="false">
@@ -27,10 +27,10 @@
       <div class="flex flex-row">
         <custom-list name="admins" divName="listDivAdmin"
                      list="userNameList" class="w-[400px]"
-                     loop=".Organisation.Info.Admins">Admin Hinzufügen</custom-list>
+                     loop=".Organisation.Admins">Admin Hinzufügen</custom-list>
         <custom-list name="user" divName="listDivUser"
                      list="userNameList" class="w-[400px] ml-2"
-                     loop=".Organisation.Info.User">Nutzer Hinzufügen</custom-list>
+                     loop=".Organisation.Member">Nutzer Hinzufügen</custom-list>
       </div>
       <submit-button>Erstellen</submit-button>
     </standard-form>

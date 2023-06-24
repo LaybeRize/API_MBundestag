@@ -13,7 +13,7 @@
                             {{if $title.Flair.Valid}}
                                 <p class="text-base mt-2">Flairtext: {{$title.Flair.String}}</p>
                             {{end}}
-                            <p class="text-base mt-2">Träger: {{arrayOrEmpty "Keine Träger eingetragen" $title.Info.Names}}</p>
+                            <p class="text-base mt-2">Träger: {{userArrayOrEmpty "Keine Träger eingetragen" $title.Holder}}</p>
                         </div>
                     {{end}}
                 </inner-listing>

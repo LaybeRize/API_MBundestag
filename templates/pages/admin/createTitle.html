@@ -11,7 +11,7 @@
       <standard-input type="text" name="subGroup" value="{{.Title.SubGroup}}">
         Unterkategorie
       </standard-input>
-      <standard-input type="text" name="flair" value="{{.Title.Flair.String}}">
+      <standard-input type="text" name="flair" value="{{.Title.Flair}}">
         Flair
       </standard-input>
       <datalist id="userNameList">
@@ -21,7 +21,7 @@
       </datalist>
       <custom-list name="user" divName="listDivUser"
                    list="userNameList" class="w-[800px] mt-2"
-                   loop=".Title.Info.Names">Nutzer Hinzufügen</custom-list>
+                   loop=".Title.Holder">Nutzer Hinzufügen</custom-list>
       <submit-button>Erstellen</submit-button>
     </standard-form>
     <message text=".Message"></message>

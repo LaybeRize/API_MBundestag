@@ -7,9 +7,6 @@ import (
 	"API_MBundestag/htmlHandler"
 	"API_MBundestag/htmlHandler/htmlAccount"
 	"API_MBundestag/htmlHandler/htmlBasics"
-	"API_MBundestag/htmlHandler/htmlDocuments"
-	"API_MBundestag/htmlHandler/htmlLetter"
-	"API_MBundestag/htmlHandler/htmlPress"
 	"API_MBundestag/htmlHandler/htmlWork"
 	"API_MBundestag/htmlHandler/htmlZwitscher"
 	wr "API_MBundestag/htmlWrapper"
@@ -32,9 +29,9 @@ func setup() {
 
 	htmlAccount.Setup()
 	htmlBasics.Setup()
-	htmlDocuments.Setup()
-	htmlLetter.Setup()
-	htmlPress.Setup()
+	//htmlDocuments.Setup()
+	//htmlLetter.Setup()
+	//htmlPress.Setup()
 	htmlWork.Setup()
 	htmlZwitscher.Setup()
 
@@ -106,8 +103,6 @@ func initRouter(router *gin.Engine) {
 		router.GET("/mod-mails", htmlLetter.GetViewModMailListPage)
 		router.GET("/letter-list", htmlLetter.GetViewLetterListPage)
 		router.POST("/letter-list", htmlLetter.PostViewLetterListPage)
-		router.GET("/zwitscher", htmlZwitscher.GetZwitscherLatestViewPage)
-		router.POST("/zwitscher", htmlZwitscher.PostZwitscherLatestViewPage)
 		router.GET("/create-post", htmlDocuments.GetPostsCreateHandler)
 		router.POST("/create-post", htmlDocuments.PostPostsCreateHandler)
 		router.GET("/create-discussion", htmlDocuments.GetDiscussionCreatePage)

@@ -7,7 +7,8 @@
     #content#
 </h1>
 <!-- message: text -->
-<p id="info" {{if ueq #text# ""}} class="{{if .Positiv}}bg-emerald-800{{else}}bg-rose-800{{end}} text-white p-2 mt-2" {{end}}>
+{{$msg := messageToString #text#}}
+<p id="info" {{if ueq $msg ""}} class="{{if .Positiv}}bg-emerald-800{{else}}bg-rose-800{{end}} text-white p-2 mt-2" {{end}}>
     {{#text#}}
 </p>
 <!-- preview: code -->

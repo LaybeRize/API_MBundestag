@@ -23,8 +23,8 @@
                             {{if $org.Flair.Valid}}
                                 <p class="text-base mt-2">Flairtext: {{$org.Flair.String}}</p>
                             {{end}}
-                            <p class="text-base mt-2">Administratoren: {{arrayOrEmpty "Keine Administratoren eingetragen" $org.Info.Admins}}</p>
-                            <p class="text-base mt-2">Nutzer: {{arrayOrEmpty "Keine Nutzer eingetragen" $org.Info.User}}</p>
+                            <p class="text-base mt-2">Administratoren: {{userArrayOrEmpty "Keine Administratoren eingetragen" $org.Admins}}</p>
+                            <p class="text-base mt-2">Nutzer: {{userArrayOrEmpty "Keine Nutzer eingetragen" $org.Members}}</p>
                         </a>
                     {{end}}
                 </inner-listing>

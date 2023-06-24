@@ -167,7 +167,7 @@ func getFunctionName(temp interface{}) string {
 }
 
 func AddFunctionToLinks(link string, function gin.HandlerFunc) {
-	isPost := strings.HasPrefix("Post", getFunctionName(function))
+	isPost := strings.HasPrefix(getFunctionName(function), "Post")
 	Links = append(Links, Routing{
 		IsPost: isPost,
 		HFunc:  function,
@@ -181,4 +181,4 @@ type Routing struct {
 	Link   string
 }
 
-var Links = make([]Routing, 10)
+var Links = make([]Routing, 0)

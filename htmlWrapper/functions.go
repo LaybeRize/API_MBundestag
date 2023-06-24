@@ -2,6 +2,7 @@ package htmlWrapper
 
 import (
 	"API_MBundestag/database"
+	"API_MBundestag/help/generics"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -48,7 +49,9 @@ var DefaultFunctions = template.FuncMap{
 	"statusTranslations": statusTranslations,
 	"voteTranslations":   voteTranslations,
 	"arrayOrEmpty":       arrayOrEmpty,
+	"userArrayOrEmpty":   userArrayOrEmpty,
 	"title":              title,
+	"messageToString":    messageToString,
 	"noescape":           noescape,
 	"getIcon":            getIcon,
 	"noescapeurl":        noescapeurl,
@@ -278,6 +281,17 @@ func arrayOrEmpty(msg string, arr []string) string {
 	return strings.Join(arr, ", ")
 }
 
+func userArrayOrEmpty(msg string, arr []database.Account) string {
+	if len(arr) == 0 {
+		return msg
+	}
+	str := ""
+	for _, acc := range arr {
+		str += acc.DisplayName + ", "
+	}
+	return str[:len(str)-2]
+}
+
 func title(s string) string {
 	// Use a closure here to remember state.
 	// Hackish but effective. Depends on Map scanning in order and calling
@@ -293,6 +307,10 @@ func title(s string) string {
 			return r
 		},
 		s)
+}
+
+func messageToString(m generics.Message) string {
+	return string(m)
 }
 
 // isSeperator is specifically for the european writing systems
